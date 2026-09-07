@@ -12,6 +12,7 @@ const modeDesc = $('modeDesc');
 const state = {
   operators: [],
   mode: 'easy',
+  guarantee: false,   // 職分保証
   squad: [],          // 12 operators
   revealed: [],       // boolean per slot
   selected: new Set(),// reroll selection
@@ -38,8 +39,8 @@ function updateHint() {
   squadCount.textContent = `${state.squad.length ? n : 0} / ${SQUAD_SIZE}`;
   switch (state.ui) {
     case 'idle': hint.textContent = '難易度を選んで「引く」'; break;
-    case 'reveal': hint.textContent = 'タップしてめくる(めくった後は長押しで詳細)'; break;
-    case 'result': hint.textContent = '長押しでオペレーターの詳細'; break;
+    case 'reveal': hint.textContent = 'タップしてめくる'; break;
+    case 'result': hint.textContent = 'タップで詳細表示。持っていないオペレーターは「選んで再抽選」で引き直せます'; break;
     case 'reroll': hint.textContent = '引き直すオペレーターをタップして選択'; break;
   }
 }
@@ -53,6 +54,14 @@ function describeMode(key) {
   if (w[3]) parts.push(`★3 ${w[3]}%`);
   if (w.low) parts.push(`★1-2 ${w.low}%`);
   return parts.join('  /  ');
+}
+
+function setGuarantee(on) {
+  state.guarantee = !!on;
+  for (const b of document.querySelectorAll('.seg__btn')) {
+    b.setAttribute('aria-checked', (b.dataset.guarantee === '1') === state.guarantee ? 'true' : 'false');
+  }
+  $('guaranteeDesc').textContent = state.guarantee ? '8職分が必ず1体ずつ。残り4枠はランダム' : '完全ランダム';
 }
 
 function setMode(key) {
@@ -159,7 +168,7 @@ function revealAll() {
 // ---------- actions ----------
 function onDraw() {
   if (!state.operators.length) return;
-  state.squad = drawSquad(state.operators, state.mode);
+  state.squad = drawSquad(state.operators, state.mode, { guarantee: state.guarantee });
   state.revealed = new Array(SQUAD_SIZE).fill(false);
   state.selected.clear();
   preloadSquad(state.squad); // warm cache; not awaited
@@ -201,7 +210,7 @@ function toggleSelect(i) {
 async function doReroll() {
   const indices = [...state.selected].sort((a, b) => a - b);
   if (!indices.length) return;
-  const next = rerollSquad(state.operators, state.squad, indices);
+  const next = rerollSquad(state.operators, state.squad, indices, { guarantee: state.guarantee });
   const changed = indices.filter((i) => next[i].id !== state.squad[i].id);
   state.squad = next;
   state.selected.clear();
@@ -249,7 +258,7 @@ async function openShare() {
 
   try {
     const logo = await getLogo();
-    const canvas = await renderShareImage(state.squad, state.mode, logo);
+    const canvas = await renderShareImage(state.squad, state.mode, logo, { guarantee: state.guarantee });
     const blob = await canvasToBlob(canvas);
     if (currentUrl) URL.revokeObjectURL(currentUrl);
     currentBlob = blob;
@@ -303,38 +312,10 @@ async function copyText() {
   }
 }
 
-// ---------- long-press detail ----------
-const LONG_PRESS_MS = 450;
-let pressTimer = null;
-let pressIndex = -1;
-let swallowClick = false;
-
-function cancelPress() {
-  if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-  pressIndex = -1;
-}
-
+// ---------- tap detail ----------
 function canShowDetail(i) {
-  return state.squad.length > 0 && state.revealed[i] && (state.ui === 'result' || state.ui === 'reroll' || state.ui === 'reveal');
+  return state.squad.length > 0 && !!state.revealed[i] && (state.ui === 'result' || state.ui === 'reveal');
 }
-
-grid.addEventListener('pointerdown', (e) => {
-  const slot = e.target.closest('.slot');
-  if (!slot || e.button > 0) return;
-  const i = Number(slot.dataset.index);
-  if (!canShowDetail(i)) return;
-  cancelPress();
-  pressIndex = i;
-  pressTimer = setTimeout(() => {
-    pressTimer = null;
-    swallowClick = true;
-    openDetail(i);
-  }, LONG_PRESS_MS);
-});
-for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) grid.addEventListener(ev, cancelPress);
-grid.addEventListener('pointermove', (e) => { if (pressTimer && e.buttons === 0) cancelPress(); });
-grid.addEventListener('contextmenu', (e) => { if (state.squad.length) e.preventDefault(); });
-grid.addEventListener('click', (e) => { if (swallowClick) { swallowClick = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
 
 /** Crop away transparent padding so the character fills the box. Returns a canvas (or the image on failure). */
 function cropToContent(img) {
@@ -400,6 +381,12 @@ for (const el of document.querySelectorAll('#detailModal [data-close-detail]')) 
 $('detailModal').addEventListener('click', (e) => { if (e.target.closest('.detail__art')) closeDetail(); });
 
 // ---------- events ----------
+$('guarantee').addEventListener('click', (e) => {
+  const b = e.target.closest('.seg__btn');
+  if (!b || state.ui !== 'idle') return;
+  setGuarantee(b.dataset.guarantee === '1');
+});
+
 $('modes').addEventListener('click', (e) => {
   const b = e.target.closest('.mode');
   if (!b || state.ui !== 'idle') return;
@@ -410,8 +397,9 @@ grid.addEventListener('click', (e) => {
   const slot = e.target.closest('.slot');
   if (!slot) return;
   const i = Number(slot.dataset.index);
-  if (state.ui === 'reveal') reveal(i);
-  else if (state.ui === 'reroll') toggleSelect(i);
+  if (state.ui === 'reroll') toggleSelect(i);
+  else if (state.ui === 'reveal' && !state.revealed[i]) reveal(i);
+  else if (canShowDetail(i)) openDetail(i);
 });
 
 $('btnDraw').addEventListener('click', onDraw);
@@ -432,6 +420,7 @@ document.addEventListener('keydown', (e) => {
 
 // ---------- init ----------
 setMode('easy');
+setGuarantee(false);
 renderEmptyGrid();
 setUi('idle');
 loadOperators()

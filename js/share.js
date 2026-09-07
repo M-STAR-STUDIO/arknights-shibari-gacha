@@ -156,7 +156,7 @@ async function drawCard(ctx, op, x, y, art, icon) {
  * @param {HTMLImageElement|null} logo
  * @returns {Promise<HTMLCanvasElement>}
  */
-export async function renderShareImage(squad, modeKey, logo) {
+export async function renderShareImage(squad, modeKey, logo, opts = {}) {
   await document.fonts?.load(`700 40px "Rajdhani"`).catch(() => {});
 
   const canvas = document.createElement('canvas');
@@ -201,6 +201,26 @@ export async function renderShareImage(squad, modeKey, logo) {
   const labelIsLatin = /^[A-Z0-9 ★]+$/.test(mode.label);
   ctx.font = labelIsLatin ? `700 44px ${LATIN_FONT}` : `700 36px ${JP_FONT}`;
   ctx.fillText(mode.label, W - 60, 86);
+
+  // class guarantee badge (image only; deliberately not in the tweet text)
+  if (opts.guarantee) {
+    ctx.textAlign = 'left';
+    ctx.font = `700 34px ${JP_FONT}`;
+    const titleW = ctx.measureText('アークナイツ縛りガチャ').width;
+    ctx.font = `700 19px ${JP_FONT}`;
+    const label = '職分保証あり';
+    const tw = ctx.measureText(label).width + 24;
+    const x = 60 + titleW + 22, y = 58;
+    ctx.fillStyle = 'rgba(159,214,224,0.14)';
+    ctx.fillRect(x, y, tw, 30);
+    ctx.strokeStyle = 'rgba(159,214,224,0.7)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 0.5, y + 0.5, tw - 1, 29);
+    ctx.fillStyle = '#9fd6e0';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x + 12, y + 16);
+    ctx.textBaseline = 'alphabetic';
+  }
 
   // divider
   ctx.fillStyle = 'rgba(159,214,224,0.35)';

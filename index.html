@@ -35,6 +35,7 @@
     <div class="header__meta"><span class="header__tag">ROSTER RANDOMIZER</span><span class="header__line"></span></div>
     <h1 class="title">アークナイツ<span class="title__sub">縛りガチャ</span></h1>
     <p class="lead">全オペレーターからランダムに12体。引いたそのままの編成で挑む。</p>
+    <p class="lead lead--sub">持っていないオペレーターが出たら「選んで再抽選」で、そのカードだけ同じレア度から引き直せます。</p>
   </header>
 
   <section class="panel panel--mode" aria-label="難易度">
@@ -57,6 +58,14 @@
       </button>
     </div>
     <div class="mode-desc" id="modeDesc" aria-live="polite"></div>
+    <div class="guarantee">
+      <span class="guarantee__label">職分保証</span>
+      <div class="seg" id="guarantee" role="radiogroup" aria-label="職分保証">
+        <button class="seg__btn" type="button" role="radio" data-guarantee="0" aria-checked="true">なし</button>
+        <button class="seg__btn" type="button" role="radio" data-guarantee="1" aria-checked="false">あり</button>
+      </div>
+      <span class="guarantee__desc" id="guaranteeDesc">完全ランダム</span>
+    </div>
   </section>
 
   <section class="panel panel--squad" aria-label="編成">
@@ -96,18 +105,18 @@
         <ol>
           <li>難易度を選びます。初期状態は「イージー」です。</li>
           <li>「引く」を押すと、12枚のカードが裏向きで並びます。カードの色でレア度が分かります。</li>
-          <li>カードをタップして1枚ずつめくります。急ぐときは「全部めくる」でまとめて表向きにできます。めくったカードを長押しすると、全身イラストと名前が表示されます。</li>
+          <li>カードをタップして1枚ずつめくります。急ぐときは「全部めくる」でまとめて表向きにできます。めくったカードをもう一度タップすると、全身イラストと名前が表示されます。</li>
           <li>持っていないオペレーターがいたら「選んで再抽選」を押し、該当のカードを選んで「引き直す」を押すと、同じレア度から引き直されます。回数の制限はありません。</li>
           <li>「シェア」で結果の画像を作成し、保存やXへの投稿ができます。</li>
           <li>ゲームを起動し、引いた12体で編成を組んで任務に挑みます。</li>
         </ol>
-        <p>操作の詳しい説明は<a class="footer__link" href="guide.html">遊び方ガイド</a>にあります。職分や近接・遠隔のバランスは一切保証していません。医療がひとりもいない、前衛ばかり、といった編成が出るのも仕様です。その状況でどう攻略するかを楽しむためのツールです。</p>
+        <p>操作の詳しい説明は<a class="footer__link" href="guide.html">遊び方ガイド</a>にあります。「職分保証」を「なし」にすると、職分や近接・遠隔のバランスは一切保証されません。医療がひとりもいない、前衛ばかり、といった編成が出るのも仕様です。「あり」にすると、先鋒・前衛・重装・狙撃・術師・医療・補助・特殊の8職分が必ず1体ずつ入り、残りの4枠がランダムになります。</p>
       </div>
     </details>
     <details class="info">
       <summary>難易度と確率</summary>
       <div class="info__body">
-        <p>難易度は、引かれるオペレーターのレア度の確率を変えます。まず確率でレア度を決め、そのレア度の中からまだ登場していないオペレーターを均等な確率で1体選ぶ、という手順を12回繰り返します。12体の中で同じオペレーターが重複することはありません。</p>
+        <p>難易度は、引かれるオペレーターのレア度の確率を変えます。「職分保証」を「あり」にした場合は、まず8職分それぞれについて確率でレア度を決めて1体ずつ選び、残りの4枠を通常どおり引きます。まず確率でレア度を決め、そのレア度の中からまだ登場していないオペレーターを均等な確率で1体選ぶ、という手順を12回繰り返します。12体の中で同じオペレーターが重複することはありません。</p>
         <div class="table-wrap">
         <table class="info__table">
           <thead><tr><th>難易度</th><th>★6</th><th>★5</th><th>★4</th><th>★3</th><th>★1・2</th></tr></thead>

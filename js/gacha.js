@@ -53,28 +53,47 @@ function buildPools(operators) {
   return pools;
 }
 
+export const CLASSES = ['vanguard', 'guard', 'defender', 'sniper', 'caster', 'medic', 'supporter', 'specialist'];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = randInt(i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 /**
  * Draw a full squad of 12 unique operators.
  * @param {Array} operators
  * @param {string} modeKey
+ * @param {{guarantee?: boolean}} [opts] guarantee: every one of the 8 classes appears at least once
  * @returns {Array} operators
  */
-export function drawSquad(operators, modeKey) {
+export function drawSquad(operators, modeKey, opts = {}) {
   const mode = MODES[modeKey];
   const pools = buildPools(operators);
   const used = new Set();
   const result = [];
-  const available = (k) => pools[k].some((o) => !used.has(o.id));
 
-  for (let i = 0; i < SQUAD_SIZE; i++) {
+  const drawOne = (filter) => {
+    const available = (k) => pools[k].some((o) => !used.has(o.id) && filter(o));
     const key = pickPoolKey(mode.weights, available);
-    if (key == null) break;
-    const cand = pools[key].filter((o) => !used.has(o.id));
+    if (key == null) return null;
+    const cand = pools[key].filter((o) => !used.has(o.id) && filter(o));
     const op = pick(cand);
     used.add(op.id);
     result.push(op);
+    return op;
+  };
+
+  if (opts.guarantee) {
+    for (const cls of shuffle(CLASSES.slice())) drawOne((o) => o.cls === cls);
   }
-  return result;
+  while (result.length < SQUAD_SIZE) {
+    if (!drawOne(() => true)) break;
+  }
+  return opts.guarantee ? shuffle(result) : result;
 }
 
 /**
@@ -84,17 +103,38 @@ export function drawSquad(operators, modeKey) {
  * @param {Array} operators
  * @param {Array} squad current squad
  * @param {number[]} indices
+ * @param {{guarantee?: boolean}} [opts] guarantee: keep every class represented (a rerolled operator whose
+ *   class would otherwise disappear from the squad is redrawn from the same class)
  * @returns {Array} new squad
  */
-export function rerollSquad(operators, squad, indices) {
+export function rerollSquad(operators, squad, indices, opts = {}) {
   const pools = buildPools(operators);
   const next = squad.slice();
   const used = new Set(squad.map((o) => o.id));
+  const pending = new Set(indices); // not yet rerolled in this pass
 
   for (const i of indices) {
     const orig = squad[i];
     const key = poolKey(orig.rarity);
-    const cand = pools[key].filter((o) => !used.has(o.id));
+    let cand = pools[key].filter((o) => !used.has(o.id));
+    if (opts.guarantee) {
+      // is this class still covered by operators that stay (or were already rerolled)?
+      const covered = next.some((o, j) => j !== i && !pending.has(j) && o.cls === orig.cls);
+      if (!covered) {
+        const sameCls = cand.filter((o) => o.cls === orig.cls);
+        if (sameCls.length) {
+          cand = sameCls;
+        } else {
+          // no unused operator of this class at the same rarity: keep the class and take the nearest rarity
+          const any = operators.filter((o) => o.cls === orig.cls && !used.has(o.id));
+          if (any.length) {
+            const best = Math.min(...any.map((o) => Math.abs(o.rarity - orig.rarity)));
+            cand = any.filter((o) => Math.abs(o.rarity - orig.rarity) === best);
+          }
+        }
+      }
+    }
+    pending.delete(i);
     if (cand.length === 0) continue; // nothing else available in this pool; keep original
     const op = pick(cand);
     used.add(op.id);
