@@ -11,7 +11,7 @@ const COLS = 6, ROWS = 2;
 
 const FRAME = {
   6: null, // gradient
-  5: '#e0c15a',
+  5: '#b8952c',
   4: '#4f8fd6',
   3: '#d9dde2',
 };
@@ -32,11 +32,13 @@ function parallelogram(ctx, x, y, w, h, cut) {
 
 function goldGradient(ctx, x, y, w, h) {
   const g = ctx.createLinearGradient(x, y, x + w, y + h);
-  g.addColorStop(0, '#a56f13');
-  g.addColorStop(0.25, '#f2c14e');
-  g.addColorStop(0.45, '#fff2b3');
-  g.addColorStop(0.6, '#f2c14e');
-  g.addColorStop(1, '#a56f13');
+  g.addColorStop(0, '#8a5a0c');
+  g.addColorStop(0.2, '#ffcf4d');
+  g.addColorStop(0.38, '#fffbe6');
+  g.addColorStop(0.5, '#ffcf4d');
+  g.addColorStop(0.62, '#fffbe6');
+  g.addColorStop(0.8, '#ffcf4d');
+  g.addColorStop(1, '#8a5a0c');
   return g;
 }
 
@@ -58,8 +60,8 @@ async function drawCard(ctx, op, x, y, art, icon) {
   // glow for 6
   if (isSix) {
     ctx.save();
-    ctx.shadowColor = 'rgba(242,193,78,0.55)';
-    ctx.shadowBlur = 24;
+    ctx.shadowColor = 'rgba(255,210,90,0.85)';
+    ctx.shadowBlur = 34;
     parallelogram(ctx, x, y, CARD_W, CARD_H, CUT);
     ctx.fillStyle = '#f2c14e';
     ctx.fill();

@@ -129,7 +129,7 @@ function fillSlot(i, op) {
 function renderSquadFaceDown(squad) {
   for (let i = 0; i < SQUAD_SIZE; i++) {
     const slot = slotEl(i);
-    slot.classList.remove('is-flipped', 'is-selected');
+    slot.classList.remove('is-flipped', 'is-selected', 'was-flipped');
     slot.classList.add('is-flippable');
     fillSlot(i, squad[i]);
   }
@@ -211,11 +211,12 @@ async function doReroll() {
   for (const i of changed) {
     const slot = slotEl(i);
     slot.classList.remove('is-selected');
+    slot.classList.add('was-flipped');
     slot.classList.remove('is-flipped');
   }
   for (const i of indices) slotEl(i).classList.remove('is-selected');
   await preloadSquad(changed.map((i) => next[i]));
-  await wait(380);
+  await wait(500);
   for (const i of changed) fillSlot(i, next[i]);
   await wait(60);
   changed.forEach((i, k) => setTimeout(() => slotEl(i).classList.add('is-flipped'), k * 70));
