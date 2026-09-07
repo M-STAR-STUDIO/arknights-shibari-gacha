@@ -136,7 +136,7 @@ a { color: var(--accent); }
 .seg__btn[aria-checked="true"] { background: rgba(159,214,224,0.16); color: var(--accent); }
 .app:not([data-state="idle"]) .seg__btn { pointer-events: none; }
 .app:not([data-state="idle"]) .seg__btn[aria-checked="false"] { opacity: 0.35; }
-.guarantee__desc { font-size: 11px; color: var(--text-3); }
+.guarantee__desc { font-size: 11px; color: var(--text-3); margin-top: 6px; min-height: 16px; }
 
 /* ===== squad grid ===== */
 .squad-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }
