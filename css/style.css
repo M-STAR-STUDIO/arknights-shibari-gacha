@@ -287,17 +287,17 @@ a { color: var(--accent); }
 .app[data-state="reroll"] .slot .card { cursor: pointer; }
 .app[data-state="reroll"] .slot:not(.is-selected) .card { opacity: 0.55; }
 .slot .check {
-  position: absolute; left: 50%; top: 50%; z-index: 2;
-  transform: translate(-50%,-50%) scale(0.6);
-  width: 36px; height: 36px; border-radius: 50%;
+  position: absolute; right: 4px; top: 4px; z-index: 2;
+  transform: scale(0.6);
+  width: 22px; height: 22px; border-radius: 50%;
   background: var(--accent); color: #0b0e11;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 20px;
+  font-weight: 800; font-size: 14px; line-height: 1;
   opacity: 0; pointer-events: none;
   transition: opacity .15s, transform .15s;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
-.slot.is-selected .check { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.slot.is-selected .check { opacity: 1; transform: scale(1); }
 .app[data-state="reroll"] .slot.is-selected { filter: drop-shadow(0 0 6px rgba(159,214,224,0.6)); }
 
 /* ===== actions (sticky bottom bar) ===== */
