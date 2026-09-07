@@ -92,6 +92,9 @@ a { color: var(--accent); }
 }
 
 /* modes */
+.mode-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mode-note { display: none; font-size: 11px; color: var(--accent); }
+.app:not([data-state="idle"]) .mode-note { display: inline; }
 .modes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
 .mode {
   background: var(--panel-2);
