@@ -82,10 +82,12 @@ async function drawCard(ctx, op, x, y, art, icon) {
   ctx.fillStyle = '#0f1418';
   ctx.fillRect(ix, iy, iw, ih);
 
-  // art: square at top, below the top cut
+  // art: enlarged square at top (sides cropped by the card), below the top cut
   const artY = iy + icut * 0.5;
+  const artS = Math.round(iw * 1.24);
+  const artH = artS;
   if (art) {
-    ctx.drawImage(art, ix, artY, iw, iw);
+    ctx.drawImage(art, ix - (artS - iw) / 2, artY, artS, artS);
   } else {
     ctx.fillStyle = '#e6ebef';
     ctx.textAlign = 'center';
@@ -94,12 +96,13 @@ async function drawCard(ctx, op, x, y, art, icon) {
     ctx.font = `700 ${size}px ${JP_FONT}`;
     ctx.fillText(op.name, ix + iw / 2, artY + iw / 2);
   }
-  // fade from art to name area
-  const fade = ctx.createLinearGradient(0, artY + iw - 50, 0, artY + iw);
+  // short fade from art to name area (kept small so the face is not covered)
+  const fadeH = 26;
+  const fade = ctx.createLinearGradient(0, artY + artH - fadeH, 0, artY + artH);
   fade.addColorStop(0, 'rgba(15,20,24,0)');
   fade.addColorStop(1, 'rgba(15,20,24,1)');
   ctx.fillStyle = fade;
-  ctx.fillRect(ix, artY + iw - 50, iw, 50);
+  ctx.fillRect(ix, artY + artH - fadeH, iw, fadeH);
 
   // name
   ctx.fillStyle = '#e6ebef';
@@ -107,20 +110,20 @@ async function drawCard(ctx, op, x, y, art, icon) {
   ctx.textBaseline = 'middle';
   const nameSize = fitText(ctx, op.name, iw - 20, 22, 12);
   ctx.font = `700 ${nameSize}px ${JP_FONT}`;
-  const nameY = artY + iw + 34;
+  const nameY = artY + artH + 26;
   ctx.fillText(op.name, ix + iw / 2, nameY);
 
   // rarity marker (thin bar, color only)
   ctx.fillStyle = isSix ? '#f2c14e' : FRAME[Math.max(3, op.rarity)];
   ctx.globalAlpha = 0.7;
-  ctx.fillRect(ix + 16, nameY + 24, iw - 32, 2);
+  ctx.fillRect(ix + 16, nameY + 24, iw - 32 - 52, 2); // stops short of the class icon
   ctx.globalAlpha = 1;
 
   // subtle diagonal band in the lower area (same shape language as the empty slot)
   ctx.save();
   ctx.beginPath();
-  const by = nameY + 60;
-  ctx.moveTo(ix, by + 70); ctx.lineTo(ix + iw, by + 10); ctx.lineTo(ix + iw, by + 40); ctx.lineTo(ix, by + 100);
+  const by = nameY + 40;
+  ctx.moveTo(ix, by + 50); ctx.lineTo(ix + iw, by + 0); ctx.lineTo(ix + iw, by + 22); ctx.lineTo(ix, by + 72);
   ctx.closePath();
   ctx.fillStyle = 'rgba(255,255,255,0.05)';
   ctx.fill();
