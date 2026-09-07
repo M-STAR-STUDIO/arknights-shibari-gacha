@@ -55,7 +55,6 @@ const counts = {};
 for (const o of operators) counts[o.rarity] = (counts[o.rarity] || 0) + 1;
 
 const out = {
-  generatedAt: new Date().toISOString(),
   source: SOURCE_URL,
   counts,
   operators,
