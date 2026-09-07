@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mstar-studio.com/arknights-shibari-gacha/sitemap.xml

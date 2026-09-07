@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>遊び方ガイド | アークナイツ縛りガチャ</title>
+<meta name="description" content="アークナイツ縛りガチャの使い方。難易度の選び方、カードのめくり方、再抽選、シェア画像の作り方と、ゲーム側で編成を組むまでの流れを説明します。">
+<meta name="theme-color" content="#0b0e11">
+<link rel="canonical" href="https://mstar-studio.com/arknights-shibari-gacha/guide.html">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pages.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8043531064519803" crossorigin="anonymous"></script>
+<style>
+  .demo { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; margin: 8px 0 14px; }
+  .demo .slot { width: 72px; flex: none; }
+  .demo .slot .face--front { visibility: visible; }
+  .demo .slot .face--back { visibility: hidden; }
+  .demo .slot.is-down .face--back { visibility: visible; }
+  .demo .slot.is-down .face--front { visibility: hidden; }
+  .demo .cap { font-size: 11px; color: var(--text-3); text-align: center; width: 72px; margin-top: 4px; line-height: 1.4; }
+  .demo .col { display: flex; flex-direction: column; align-items: center; }
+  .demo .face--front .inner { background: #1a2129; }
+  .demo .face--front .inner::before { content: ""; position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 1; background: radial-gradient(circle at 50% 42%, #3a4652 0 26%, transparent 27%), radial-gradient(ellipse at 50% 95%, #3a4652 0 45%, transparent 46%); }
+  .demo .btn { pointer-events: none; }
+  .steps li { margin-bottom: 10px; }
+  .steps strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<main class="app">
+  <header class="header">
+    <div class="header__meta"><span class="header__tag">GUIDE</span><span class="header__line"></span></div>
+    <h1 class="title">遊び方ガイド<span class="title__sub">引いてから編成を組むまで</span></h1>
+  </header>
+  <nav class="subnav">
+    <a class="footer__link" href="./">← ガチャに戻る</a>
+    <a class="footer__link" href="rules.html">縛りルール集</a>
+    <a class="footer__link" href="changelog.html">更新履歴</a>
+  </nav>
+
+  <section class="panel doc">
+    <div class="panel__label">OVERVIEW</div>
+    <h2>このツールでできること</h2>
+    <p>アークナイツ縛りガチャは、『アークナイツ』のグローバル版(日本版)に実装されている全オペレーターの中から、ランダムに12体を選ぶツールです。選ばれた12体をそのままゲーム内の編成に組み、任務に挑む「縛りプレー」を手軽に始められます。登録やログインは不要で、スマートフォンのブラウザからそのまま使えます。</p>
+    <p>ゲームのアカウントとは一切連携しません。手持ちのオペレーターを読み取ることはできないので、持っていないオペレーターが出たときのために「再抽選」の機能があります。</p>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">STEP BY STEP</div>
+    <h2>手順</h2>
+    <ol class="steps">
+      <li><strong>難易度を選ぶ。</strong> 画面上部の4つのボタンから選びます。初期状態はイージーです。難易度によって、引かれるオペレーターのレア度の確率が変わります。詳しい確率はガチャ画面の「難易度と確率」を開くと確認できます。</li>
+      <li><strong>「引く」を押す。</strong> 12枚のカードが裏向きで並びます。裏向きの状態でも、カードの色でレア度だけは分かるようになっています。</li>
+      <li><strong>カードをめくる。</strong> カードをタップすると1枚ずつ表になります。全部まとめて表にしたいときは、スロットの右上にある「全部めくる」を押します。</li>
+      <li><strong>必要なら再抽選する。</strong> 持っていないオペレーターがいたら「再抽選」を押し、引き直したいカードをタップして選び、「再抽選する」を押します。選んだカードだけが、元のカードと同じレア度から引き直されます。</li>
+      <li><strong>シェアする。</strong> 「シェア」を押すと、12体を並べた画像がその場で作られます。スマートフォンでは「画像ごと共有」からXなどのアプリに直接送れます。パソコンでは「画像を保存」してから「Xで投稿」で添付します。</li>
+      <li><strong>ゲームで編成を組む。</strong> アークナイツを起動して、編成画面で12体を選びます。シェア画像を保存しておくと、ゲームと行き来しながら組めます。</li>
+      <li><strong>もう一回引く。</strong> 「もう一回引く」を押すと最初の画面に戻ります。難易度を変えて引き直すこともできます。</li>
+    </ol>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">CARDS</div>
+    <h2>カードの見方</h2>
+    <p>カードの枠の色がレア度を表します。裏向きのときはカード全体がその色になります。名前は表示せず、絵と職分アイコンだけで示すのがこのツールの特徴です。</p>
+    <div class="demo">
+      <div class="col"><div class="slot" data-rarity="6"><div class="card"><div class="face face--back"><div class="back-inner"></div></div><div class="face face--front"><div class="inner"><div class="strip"></div></div></div></div></div><div class="cap">星6<br>光沢のある金</div></div>
+      <div class="col"><div class="slot" data-rarity="5"><div class="card"><div class="face face--back"><div class="back-inner"></div></div><div class="face face--front"><div class="inner"><div class="strip"></div></div></div></div></div><div class="cap">星5<br>黄</div></div>
+      <div class="col"><div class="slot" data-rarity="4"><div class="card"><div class="face face--back"><div class="back-inner"></div></div><div class="face face--front"><div class="inner"><div class="strip"></div></div></div></div></div><div class="cap">星4<br>青</div></div>
+      <div class="col"><div class="slot" data-rarity="3"><div class="card"><div class="face face--back"><div class="back-inner"></div></div><div class="face face--front"><div class="inner"><div class="strip"></div></div></div></div></div><div class="cap">星3以下<br>白</div></div>
+    </div>
+    <div class="demo">
+      <div class="col"><div class="slot is-down" data-rarity="6"><div class="card"><div class="face face--back"><div class="back-inner"><span class="back-num">01</span></div></div><div class="face face--front"><div class="inner"></div></div></div></div><div class="cap">裏向き(星6)</div></div>
+      <div class="col"><div class="slot is-down" data-rarity="4"><div class="card"><div class="face face--back"><div class="back-inner"><span class="back-num">02</span></div></div><div class="face face--front"><div class="inner"></div></div></div></div><div class="cap">裏向き(星4)</div></div>
+      <div class="col"><div class="slot"><div class="card"><div class="face face--empty"><span class="slot-num">03</span></div></div></div><div class="cap">空のスロット</div></div>
+    </div>
+    <p>カードの右下には職分アイコンが付きます。先鋒・前衛・重装・狙撃・術師・医療・補助・特殊の8種類で、サブ職分は表示しません。画像が読み込めなかったときだけ、絵の代わりにオペレーターの名前を表示します。</p>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">REROLL</div>
+    <h2>再抽選の仕組み</h2>
+    <p>再抽選は「持っていないオペレーターの救済」のための機能です。次のルールで動きます。</p>
+    <ul>
+      <li>引き直しは、元のオペレーターと<strong>同じレア度</strong>の中から行われます。星4を選べば星4が、星6を選べば星6が出ます。</li>
+      <li>場に残っている他の11体と重複することはありません。</li>
+      <li>複数のカードをまとめて選べます。回数の制限もありません。</li>
+      <li>星1と星2は1つのグループとして扱うので、星1を引き直すと星2が出ることがあります。</li>
+    </ul>
+    <p>再抽選を「持っていないときだけ」に限るか、「気に入らないときも可」にするかは、自分でルールを決めてください。縛りとして遊ぶなら前者がおすすめです。</p>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">IN GAME</div>
+    <h2>ゲーム側で編成を組むときのコツ</h2>
+    <ul>
+      <li>編成画面では、職分でフィルタするとシェア画像との照らし合わせが楽です。カードの職分アイコンを見ながら1職分ずつ探すと、12体を素早く揃えられます。</li>
+      <li>編成枠は「編成1〜4」のどれかを縛りガチャ専用にしておくと、普段の編成を崩さずに済みます。</li>
+      <li>フレンドの支援オペレーターは使わないのが基本です。12体だけで挑むのが縛りガチャの趣旨です。</li>
+      <li>難しすぎると感じたら、<a class="footer__link" href="rules.html">縛りルール集</a>の「基本編」から、逆に簡単すぎたら「育成制限編」や「戦術制限編」から追加ルールを選んでみてください。</li>
+    </ul>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">TROUBLE</div>
+    <h2>うまく動かないとき</h2>
+    <dl class="faq">
+      <dt>カードの絵が表示されず、名前だけになる</dt>
+      <dd>画像は外部のサーバーから読み込んでいます。通信環境によって読み込めないことがあり、その場合は名前で代替します。しばらくしてから「もう一回引く」で引き直すと表示されることがあります。</dd>
+      <dt>「画像ごと共有」のボタンが出ない</dt>
+      <dd>お使いのブラウザが画像付きの共有に対応していない場合は表示されません。「画像を保存」してから、Xのアプリで添付してください。パソコンのブラウザではこの形が基本です。</dd>
+      <dt>シェア画像に名前が入っている</dt>
+      <dd>画面上のカードには名前を出しませんが、シェア画像は他の人に見せるためのものなので名前を入れています。</dd>
+      <dt>引いた結果が消えた</dt>
+      <dd>結果はページを閉じると消えます。保存の仕組みは持っていないので、残したいときはシェア画像を保存してください。</dd>
+      <dt>新しいオペレーターが出てこない</dt>
+      <dd>オペレーターの一覧は毎週月曜に自動で更新しています。実装から1週間程度お待ちください。反映状況は<a class="footer__link" href="changelog.html">更新履歴</a>で確認できます。</dd>
+    </dl>
+  </section>
+
+  <footer class="footer">
+    <p class="footer__legal">『アークナイツ』およびオペレーターの名称等に関する権利は ©Hypergryph / Yostar に帰属します。本サイトは非公式のファンコンテンツです。</p>
+    <p class="footer__credit">制作: <span class="footer__studio">M Star Studio</span>
+      <span class="footer__sep">/</span><a class="footer__link" href="privacy.html">プライバシーポリシー・運営者情報</a></p>
+  </footer>
+</main>
+</body>
+</html>
