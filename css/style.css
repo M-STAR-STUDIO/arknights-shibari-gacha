@@ -16,7 +16,7 @@
   --r6: #ffcf4d;
   --r6-hi: #fffbe6;
   --r6-lo: #8a5a0c;
-  --r5: #b8952c;
+  --r5: #a8862a;
   --r4: #4f8fd6;
   --r3: #d9dde2;
 
@@ -283,12 +283,30 @@ a { color: var(--accent); }
   background-size: 300% 300%;
   animation: shimmer 2.2s linear infinite;
 }
-.slot[data-rarity="6"] .face--front { padding: 5px; }
-.slot[data-rarity="6"] .face--front .inner { inset: 5px; }
-.slot[data-rarity="6"] { animation: glow6 1.6s ease-in-out infinite; }
+.slot[data-rarity="6"] .face--front { padding: 6px; }
+.slot[data-rarity="6"] .face--front .inner { inset: 6px; }
+.slot[data-rarity="6"] { animation: glow6 1.4s ease-in-out infinite; }
 @keyframes glow6 {
-  0%, 100% { filter: drop-shadow(0 0 4px rgba(255,205,80,0.55)); }
-  50%      { filter: drop-shadow(0 0 12px rgba(255,220,110,0.95)); }
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255,205,80,0.7)); }
+  50%      { filter: drop-shadow(0 0 16px rgba(255,225,120,1)); }
+}
+/* light sweep across the whole card face */
+.slot[data-rarity="6"] .face--front .inner::after {
+  content: ""; position: absolute; inset: -40% -60%; z-index: 3; pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,250,220,0.0) 44%, rgba(255,250,220,0.55) 50%, rgba(255,250,220,0.0) 56%, transparent 60%);
+  animation: sweep6 2.4s ease-in-out infinite;
+}
+@keyframes sweep6 {
+  0%   { transform: translateX(-45%); }
+  60%, 100% { transform: translateX(45%); }
+}
+.slot[data-rarity="6"] .face--front .strip {
+  background: linear-gradient(180deg, rgba(15,20,24,0) 0%, rgba(120,85,10,0.55) 45%, rgba(60,42,6,0.95) 100%);
+}
+.slot[data-rarity="6"] .face--back .back-inner {
+  background:
+    repeating-linear-gradient(135deg, rgba(0,0,0,0.08) 0 2px, transparent 2px 8px),
+    linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.25));
 }
 .slot[data-rarity="5"] { --frame: var(--r5); }
 .slot[data-rarity="4"] { --frame: var(--r4); }
@@ -317,8 +335,10 @@ a { color: var(--accent); }
 .slot.is-selected .check { opacity: 1; transform: scale(1); }
 .app[data-state="reroll"] .slot.is-selected { filter: drop-shadow(0 0 6px rgba(159,214,224,0.6)); }
 
-/* ===== actions (sticky bottom bar) ===== */
-.actions {
+/* ===== actions ===== */
+.actions { margin: 4px 0 8px; padding: 6px 0; }
+/* only the initial 引く button sticks to the bottom so it is reachable without scrolling */
+.app[data-state="idle"] .actions {
   position: sticky; bottom: 0; z-index: 10;
   margin: 0 -16px;
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -332,7 +352,7 @@ a { color: var(--accent); }
 .app[data-state="idle"] .actions__row[data-for="idle"],
 .app[data-state="result"] .actions__row[data-for="result"],
 .app[data-state="reroll"] .actions__row[data-for="reroll"] { display: flex; }
-.again { display: none; justify-content: center; margin: 18px 0 26px; }
+.again { display: none; justify-content: center; margin: 6px 0 26px; }
 .app[data-state="result"] .again, .app[data-state="reroll"] .again { display: flex; }
 .again .btn { min-width: 200px; }
 
@@ -404,6 +424,6 @@ a { color: var(--accent); }
 .share-note { margin: 10px 0 0; font-size: 11px; color: var(--text-3); }
 
 @media (prefers-reduced-motion: reduce) {
-  .slot[data-rarity="6"] .face { animation: none; }
-  .slot[data-rarity="6"] { animation: none; filter: drop-shadow(0 0 8px rgba(255,210,90,0.8)); }
+  .slot[data-rarity="6"] .face, .slot[data-rarity="6"] .face--front .inner::after { animation: none; }
+  .slot[data-rarity="6"] { animation: none; filter: drop-shadow(0 0 10px rgba(255,210,90,0.9)); }
 }

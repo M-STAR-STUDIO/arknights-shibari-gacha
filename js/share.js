@@ -11,7 +11,7 @@ const COLS = 6, ROWS = 2;
 
 const FRAME = {
   6: null, // gradient
-  5: '#b8952c',
+  5: '#a8862a',
   4: '#4f8fd6',
   3: '#d9dde2',
 };
