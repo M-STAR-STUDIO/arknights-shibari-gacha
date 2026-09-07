@@ -22,6 +22,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache-bust CSS/JS URLs with the commit hash
+        run: |
+          V=${GITHUB_SHA::8}
+          # <link href="css/x.css"> / <script src="js/x.js">
+          sed -i -E "s#((href|src)=\"(css|js)/[A-Za-z0-9_-]+\.(css|js))\"#\1?v=$V\"#g" *.html
+          # import ... from './x.js' (html inline modules and js files)
+          sed -i -E "s#(from '\./[A-Za-z0-9_/-]+\.js)'#\1?v=$V'#g" *.html js/*.js
+          # dynamic import('./js/x.js')
+          sed -i -E "s#(import\('\./[A-Za-z0-9_/-]+\.js)'\)#\1?v=$V')#g" *.html js/*.js
+          grep -o "style.css?v=[0-9a-f]*" index.html | head -1
+          grep -o "gacha.js?v=[0-9a-f]*" js/app.js | head -1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
