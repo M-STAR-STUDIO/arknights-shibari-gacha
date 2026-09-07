@@ -1,5 +1,5 @@
 import { MODES, SQUAD_SIZE, drawSquad, rerollSquad } from './gacha.js';
-import { avatarUrl, classIconUrl, loadImage, preloadSquad, CLASS_JP, CLASS_SHORT } from './assets.js';
+import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad, CLASS_JP, CLASS_SHORT } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
 
 const $ = (id) => document.getElementById(id);
@@ -38,8 +38,8 @@ function updateHint() {
   squadCount.textContent = `${state.squad.length ? n : 0} / ${SQUAD_SIZE}`;
   switch (state.ui) {
     case 'idle': hint.textContent = '難易度を選んで「引く」'; break;
-    case 'reveal': hint.textContent = 'タップしてめくる'; break;
-    case 'result': hint.textContent = ''; break;
+    case 'reveal': hint.textContent = 'タップしてめくる(めくった後は長押しで詳細)'; break;
+    case 'result': hint.textContent = '長押しでオペレーターの詳細'; break;
     case 'reroll': hint.textContent = '引き直すオペレーターをタップして選択'; break;
   }
 }
@@ -303,6 +303,102 @@ async function copyText() {
   }
 }
 
+// ---------- long-press detail ----------
+const LONG_PRESS_MS = 450;
+let pressTimer = null;
+let pressIndex = -1;
+let swallowClick = false;
+
+function cancelPress() {
+  if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+  pressIndex = -1;
+}
+
+function canShowDetail(i) {
+  return state.squad.length > 0 && state.revealed[i] && (state.ui === 'result' || state.ui === 'reroll' || state.ui === 'reveal');
+}
+
+grid.addEventListener('pointerdown', (e) => {
+  const slot = e.target.closest('.slot');
+  if (!slot || e.button > 0) return;
+  const i = Number(slot.dataset.index);
+  if (!canShowDetail(i)) return;
+  cancelPress();
+  pressIndex = i;
+  pressTimer = setTimeout(() => {
+    pressTimer = null;
+    swallowClick = true;
+    openDetail(i);
+  }, LONG_PRESS_MS);
+});
+for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) grid.addEventListener(ev, cancelPress);
+grid.addEventListener('pointermove', (e) => { if (pressTimer && e.buttons === 0) cancelPress(); });
+grid.addEventListener('contextmenu', (e) => { if (state.squad.length) e.preventDefault(); });
+grid.addEventListener('click', (e) => { if (swallowClick) { swallowClick = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+
+/** Crop away transparent padding so the character fills the box. Returns a canvas (or the image on failure). */
+function cropToContent(img) {
+  try {
+    const S = 256;
+    const probe = document.createElement('canvas');
+    probe.width = S; probe.height = S;
+    const pc = probe.getContext('2d', { willReadFrequently: true });
+    pc.drawImage(img, 0, 0, S, S);
+    const d = pc.getImageData(0, 0, S, S).data;
+    let minX = S, minY = S, maxX = -1, maxY = -1;
+    for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+      if (d[(y * S + x) * 4 + 3] > 16) { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+    }
+    if (maxX < 0) return img;
+    const pad = 6;
+    minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+    maxX = Math.min(S - 1, maxX + pad); maxY = Math.min(S - 1, maxY + pad);
+    const sx = img.naturalWidth / S, sy = img.naturalHeight / S;
+    const cx = Math.floor(minX * sx), cy = Math.floor(minY * sy);
+    const cw = Math.ceil((maxX - minX + 1) * sx), ch = Math.ceil((maxY - minY + 1) * sy);
+    const out = document.createElement('canvas');
+    const scale = Math.min(1, 1400 / Math.max(cw, ch));
+    out.width = Math.round(cw * scale); out.height = Math.round(ch * scale);
+    out.getContext('2d').drawImage(img, cx, cy, cw, ch, 0, 0, out.width, out.height);
+    return out;
+  } catch { return img; }
+}
+
+let detailToken = 0;
+async function openDetail(i) {
+  const op = state.squad[i];
+  if (!op) return;
+  const modal = $('detailModal');
+  const artBox = $('detailArt');
+  const token = ++detailToken;
+  $('detailName').textContent = op.name;
+  $('detailRarity').textContent = '★'.repeat(op.rarity);
+  $('detailRarity').dataset.rarity = op.rarity;
+  $('detailCls').textContent = CLASS_JP[op.cls];
+  artBox.innerHTML = '<div class="spinner">LOADING...</div>';
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  let img = await loadImage(fullArtUrl(op));
+  if (!img) img = await loadImage(avatarUrl(op)); // fallback: face icon
+  if (token !== detailToken || modal.hidden) return;
+  artBox.innerHTML = '';
+  if (img) {
+    const el = cropToContent(img);
+    if (el instanceof HTMLImageElement) { el.alt = op.name; el.draggable = false; }
+    else el.setAttribute('role', 'img'), el.setAttribute('aria-label', op.name);
+    artBox.appendChild(el);
+  } else {
+    artBox.innerHTML = '<div class="spinner">画像を読み込めませんでした</div>';
+  }
+}
+function closeDetail() {
+  detailToken++;
+  $('detailModal').hidden = true;
+  if ($('shareModal').hidden) document.body.style.overflow = '';
+}
+for (const el of document.querySelectorAll('#detailModal [data-close-detail]')) el.addEventListener('click', closeDetail);
+$('detailModal').addEventListener('click', (e) => { if (e.target.closest('.detail__art')) closeDetail(); });
+
 // ---------- events ----------
 $('modes').addEventListener('click', (e) => {
   const b = e.target.closest('.mode');
@@ -328,7 +424,11 @@ $('btnShare').addEventListener('click', openShare);
 $('btnNativeShare').addEventListener('click', nativeShare);
 $('btnCopyText').addEventListener('click', copyText);
 for (const el of document.querySelectorAll('#shareModal [data-close]')) el.addEventListener('click', closeShare);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('shareModal').hidden) closeShare(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (!$('detailModal').hidden) closeDetail();
+  else if (!$('shareModal').hidden) closeShare();
+});
 
 // ---------- init ----------
 setMode('easy');

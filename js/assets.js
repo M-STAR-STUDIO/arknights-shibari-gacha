@@ -15,6 +15,11 @@ export const CLASS_SHORT = {
 export function avatarUrl(op) {
   return `${AVATAR_BASE}${op.id}.png`;
 }
+const ART_BASE = 'https://cdn.jsdelivr.net/gh/fexli/ArknightsResource@main/charpack/';
+/** Full illustration (pre-promotion default art). Large file, load on demand only. */
+export function fullArtUrl(op) {
+  return `${ART_BASE}${op.id}_1.png`;
+}
 export function classIconUrl(cls) {
   return `${CLASS_BASE}class_${cls}.png`;
 }

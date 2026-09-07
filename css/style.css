@@ -457,6 +457,30 @@ a { color: var(--accent); }
 .share-btns .btn--primary { grid-column: 1 / -1; }
 .share-note { margin: 10px 0 0; font-size: 11px; color: var(--text-3); }
 
+/* ===== operator detail (long press) ===== */
+.modal--detail { align-items: center; z-index: 60; }
+.modal--detail .modal__backdrop { background: rgba(5,7,9,0.93); }
+.detail {
+  position: relative; width: min(100%, 520px); max-height: 100vh; max-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 16px 12px calc(16px + env(safe-area-inset-bottom));
+}
+.detail__close { position: absolute; right: 8px; top: 6px; z-index: 2; color: var(--text); }
+.detail__art {
+  width: 100%; height: min(70vh, 640px); display: flex; align-items: center; justify-content: center;
+}
+.detail__art img, .detail__art canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7)); animation: detailIn .25s ease-out; }
+.detail__art .spinner { color: var(--text-3); font-family: var(--font-latin); letter-spacing: 0.2em; font-size: 12px; }
+@keyframes detailIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+.detail__info { margin-top: 10px; text-align: center; }
+.detail__rarity { font-size: 14px; letter-spacing: 0.1em; color: var(--r3); }
+.detail__rarity[data-rarity="6"] { color: var(--r6); text-shadow: 0 0 8px rgba(255,205,80,0.7); }
+.detail__rarity[data-rarity="5"] { color: var(--r5); }
+.detail__rarity[data-rarity="4"] { color: var(--r4); }
+.detail__name { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 2px; }
+.detail__cls { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.slot { touch-action: manipulation; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .slot[data-rarity="6"] .face, .slot[data-rarity="6"] .face--front .inner::after { animation: none; }
   .slot[data-rarity="6"] { animation: none; filter: drop-shadow(0 0 10px rgba(255,210,90,0.9)); }

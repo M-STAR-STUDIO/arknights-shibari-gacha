@@ -96,7 +96,7 @@
         <ol>
           <li>難易度を選びます。初期状態は「イージー」です。</li>
           <li>「引く」を押すと、12枚のカードが裏向きで並びます。カードの色でレア度が分かります。</li>
-          <li>カードをタップして1枚ずつめくります。急ぐときは「全部めくる」でまとめて表向きにできます。</li>
+          <li>カードをタップして1枚ずつめくります。急ぐときは「全部めくる」でまとめて表向きにできます。めくったカードを長押しすると、全身イラストと名前が表示されます。</li>
           <li>持っていないオペレーターがいたら「選んで再抽選」を押し、該当のカードを選んで「引き直す」を押すと、同じレア度から引き直されます。回数の制限はありません。</li>
           <li>「シェア」で結果の画像を作成し、保存やXへの投稿ができます。</li>
           <li>ゲームを起動し、引いた12体で編成を組んで任務に挑みます。</li>
@@ -181,6 +181,19 @@
     </p>
   </footer>
 </main>
+
+<div class="modal modal--detail" id="detailModal" hidden>
+  <div class="modal__backdrop" data-close-detail></div>
+  <div class="detail" role="dialog" aria-modal="true" aria-labelledby="detailName">
+    <button class="modal__close detail__close" type="button" data-close-detail aria-label="閉じる">×</button>
+    <div class="detail__art" id="detailArt"><div class="spinner">LOADING...</div></div>
+    <div class="detail__info">
+      <div class="detail__rarity" id="detailRarity"></div>
+      <div class="detail__name" id="detailName"></div>
+      <div class="detail__cls" id="detailCls"></div>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="shareModal" hidden>
   <div class="modal__backdrop" data-close></div>
