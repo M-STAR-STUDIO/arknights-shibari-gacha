@@ -19,6 +19,8 @@
 | `js/share.js` | シェア画像(1600×900、2行×6列)を Canvas で生成 |
 | `js/ogp.js` + `scripts/ogp.html` | OGP画像 `assets/ogp.png` の生成(開発時のみ) |
 | `data/operators.json` | オペレーター一覧(自動生成) |
+| `data/changelog.json` | オペレーターの追加・除外の記録(自動追記)とサイトの更新履歴(手動) |
+| `changelog.html` / `operators.html` | 更新履歴ページ、対象オペレーター一覧ページ(JSONから描画) |
 | `scripts/build-data.mjs` | 上記 JSON を生成するスクリプト |
 
 ## データと画像の取得元

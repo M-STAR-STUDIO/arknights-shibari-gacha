@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>対象オペレーター一覧 | アークナイツ縛りガチャ</title>
+<meta name="description" content="アークナイツ縛りガチャの抽選対象になっているオペレーターの一覧。レア度と職分ごとに分類しています。">
+<meta name="theme-color" content="#0b0e11">
+<link rel="canonical" href="https://mstar-studio.com/arknights-shibari-gacha/operators.html">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<main class="app">
+  <header class="header">
+    <div class="header__meta"><span class="header__tag">ROSTER</span><span class="header__line"></span></div>
+    <h1 class="title">対象オペレーター一覧<span class="title__sub" id="subtitle">読み込み中…</span></h1>
+  </header>
+  <nav class="subnav">
+    <a class="footer__link" href="./">← ガチャに戻る</a>
+    <a class="footer__link" href="changelog.html">更新履歴</a>
+  </nav>
+
+  <section class="panel doc">
+    <p>このページは、ガチャで引かれる可能性のあるオペレーターをすべて掲載しています。グローバル版(日本版)に実装済みで、通常の編成に使えるオペレーターが対象です。大陸版限定のオペレーターや、予備隊員などの編成に使えないキャラクターは含まれません。一覧は毎週自動で更新されます。</p>
+    <p class="muted">各難易度でのレア度の出現確率は、ガチャ画面の「難易度と確率」を参照してください。</p>
+  </section>
+
+  <div id="list"><section class="panel doc"><p class="muted">読み込み中…</p></section></div>
+
+  <footer class="footer">
+    <p class="footer__legal">『アークナイツ』およびオペレーターの名称等に関する権利は ©Hypergryph / Yostar に帰属します。本ページはゲームデータをもとに自動生成しています。</p>
+    <p class="footer__credit">制作: <span class="footer__studio">M Star Studio</span>
+      <span class="footer__sep">/</span><a class="footer__link" href="privacy.html">プライバシーポリシー・運営者情報</a></p>
+  </footer>
+</main>
+<script type="module">
+import { CLASS_JP } from './js/assets.js';
+const CLASS_ORDER = ['vanguard', 'guard', 'defender', 'sniper', 'caster', 'medic', 'supporter', 'specialist'];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const RARITY_LABEL = { 6: '星6', 5: '星5', 4: '星4', 3: '星3', 2: '星2', 1: '星1' };
+
+const ops = await fetch('data/operators.json', { cache: 'no-cache' }).then((r) => r.json());
+document.getElementById('subtitle').textContent = `${ops.operators.length}体`;
+
+const groups = {};
+for (const o of ops.operators) ((groups[o.rarity] ||= {})[o.cls] ||= []).push(o);
+
+document.getElementById('list').innerHTML = [6, 5, 4, 3, 2, 1].map((r) => {
+  const g = groups[r]; if (!g) return '';
+  const n = Object.values(g).reduce((s, a) => s + a.length, 0);
+  return `<section class="panel doc rarity-block r${r}">
+    <div class="panel__label">RARITY ${r}</div>
+    <h2>${RARITY_LABEL[r]} <span class="count">${n}体</span></h2>
+    ${CLASS_ORDER.filter((c) => g[c]).map((c) => `
+      <h3>${CLASS_JP[c]} <span class="count">${g[c].length}</span></h3>
+      <ul class="names">${g[c].map((o) => `<li>${esc(o.name)}</li>`).join('')}</ul>`).join('')}
+  </section>`;
+}).join('');
+</script>
+</body>
+</html>

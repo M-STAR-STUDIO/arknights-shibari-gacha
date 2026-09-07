@@ -1,0 +1,27 @@
+/* Shared styles for the secondary pages (changelog, operators, privacy). */
+.subnav { display: flex; gap: 16px; flex-wrap: wrap; margin: 6px 0 18px; font-size: 13px; }
+.doc { font-size: 13px; line-height: 1.85; color: var(--text-2); }
+.doc h2 { font-size: 16px; color: var(--text); margin: 8px 0 10px; }
+.doc h3 { font-size: 13px; color: var(--text-2); margin: 14px 0 6px; padding-left: 8px; border-left: 2px solid var(--line-2); }
+.doc p { margin: 0 0 10px; }
+.doc .count { font-family: var(--font-latin); font-weight: 600; font-size: 12px; color: var(--text-3); margin-left: 6px; letter-spacing: 0.05em; }
+.muted { color: var(--text-3); font-size: 12px; }
+
+.log { list-style: none; margin: 0; padding: 0; }
+.log li { border-top: 1px solid var(--line); padding: 10px 0 12px; }
+.log li:first-child { border-top: 0; }
+.log time { display: inline-block; font-family: var(--font-latin); font-weight: 700; letter-spacing: 0.06em; color: var(--accent); margin-right: 10px; }
+.log p { margin: 4px 0 0; }
+.log__group { margin-top: 6px; }
+.log__tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+.log__tag.add { background: rgba(159,214,224,0.15); color: var(--accent); }
+.log__tag.del { background: rgba(214,90,90,0.15); color: #e08080; }
+.op { display: inline-block; margin: 3px 8px 3px 0; padding: 2px 8px; border-radius: 2px; border: 1px solid var(--line); color: var(--text); font-size: 12px; vertical-align: middle; }
+.op small { color: var(--text-3); margin-left: 6px; font-size: 11px; }
+.op.r6 { border-color: var(--r6); } .op.r5 { border-color: var(--r5); } .op.r4 { border-color: var(--r4); }
+
+.rarity-block.r6 .panel__label { color: var(--r6); }
+.rarity-block.r5 .panel__label { color: var(--r5); }
+.rarity-block.r4 .panel__label { color: var(--r4); }
+.names { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.names li { background: var(--panel-2); border: 1px solid var(--line); border-radius: 2px; padding: 3px 9px; font-size: 12px; color: var(--text); }

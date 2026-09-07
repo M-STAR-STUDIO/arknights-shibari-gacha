@@ -1,8 +1,9 @@
 // Fetch the JP (グローバル版) character table and emit a compact operators.json.
+// Also appends any newly added / removed operators to data/changelog.json.
 // Usage: node scripts/build-data.mjs
 // Runtime: Node 18+ (global fetch). No dependencies.
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,7 +27,19 @@ const PROFESSION = {
 };
 
 const here = dirname(fileURLToPath(import.meta.url));
-const outPath = resolve(here, '..', 'data', 'operators.json');
+const dataDir = resolve(here, '..', 'data');
+const outPath = resolve(dataDir, 'operators.json');
+const logPath = resolve(dataDir, 'changelog.json');
+
+async function readJson(path) {
+  try { return JSON.parse(await readFile(path, 'utf8')); } catch { return null; }
+}
+
+// Date in JST as YYYY-MM-DD
+function todayJst() {
+  const d = new Date(Date.now() + 9 * 3600 * 1000);
+  return d.toISOString().slice(0, 10);
+}
 
 const res = await fetch(SOURCE_URL);
 if (!res.ok) throw new Error(`fetch failed: ${res.status} ${res.statusText}`);
@@ -54,13 +67,35 @@ for (const o of operators) delete o.sort;
 const counts = {};
 for (const o of operators) counts[o.rarity] = (counts[o.rarity] || 0) + 1;
 
+// ---- changelog: diff against the previously generated list ----
+const prev = await readJson(outPath);
+const log = (await readJson(logPath)) || { data: [], site: [] };
+if (prev && Array.isArray(prev.operators)) {
+  const prevIds = new Map(prev.operators.map((o) => [o.id, o]));
+  const nextIds = new Map(operators.map((o) => [o.id, o]));
+  const added = operators.filter((o) => !prevIds.has(o.id));
+  const removed = prev.operators.filter((o) => !nextIds.has(o.id));
+  if (added.length || removed.length) {
+    log.data.unshift({
+      date: todayJst(),
+      total: operators.length,
+      added: added.map(({ id, name, rarity, cls }) => ({ id, name, rarity, cls })),
+      removed: removed.map(({ id, name, rarity, cls }) => ({ id, name, rarity, cls })),
+    });
+    console.log(`changelog: +${added.length} / -${removed.length}`);
+  } else {
+    console.log('changelog: no roster change');
+  }
+}
+
 const out = {
   source: SOURCE_URL,
   counts,
   operators,
 };
 
-await mkdir(dirname(outPath), { recursive: true });
+await mkdir(dataDir, { recursive: true });
 await writeFile(outPath, JSON.stringify(out), 'utf8');
+await writeFile(logPath, JSON.stringify(log, null, 1), 'utf8');
 console.log(`wrote ${operators.length} operators -> ${outPath}`);
 console.log('by rarity:', counts);

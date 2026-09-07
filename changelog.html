@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>更新履歴 | アークナイツ縛りガチャ</title>
+<meta name="description" content="アークナイツ縛りガチャの更新履歴。対象オペレーターの追加状況と、サイトの変更点を記録しています。">
+<meta name="theme-color" content="#0b0e11">
+<link rel="canonical" href="https://mstar-studio.com/arknights-shibari-gacha/changelog.html">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<main class="app">
+  <header class="header">
+    <div class="header__meta"><span class="header__tag">CHANGELOG</span><span class="header__line"></span></div>
+    <h1 class="title">更新履歴<span class="title__sub">オペレーターの追加とサイトの変更</span></h1>
+  </header>
+  <nav class="subnav">
+    <a class="footer__link" href="./">← ガチャに戻る</a>
+    <a class="footer__link" href="operators.html">対象オペレーター一覧</a>
+  </nav>
+
+  <section class="panel doc">
+    <div class="panel__label">ROSTER</div>
+    <h2>対象オペレーター数</h2>
+    <p>現在の抽選対象は、グローバル版(日本版)に実装済みで、通常の編成に使えるオペレーターです。一覧は毎週月曜に自動で更新され、追加・削除があった場合は下の「オペレーターの追加履歴」に記録されます。</p>
+    <div class="table-wrap"><table class="info__table" id="rosterTable"><tbody><tr><td>読み込み中…</td></tr></tbody></table></div>
+    <div class="table-wrap"><table class="info__table" id="classTable"><tbody></tbody></table></div>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">OPERATORS</div>
+    <h2>オペレーターの追加履歴</h2>
+    <p class="muted">日本版に新しいオペレーターが実装されると、実装から1週間以内にここへ追記されます。</p>
+    <ul class="log" id="dataLog"><li class="muted">読み込み中…</li></ul>
+  </section>
+
+  <section class="panel doc">
+    <div class="panel__label">SITE</div>
+    <h2>サイトの更新履歴</h2>
+    <ul class="log" id="siteLog"><li class="muted">読み込み中…</li></ul>
+  </section>
+
+  <footer class="footer">
+    <p class="footer__credit">制作: <span class="footer__studio">M Star Studio</span>
+      <span class="footer__sep">/</span><a class="footer__link" href="privacy.html">プライバシーポリシー・運営者情報</a></p>
+  </footer>
+</main>
+<script type="module">
+import { CLASS_JP } from './js/assets.js';
+const CLASS_ORDER = ['vanguard', 'guard', 'defender', 'sniper', 'caster', 'medic', 'supporter', 'specialist'];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtDate = (d) => { const [y, m, dd] = d.split('-'); return `${y}年${Number(m)}月${Number(dd)}日`; };
+const star = (r) => '★' + r;
+
+const [ops, log] = await Promise.all([
+  fetch('data/operators.json', { cache: 'no-cache' }).then((r) => r.json()),
+  fetch('data/changelog.json', { cache: 'no-cache' }).then((r) => r.json()),
+]);
+
+// roster summary
+const byR = {}; const byC = {};
+for (const o of ops.operators) { byR[o.rarity] = (byR[o.rarity] || 0) + 1; byC[o.cls] = (byC[o.cls] || 0) + 1; }
+document.getElementById('rosterTable').innerHTML =
+  `<thead><tr><th>合計</th>${[6, 5, 4, 3, 2, 1].map((r) => `<th>${star(r)}</th>`).join('')}</tr></thead>
+   <tbody><tr><td>${ops.operators.length}体</td>${[6, 5, 4, 3, 2, 1].map((r) => `<td>${byR[r] || 0}</td>`).join('')}</tr></tbody>`;
+document.getElementById('classTable').innerHTML =
+  `<thead><tr>${CLASS_ORDER.map((c) => `<th>${CLASS_JP[c]}</th>`).join('')}</tr></thead>
+   <tbody><tr>${CLASS_ORDER.map((c) => `<td>${byC[c] || 0}</td>`).join('')}</tr></tbody>`;
+
+// data log
+const opLine = (o) => `<span class="op r${o.rarity}">${star(o.rarity)} ${esc(o.name)}<small>${CLASS_JP[o.cls]}</small></span>`;
+document.getElementById('dataLog').innerHTML = (log.data || []).map((e) => {
+  const parts = [];
+  if (e.added?.length) parts.push(`<div class="log__group"><span class="log__tag add">追加 ${e.added.length}体</span>${e.added.map(opLine).join('')}</div>`);
+  if (e.removed?.length) parts.push(`<div class="log__group"><span class="log__tag del">除外 ${e.removed.length}体</span>${e.removed.map(opLine).join('')}</div>`);
+  if (e.note) parts.push(`<p>${esc(e.note)}</p>`);
+  return `<li><time>${fmtDate(e.date)}</time><span class="muted">対象 ${e.total}体</span>${parts.join('')}</li>`;
+}).join('') || '<li class="muted">まだ記録はありません。</li>';
+
+// site log
+document.getElementById('siteLog').innerHTML = (log.site || []).map((e) =>
+  `<li><time>${fmtDate(e.date)}</time><p>${esc(e.text)}</p></li>`).join('');
+</script>
+</body>
+</html>
