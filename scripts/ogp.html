@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OGP generator (dev only)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<style>body{background:#222;color:#ddd;font-family:system-ui;padding:16px}canvas{max-width:100%;border:1px solid #555}</style>
+</head>
+<body>
+<p>OGP 画像を生成し、開発サーバー経由で <code>assets/ogp.png</code> に保存します。<button id="go">生成して保存</button> <span id="msg"></span></p>
+<div id="out"></div>
+<script type="module">
+import { renderOgp } from '../js/ogp.js';
+const msg = document.getElementById('msg');
+async function run() {
+  const canvas = await renderOgp();
+  document.getElementById('out').replaceChildren(canvas);
+  const blob = await new Promise((r) => canvas.toBlob(r, 'image/png'));
+  const res = await fetch('/__save?name=ogp.png', { method: 'POST', body: blob });
+  msg.textContent = await res.text();
+  window.__ogpDone = msg.textContent;
+}
+document.getElementById('go').addEventListener('click', run);
+if (location.hash === '#auto') run();
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>アークナイツ縛りガチャ</title>
+<meta name="description" content="全オペレーターからランダムに12体を引いて、そのまま編成として遊ぶアークナイツ用の縛りプレー支援ツール。">
+<meta name="theme-color" content="#0b0e11">
+<link rel="canonical" href="https://mon3tr-s.github.io/arknights-shibari-gacha/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="アークナイツ縛りガチャ">
+<meta property="og:title" content="アークナイツ縛りガチャ">
+<meta property="og:description" content="全オペレーターからランダムに12体。引いたそのままの編成で挑む。">
+<meta property="og:url" content="https://mon3tr-s.github.io/arknights-shibari-gacha/">
+<meta property="og:image" content="https://mon3tr-s.github.io/arknights-shibari-gacha/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="アークナイツ縛りガチャ">
+<meta name="twitter:description" content="全オペレーターからランダムに12体。引いたそのままの編成で挑む。">
+<meta name="twitter:image" content="https://mon3tr-s.github.io/arknights-shibari-gacha/assets/ogp.png">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<main class="app" id="app" data-state="idle">
+  <header class="header">
+    <div class="header__meta"><span class="header__tag">ROSTER RANDOMIZER</span><span class="header__line"></span></div>
+    <h1 class="title">アークナイツ<span class="title__sub">縛りガチャ</span></h1>
+    <p class="lead">全オペレーターからランダムに12体。引いたそのままの編成で挑む。</p>
+  </header>
+
+  <section class="panel panel--mode" aria-label="難易度">
+    <div class="panel__label">DIFFICULTY</div>
+    <div class="modes" id="modes" role="radiogroup" aria-label="難易度選択">
+      <button class="mode" type="button" role="radio" data-mode="easy" aria-checked="true">
+        <span class="mode__name">イージー</span><span class="mode__sub">EASY</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="normal" aria-checked="false">
+        <span class="mode__name">ノーマル</span><span class="mode__sub">NORMAL</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="monster" aria-checked="false">
+        <span class="mode__name">Monster</span><span class="mode__sub">MONSTER</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="musou" aria-checked="false">
+        <span class="mode__name">無双</span><span class="mode__sub">ALL ★6</span>
+      </button>
+    </div>
+    <div class="mode-desc" id="modeDesc" aria-live="polite"></div>
+  </section>
+
+  <section class="panel panel--squad" aria-label="編成">
+    <div class="squad-head">
+      <div class="panel__label">SQUAD <span class="squad-count" id="squadCount">0 / 12</span></div>
+      <div class="squad-actions" id="squadActions">
+        <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">全部めくる</button>
+      </div>
+    </div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+    <p class="hint" id="hint"></p>
+  </section>
+
+  <section class="actions" id="actions">
+    <div class="actions__row" data-for="idle">
+      <button class="btn btn--primary btn--lg" type="button" id="btnDraw">引く</button>
+    </div>
+    <div class="actions__row" data-for="result">
+      <button class="btn btn--primary" type="button" id="btnShare">シェア</button>
+      <button class="btn" type="button" id="btnReroll">再抽選</button>
+    </div>
+    <div class="actions__row" data-for="reroll">
+      <button class="btn btn--primary" type="button" id="btnRerollGo" disabled>再抽選する</button>
+      <button class="btn btn--ghost" type="button" id="btnRerollCancel">やめる</button>
+    </div>
+  </section>
+  <section class="again" id="again">
+    <button class="btn btn--ghost" type="button" id="btnAgain">もう一回引く</button>
+  </section>
+
+  <footer class="footer">
+    <p class="footer__legal">
+      本サイトは個人が制作した非公式のファンコンテンツであり、Hypergryph・Yostar 各社とは一切関係ありません。<br>
+      『アークナイツ』およびオペレーターの名称・画像等に関する著作権その他一切の権利は、©Hypergryph / Yostar に帰属します。<br>
+      オペレーターの画像・データは有志が公開しているゲームデータを利用しています。権利者からの要請があれば速やかに対応します。
+    </p>
+    <p class="footer__credit">
+      制作: <span class="footer__studio">M Star Studio</span>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="https://twitter.com/PLACEHOLDER" target="_blank" rel="noopener noreferrer">お問い合わせ (X)</a>
+    </p>
+  </footer>
+</main>
+
+<div class="modal" id="shareModal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="modal__head">
+      <div class="panel__label" id="shareTitle">SHARE</div>
+      <button class="modal__close" type="button" data-close aria-label="閉じる">×</button>
+    </div>
+    <div class="share-preview" id="sharePreview"></div>
+    <textarea class="share-text" id="shareText" rows="4" readonly></textarea>
+    <div class="share-btns">
+      <button class="btn btn--primary" type="button" id="btnNativeShare" hidden>画像ごと共有</button>
+      <a class="btn" id="btnSaveImage" download="arknights-shibari-gacha.png">画像を保存</a>
+      <a class="btn" id="btnTweet" target="_blank" rel="noopener noreferrer">Xで投稿</a>
+      <button class="btn btn--ghost" type="button" id="btnCopyText">文章をコピー</button>
+    </div>
+    <p class="share-note" id="shareNote">画像を保存してから「Xで投稿」で添付してください。</p>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
