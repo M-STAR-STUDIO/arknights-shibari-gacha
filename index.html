@@ -83,6 +83,76 @@
     <button class="btn btn--ghost" type="button" id="btnAgain">もう一回引く</button>
   </section>
 
+  <section class="panel panel--info" aria-label="このサイトについて">
+    <div class="panel__label">ABOUT</div>
+    <details class="info">
+      <summary>このサイトについて・遊び方</summary>
+      <div class="info__body">
+        <p>「アークナイツ縛りガチャ」は、スマートフォン向けタワーディフェンスゲーム『アークナイツ』の縛りプレー用に作られた非公式のファンツールです。グローバル版(日本版)に実装されている全オペレーターの中からランダムに12体を選び、その12体をそのまま編成として使って任務に挑む、という遊び方を手軽に始められます。</p>
+        <ol>
+          <li>難易度を選びます。初期状態は「イージー」です。</li>
+          <li>「引く」を押すと、12枚のカードが裏向きで並びます。カードの色でレア度が分かります。</li>
+          <li>カードをタップして1枚ずつめくります。急ぐときは「全部めくる」でまとめて表向きにできます。</li>
+          <li>持っていないオペレーターがいたら「再抽選」を押し、該当のカードを選んで「再抽選する」を押すと、同じレア度から引き直されます。回数の制限はありません。</li>
+          <li>「シェア」で結果の画像を作成し、保存やXへの投稿ができます。</li>
+          <li>ゲームを起動し、引いた12体で編成を組んで任務に挑みます。</li>
+        </ol>
+        <p>職分や近接・遠隔のバランスは一切保証していません。医療がひとりもいない、前衛ばかり、といった編成が出るのも仕様です。その状況でどう攻略するかを楽しむためのツールです。</p>
+      </div>
+    </details>
+    <details class="info">
+      <summary>難易度と確率</summary>
+      <div class="info__body">
+        <p>難易度は、引かれるオペレーターのレア度の確率を変えます。まず確率でレア度を決め、そのレア度の中からまだ登場していないオペレーターを均等な確率で1体選ぶ、という手順を12回繰り返します。12体の中で同じオペレーターが重複することはありません。</p>
+        <div class="table-wrap">
+        <table class="info__table">
+          <thead><tr><th>難易度</th><th>★6</th><th>★5</th><th>★4</th><th>★3</th><th>★1・2</th></tr></thead>
+          <tbody>
+            <tr><td>無双</td><td>100%</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr><td>イージー</td><td>50%</td><td>30%</td><td>20%</td><td>-</td><td>-</td></tr>
+            <tr><td>ノーマル</td><td>25%</td><td>40%</td><td>20%</td><td>10%</td><td>5%</td></tr>
+            <tr><td>Monster</td><td>10%</td><td>50%</td><td>20%</td><td>10%</td><td>10%</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>「無双」は星6だけの編成で、手持ちが揃っているドクター向けです。「Monster」は低レア中心になり、育成状況によっては非常に厳しい編成になります。カードの枠の色は、星6が光沢のある金、星5が黄、星4が青、星3以下が白です。</p>
+      </div>
+    </details>
+    <details class="info">
+      <summary>縛りルールの例</summary>
+      <div class="info__body">
+        <p>引いた12体をそのまま使うのが基本ですが、慣れてきたら次のような追加ルールと組み合わせると難易度を調整できます。</p>
+        <ul>
+          <li><strong>引き直しなし</strong>: 再抽選を使わず、持っていないオペレーターの枠は空けたまま挑む。</li>
+          <li><strong>昇進・レベル制限</strong>: 昇進1まで、レベル50までなど、育成状況に上限を設ける。</li>
+          <li><strong>支援ユニット禁止</strong>: フレンドの支援オペレーターを使わない。</li>
+          <li><strong>スキル固定</strong>: 各オペレーターのスキルをランダムまたは第1スキルに固定する。</li>
+          <li><strong>周回に適用</strong>: 素材周回や殲滅作戦を、引いた編成だけでクリアできるか試す。</li>
+          <li><strong>友人と同じ編成</strong>: シェア画像を送り合い、同じ12体で同じステージに挑んで結果を比べる。</li>
+        </ul>
+      </div>
+    </details>
+    <details class="info">
+      <summary>よくある質問</summary>
+      <div class="info__body">
+        <dl class="faq">
+          <dt>大陸版(中国版)にしかいないオペレーターは出ますか?</dt>
+          <dd>出ません。日本版のゲームデータをもとにしているため、日本版で入手可能になったオペレーターだけが対象です。</dd>
+          <dt>新しいオペレーターはいつ反映されますか?</dt>
+          <dd>オペレーターの一覧は毎週自動で更新しています。実装から1週間程度で反映されます。</dd>
+          <dt>コラボ限定や配布のオペレーターも含まれますか?</dt>
+          <dd>含まれます。現在入手できないオペレーターが出た場合は「再抽選」で引き直してください。予備隊員など、通常の編成に使えないキャラクターは除外しています。</dd>
+          <dt>画像が表示されず名前だけになります。</dt>
+          <dd>画像は外部サイトから読み込んでいるため、通信環境によって表示されないことがあります。その場合はレア度の色と職分アイコンはそのまま表示し、画像の代わりに名前を表示します。</dd>
+          <dt>引いた結果は保存されますか?</dt>
+          <dd>保存されません。ページを閉じると結果は消えるので、残したい場合は「シェア」から画像を保存してください。</dd>
+          <dt>無料ですか? ログインは必要ですか?</dt>
+          <dd>無料で、登録やログインは不要です。ゲームアカウントと連携することもありません。</dd>
+        </dl>
+      </div>
+    </details>
+  </section>
+
   <footer class="footer">
     <p class="footer__legal">
       本サイトは個人が制作した非公式のファンコンテンツであり、Hypergryph・Yostar 各社とは一切関係ありません。<br>
@@ -93,6 +163,8 @@
       制作: <span class="footer__studio">M Star Studio</span>
       <span class="footer__sep">/</span>
       <a class="footer__link" href="https://x.com/M3tarStudio96" target="_blank" rel="noopener noreferrer">お問い合わせ (X)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="privacy.html">プライバシーポリシー・運営者情報</a>
     </p>
   </footer>
 </main>
