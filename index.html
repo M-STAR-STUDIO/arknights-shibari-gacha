@@ -73,10 +73,10 @@
     </div>
     <div class="actions__row" data-for="result">
       <button class="btn btn--primary" type="button" id="btnShare">シェア</button>
-      <button class="btn" type="button" id="btnReroll">再抽選</button>
+      <button class="btn" type="button" id="btnReroll">選んで再抽選</button>
     </div>
     <div class="actions__row" data-for="reroll">
-      <button class="btn btn--primary" type="button" id="btnRerollGo" disabled>再抽選する</button>
+      <button class="btn btn--primary" type="button" id="btnRerollGo" disabled>引き直す</button>
       <button class="btn btn--ghost" type="button" id="btnRerollCancel">やめる</button>
     </div>
   </section>
@@ -94,7 +94,7 @@
           <li>難易度を選びます。初期状態は「イージー」です。</li>
           <li>「引く」を押すと、12枚のカードが裏向きで並びます。カードの色でレア度が分かります。</li>
           <li>カードをタップして1枚ずつめくります。急ぐときは「全部めくる」でまとめて表向きにできます。</li>
-          <li>持っていないオペレーターがいたら「再抽選」を押し、該当のカードを選んで「再抽選する」を押すと、同じレア度から引き直されます。回数の制限はありません。</li>
+          <li>持っていないオペレーターがいたら「選んで再抽選」を押し、該当のカードを選んで「引き直す」を押すと、同じレア度から引き直されます。回数の制限はありません。</li>
           <li>「シェア」で結果の画像を作成し、保存やXへの投稿ができます。</li>
           <li>ゲームを起動し、引いた12体で編成を組んで任務に挑みます。</li>
         </ol>
@@ -124,7 +124,7 @@
       <div class="info__body">
         <p>引いた12体をそのまま使うのが基本ですが、慣れてきたら次のような追加ルールと組み合わせると難易度を調整できます。より詳しい20種類のルールは<a class="footer__link" href="rules.html">縛りルール集</a>にまとめています。</p>
         <ul>
-          <li><strong>引き直しなし</strong>: 再抽選を使わず、持っていないオペレーターの枠は空けたまま挑む。</li>
+          <li><strong>引き直しなし</strong>: 「選んで再抽選」を使わず、持っていないオペレーターの枠は空けたまま挑む。</li>
           <li><strong>昇進・レベル制限</strong>: 昇進1まで、レベル50までなど、育成状況に上限を設ける。</li>
           <li><strong>支援ユニット禁止</strong>: フレンドの支援オペレーターを使わない。</li>
           <li><strong>スキル固定</strong>: 各オペレーターのスキルをランダムまたは第1スキルに固定する。</li>
@@ -142,7 +142,7 @@
           <dt>新しいオペレーターはいつ反映されますか?</dt>
           <dd>オペレーターの一覧は毎週自動で更新しています。実装から1週間程度で反映され、追加されたオペレーターは<a class="footer__link" href="changelog.html">更新履歴</a>に記録されます。対象の全オペレーターは<a class="footer__link" href="operators.html">対象オペレーター一覧</a>で確認できます。</dd>
           <dt>コラボ限定や配布のオペレーターも含まれますか?</dt>
-          <dd>含まれます。現在入手できないオペレーターが出た場合は「再抽選」で引き直してください。予備隊員など、通常の編成に使えないキャラクターは除外しています。</dd>
+          <dd>含まれます。現在入手できないオペレーターが出た場合は「選んで再抽選」で引き直してください。予備隊員など、通常の編成に使えないキャラクターは除外しています。</dd>
           <dt>画像が表示されず名前だけになります。</dt>
           <dd>画像は外部サイトから読み込んでいるため、通信環境によって表示されないことがあります。その場合はレア度の色と職分アイコンはそのまま表示し、画像の代わりに名前を表示します。</dd>
           <dt>引いた結果は保存されますか?</dt>
