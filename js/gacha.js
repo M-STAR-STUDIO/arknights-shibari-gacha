@@ -3,7 +3,7 @@
 export const MODES = {
   easy:    { name: 'イージー', label: 'EASY',    color: '#6fd38a', weights: { 6: 50, 5: 30, 4: 20, 3: 0,  low: 0 } },
   normal:  { name: 'ノーマル', label: 'NORMAL',  color: '#9fd6e0', weights: { 6: 25, 5: 40, 4: 20, 3: 10, low: 5 } },
-  monster: { name: 'Monster',  label: 'MONSTER', color: '#ff6b6b', weights: { 6: 10, 5: 50, 4: 20, 3: 10, low: 10 } },
+  monster: { name: 'Mon3tr',   label: 'MONSTER', color: '#ff6b6b', weights: { 6: 10, 5: 50, 4: 20, 3: 10, low: 10 } },
   musou:   { name: '無双',     label: '無双',    color: '#ffcf4d', weights: { 6: 100, 5: 0, 4: 0, 3: 0, low: 0 } },
 };
 
