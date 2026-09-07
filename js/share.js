@@ -197,7 +197,7 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
   ctx.fillStyle = '#66717c';
   ctx.font = `600 16px ${LATIN_FONT}`;
   ctx.fillText('D I F F I C U L T Y', W - 60, 44);
-  ctx.fillStyle = '#9fd6e0';
+  ctx.fillStyle = mode.color || '#9fd6e0';
   const labelIsLatin = /^[A-Z0-9 ★]+$/.test(mode.label);
   ctx.font = labelIsLatin ? `700 44px ${LATIN_FONT}` : `700 36px ${JP_FONT}`;
   ctx.fillText(mode.label, W - 60, 86);
