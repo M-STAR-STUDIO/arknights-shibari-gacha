@@ -92,19 +92,20 @@ export async function renderOgp() {
   for (let i = 0; i < 6; i++) emptySlot(ctx, sx + i * (sw + gap), sy, sw, sh, cut, i === 2);
 
   // difficulty chips top-right
-  const chips = ['EASY', 'NORMAL', 'MONSTER', '無双'];
+  const chips = ['無双', 'EASY', 'NORMAL', 'MONSTER'];
+  const active = 1; // EASY is the default mode
   ctx.textAlign = 'right';
   let cxr = W - 72;
   for (let i = chips.length - 1; i >= 0; i--) {
     const isJp = /[^\x00-\x7F]/.test(chips[i]);
     ctx.font = isJp ? `700 18px ${JP_FONT}` : `700 18px ${LATIN_FONT}`;
     const tw = ctx.measureText(chips[i]).width + 28;
-    ctx.fillStyle = i === 0 ? 'rgba(159,214,224,0.16)' : 'rgba(255,255,255,0.04)';
+    ctx.fillStyle = i === active ? 'rgba(159,214,224,0.16)' : 'rgba(255,255,255,0.04)';
     ctx.fillRect(cxr - tw, 92, tw, 36);
-    ctx.strokeStyle = i === 0 ? '#9fd6e0' : '#2a333d';
+    ctx.strokeStyle = i === active ? '#9fd6e0' : '#2a333d';
     ctx.lineWidth = 1;
     ctx.strokeRect(cxr - tw + 0.5, 92.5, tw - 1, 35);
-    ctx.fillStyle = i === 0 ? '#9fd6e0' : '#9aa7b3';
+    ctx.fillStyle = i === active ? '#9fd6e0' : '#9aa7b3';
     ctx.textBaseline = 'middle';
     ctx.fillText(chips[i], cxr - 14, 111);
     cxr -= tw + 8;
@@ -115,7 +116,7 @@ export async function renderOgp() {
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#66717c';
   ctx.font = `600 18px ${LATIN_FONT}`;
-  ctx.fillText('mon3tr-s.github.io/arknights-shibari-gacha', 72, H - 22);
+  ctx.fillText('m-star-studio.github.io/arknights-shibari-gacha', 72, H - 22);
   if (logo) {
     const lh = 44;
     const lw = lh * (logo.naturalWidth / logo.naturalHeight);

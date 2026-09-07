@@ -2,7 +2,7 @@
 import { MODES } from './gacha.js';
 import { avatarUrl, classIconUrl, loadImage, CLASS_SHORT } from './assets.js';
 
-export const SITE_URL = 'https://mon3tr-s.github.io/arknights-shibari-gacha/';
+export const SITE_URL = 'https://m-star-studio.github.io/arknights-shibari-gacha/';
 export const HASHTAG = '#アークナイツ縛りガチャ';
 
 const W = 1600, H = 900;
