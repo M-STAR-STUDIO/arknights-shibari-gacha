@@ -2,7 +2,7 @@
 
 全オペレーターからランダムに12体を引き、そのまま編成として遊ぶための非公式ファンツール。
 
-- 公開URL: https://m-star-studio.github.io/arknights-shibari-gacha/
+- 公開URL: https://mstar-studio.com/arknights-shibari-gacha/
 - 制作: M Star Studio
 
 ## 仕組み

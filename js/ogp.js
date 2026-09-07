@@ -116,7 +116,7 @@ export async function renderOgp() {
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#66717c';
   ctx.font = `600 18px ${LATIN_FONT}`;
-  ctx.fillText('m-star-studio.github.io/arknights-shibari-gacha', 72, H - 22);
+  ctx.fillText('mstar-studio.com/arknights-shibari-gacha', 72, H - 22);
   if (logo) {
     const lh = 44;
     const lw = lh * (logo.naturalWidth / logo.naturalHeight);
