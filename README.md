@@ -14,6 +14,7 @@
 | `index.html` / `css/style.css` | 画面 |
 | `js/app.js` | 画面の状態管理(引く → めくる → 結果 → 再抽選 → もう一回) |
 | `js/gacha.js` | 抽選ロジック(4モードの確率、重複なし、再抽選) |
+| (画面のスロット) | 3行×4列。シェア画像は2行×6列 |
 | `js/assets.js` | 画像URLと読み込み(CDN) |
 | `js/share.js` | シェア画像(1600×900、2行×6列)を Canvas で生成 |
 | `js/ogp.js` + `scripts/ogp.html` | OGP画像 `assets/ogp.png` の生成(開発時のみ) |

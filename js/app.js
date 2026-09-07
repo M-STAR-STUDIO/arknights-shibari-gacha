@@ -85,7 +85,7 @@ function renderEmptyGrid() {
 function buildCardFaces(i, op) {
   const num = String(i + 1).padStart(2, '0');
   return `
-    <div class="face face--back"><span class="back-num">${num}</span></div>
+    <div class="face face--back"><div class="back-inner"><span class="back-num">${num}</span></div></div>
     <div class="face face--front">
       <div class="inner">
         <img class="art" alt="" draggable="false">

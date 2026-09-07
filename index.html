@@ -39,6 +39,9 @@
   <section class="panel panel--mode" aria-label="難易度">
     <div class="panel__label">DIFFICULTY</div>
     <div class="modes" id="modes" role="radiogroup" aria-label="難易度選択">
+      <button class="mode" type="button" role="radio" data-mode="musou" aria-checked="false">
+        <span class="mode__name">無双</span><span class="mode__sub">ALL ★6</span>
+      </button>
       <button class="mode" type="button" role="radio" data-mode="easy" aria-checked="true">
         <span class="mode__name">イージー</span><span class="mode__sub">EASY</span>
       </button>
@@ -47,9 +50,6 @@
       </button>
       <button class="mode" type="button" role="radio" data-mode="monster" aria-checked="false">
         <span class="mode__name">Monster</span><span class="mode__sub">MONSTER</span>
-      </button>
-      <button class="mode" type="button" role="radio" data-mode="musou" aria-checked="false">
-        <span class="mode__name">無双</span><span class="mode__sub">ALL ★6</span>
       </button>
     </div>
     <div class="mode-desc" id="modeDesc" aria-live="polite"></div>
