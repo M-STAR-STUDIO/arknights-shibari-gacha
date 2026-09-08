@@ -525,9 +525,14 @@ a { color: var(--accent); }
   line-height: 1.7;
 }
 .footer__legal { margin: 0 0 10px; }
-.footer__credit { margin: 0; color: var(--text-2); }
+.footer__credit { margin: 0 0 6px; color: var(--text-2); font-size: 13px; }
+.footer__by { font-size: 12px; color: var(--text-3); letter-spacing: 0.1em; margin-right: 4px; }
+.footer__studio { font-family: var(--font-latin); font-weight: 700; letter-spacing: 0.1em; font-size: 20px; color: var(--text); }
+.footer__contact { margin: 0 0 8px; font-size: 13px; }
+.footer__link--contact { font-weight: 700; font-size: 14px; }
 .footer__links { margin: 6px 0 0; font-size: 11px; }
-.footer__studio { font-family: var(--font-latin); font-weight: 700; letter-spacing: 0.08em; font-size: 13px; color: var(--text); }
+.footer__provider { font-size: 10px; color: var(--text-3); opacity: 0.8; }
+.footer__provider .footer__link { color: var(--text-2); }
 .footer__sep { margin: 0 8px; color: var(--line-2); }
 .footer__link { color: var(--accent); text-decoration: none; }
 .footer__link:hover { text-decoration: underline; }
