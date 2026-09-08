@@ -1,0 +1,15 @@
+{
+  "name": "アークナイツ縛りガチャ",
+  "short_name": "縛りガチャ",
+  "description": "全オペレーターからランダムに12体。引いたそのままの編成で挑む。",
+  "start_url": "/arknights-shibari-gacha/",
+  "scope": "/arknights-shibari-gacha/",
+  "display": "standalone",
+  "background_color": "#0b0e11",
+  "theme_color": "#0b0e11",
+  "lang": "ja",
+  "icons": [
+    { "src": "assets/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

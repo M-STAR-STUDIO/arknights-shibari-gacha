@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>App icon generator (dev only)</title>
+<style>body{background:#222;color:#ddd;font-family:system-ui;padding:16px}canvas{border:1px solid #555;margin:4px}</style>
+</head>
+<body>
+<p>ホーム画面用アイコンを生成して <code>assets/icon-180.png</code> と <code>assets/icon-512.png</code> に保存します。<button id="go">生成して保存</button> <span id="msg"></span></p>
+<div id="out"></div>
+<script type="module">
+function draw(size) {
+  const c = document.createElement('canvas'); c.width = size; c.height = size;
+  const x = c.getContext('2d');
+  const s = size / 64; // design on a 64px grid
+  const bg = x.createLinearGradient(0, 0, 0, size);
+  bg.addColorStop(0, '#141a20'); bg.addColorStop(1, '#0b0e11');
+  x.fillStyle = bg; x.fillRect(0, 0, size, size);
+  // faint grid
+  x.strokeStyle = 'rgba(255,255,255,0.05)'; x.lineWidth = Math.max(1, s * 0.25);
+  for (let g = 8; g < 64; g += 8) { x.beginPath(); x.moveTo(g * s, 0); x.lineTo(g * s, size); x.moveTo(0, g * s); x.lineTo(size, g * s); x.stroke(); }
+  // top glow
+  const glow = x.createRadialGradient(size / 2, -size * 0.2, 0, size / 2, -size * 0.2, size);
+  glow.addColorStop(0, 'rgba(79,179,196,0.28)'); glow.addColorStop(1, 'rgba(79,179,196,0)');
+  x.fillStyle = glow; x.fillRect(0, 0, size, size);
+  // parallelogram card (gold frame)
+  const px = 19 * s, py = 12 * s, pw = 26 * s, ph = 40 * s, cut = 4 * s;
+  const poly = () => { x.beginPath(); x.moveTo(px, py + cut); x.lineTo(px + pw, py); x.lineTo(px + pw, py + ph - cut); x.lineTo(px, py + ph); x.closePath(); };
+  x.save(); x.shadowColor = 'rgba(242,193,78,0.6)'; x.shadowBlur = 6 * s; poly(); x.fillStyle = '#f2c14e'; x.fill(); x.restore();
+  const gold = x.createLinearGradient(px, py, px + pw, py + ph);
+  gold.addColorStop(0, '#a56f13'); gold.addColorStop(0.35, '#f2c14e'); gold.addColorStop(0.5, '#fff2b3'); gold.addColorStop(0.65, '#f2c14e'); gold.addColorStop(1, '#a56f13');
+  poly(); x.fillStyle = gold; x.fill();
+  // inner
+  const ip = 2.2 * s;
+  x.beginPath(); x.moveTo(px + ip, py + cut + ip * 0.6); x.lineTo(px + pw - ip, py + ip); x.lineTo(px + pw - ip, py + ph - cut - ip * 0.6); x.lineTo(px + ip, py + ph - ip); x.closePath();
+  x.fillStyle = '#0f1418'; x.fill();
+  // plus mark
+  x.strokeStyle = '#e6ebef'; x.lineWidth = 3 * s; x.lineCap = 'round';
+  const cx = px + pw / 2, cy = py + ph / 2 - 1 * s, r = 6 * s;
+  x.beginPath(); x.moveTo(cx - r, cy); x.lineTo(cx + r, cy); x.moveTo(cx, cy - r); x.lineTo(cx, cy + r); x.stroke();
+  return c;
+}
+async function save(canvas, name) {
+  const blob = await new Promise((r) => canvas.toBlob(r, 'image/png'));
+  const res = await fetch('/__save?name=' + name, { method: 'POST', body: blob });
+  return res.text();
+}
+async function run() {
+  const out = document.getElementById('out'); out.replaceChildren();
+  const msgs = [];
+  for (const [size, name] of [[180, 'icon-180.png'], [512, 'icon-512.png']]) {
+    const c = draw(size); out.appendChild(c); msgs.push(await save(c, name));
+  }
+  document.getElementById('msg').textContent = msgs.join(' / ');
+  window.__iconDone = msgs.join(' / ');
+}
+document.getElementById('go').addEventListener('click', run);
+if (location.hash === '#auto') run();
+</script>
+</body>
+</html>
