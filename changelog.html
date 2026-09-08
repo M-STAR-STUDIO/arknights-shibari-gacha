@@ -38,7 +38,7 @@
   <section class="panel doc">
     <div class="panel__label">OPERATORS</div>
     <h2>オペレーターの追加履歴</h2>
-    <p class="muted">日本版に新しいオペレーターが実装されると、実装から1週間以内にここへ追記されます。</p>
+    <p class="muted">日本版に新しいオペレーターが実装されると、実装から1週間以内にここへ追記されます。<span id="checkedAt"></span></p>
     <ul class="log" id="dataLog"><li class="muted">読み込み中…</li></ul>
   </section>
 
@@ -74,6 +74,8 @@ document.getElementById('rosterTable').innerHTML =
 document.getElementById('classTable').innerHTML =
   `<thead><tr>${CLASS_ORDER.map((c) => `<th>${CLASS_JP[c]}</th>`).join('')}</tr></thead>
    <tbody><tr>${CLASS_ORDER.map((c) => `<td>${byC[c] || 0}</td>`).join('')}</tr></tbody>`;
+
+if (log.checkedAt) document.getElementById('checkedAt').textContent = ` 最終確認日: ${fmtDate(log.checkedAt)}`;
 
 // data log
 const opLine = (o) => `<span class="op r${o.rarity}">${star(o.rarity)} ${esc(o.name)}<small>${CLASS_JP[o.cls]}</small></span>`;

@@ -88,6 +88,8 @@ if (prev && Array.isArray(prev.operators)) {
   }
 }
 
+log.checkedAt = todayJst(); // heartbeat: shown on changelog.html as 最終確認日
+
 const out = {
   source: SOURCE_URL,
   counts,
