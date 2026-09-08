@@ -476,8 +476,7 @@ async function refreshOwned() {
 
 $('ownedToggle').addEventListener('click', () => {
   const p = $('ownedPanel');
-  p.hidden = !p.hidden;
-  if (!p.hidden && !state.owned) $('ownedInput').focus();
+  p.hidden = !p.hidden; // no auto-focus: opening the panel must not pop the keyboard on phones
 });
 $('ownedInfoBtn').addEventListener('click', () => {
   const b = $('ownedInfoBtn'), d = $('ownedInfo');
