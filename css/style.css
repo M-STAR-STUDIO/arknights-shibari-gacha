@@ -140,14 +140,13 @@ a { color: var(--accent); }
 /* Mon3tr horns (CSS/SVG only) */
 .mode { position: relative; }
 .horns {
-  position: absolute; left: 0; right: 0; top: -27px; height: 29px; pointer-events: none;
+  position: absolute; left: 0; right: 0; top: -30px; height: 32px; pointer-events: none;
   transform: scaleY(0); transform-origin: 50% 100%; opacity: 0;
 }
 .horns svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 2px rgba(143,240,122,0.9)) drop-shadow(0 0 7px rgba(80,220,120,0.55)); }
-.horn__base { fill: #0c1210; stroke: #1c3a24; stroke-width: 0.8; }
-.horn__side { fill: url(#hDark); }
-.horn__lit { fill: url(#hLight); }
-.horn__shade { fill: url(#hDark); }
+.horn__outer { fill: url(#hOuter); }
+.horn__inner { fill: url(#hInner); stroke: #1f4a2a; stroke-width: 0.6; }
+.horn__tip { fill: #f2ffe6; }
 .mode[data-mode="monster"][aria-checked="true"] .horns {
   opacity: 1;
   animation: horn-grow .55s cubic-bezier(.25,1.5,.4,1) both, horn-glow 2.4s ease-in-out .55s infinite;
