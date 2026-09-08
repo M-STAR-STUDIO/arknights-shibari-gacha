@@ -114,14 +114,6 @@
     </div>
     <div class="mode-desc" id="modeDesc" aria-live="polite"></div>
     <div class="guarantee">
-      <span class="guarantee__label">編成</span>
-      <div class="seg" id="game" role="radiogroup" aria-label="編成の種類">
-        <button class="seg__btn" type="button" role="radio" data-game="normal" aria-checked="true">通常 12体</button>
-        <button class="seg__btn" type="button" role="radio" data-game="sss" aria-checked="false">保全駐在 20体</button>
-      </div>
-    </div>
-    <div class="guarantee__desc" id="gameDesc">通常任務の12体編成</div>
-    <div class="guarantee">
       <span class="guarantee__label">職分保証</span>
       <div class="seg" id="guarantee" role="radiogroup" aria-label="職分保証">
         <button class="seg__btn" type="button" role="radio" data-guarantee="0" aria-checked="true">なし</button>
@@ -129,6 +121,14 @@
       </div>
     </div>
     <div class="guarantee__desc" id="guaranteeDesc">完全ランダム</div>
+    <div class="guarantee guarantee--sub">
+      <span class="guarantee__label">編成</span>
+      <div class="seg" id="game" role="radiogroup" aria-label="編成の種類">
+        <button class="seg__btn" type="button" role="radio" data-game="normal" aria-checked="true">通常 12体</button>
+        <button class="seg__btn" type="button" role="radio" data-game="sss" aria-checked="false">保全駐在 20体</button>
+      </div>
+    </div>
+    <div class="guarantee__desc guarantee__desc--sub" id="gameDesc">通常任務の12体編成</div>
   </section>
 
   <section class="panel panel--squad" aria-label="編成">

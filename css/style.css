@@ -182,6 +182,11 @@ a { color: var(--accent); }
 .app:not([data-state="idle"]) .seg__btn { pointer-events: none; }
 .app:not([data-state="idle"]) .seg__btn[aria-checked="false"] { opacity: 0.35; }
 .guarantee__desc { font-size: 11px; color: var(--text-3); margin-top: 6px; min-height: 16px; }
+/* secondary option (保全駐在): deliberately small and muted */
+.guarantee--sub { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--line); opacity: 0.75; }
+.guarantee--sub .guarantee__label { font-size: 11px; color: var(--text-3); font-weight: 600; }
+.guarantee--sub .seg__btn { padding: 3px 10px; font-size: 11px; }
+.guarantee__desc--sub { font-size: 10px; opacity: 0.75; }
 
 /* ===== squad grid ===== */
 .squad-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }
