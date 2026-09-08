@@ -11,6 +11,10 @@
  "site": [
   {
    "date": "2026-09-09",
+   "text": "保全駐在で職分保証「あり」のとき、各職分2体ずつ(16体)を保証するようにしました。"
+  },
+  {
+   "date": "2026-09-09",
    "text": "「ID登録」を追加。Arknights Shared Viewer(OperatorManageToolマン @an_mngtool 様制作)の共有URLを登録すると、未所持のオペレーターを自動的に除外します。"
   },
   {

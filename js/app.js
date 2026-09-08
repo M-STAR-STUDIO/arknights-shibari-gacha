@@ -39,6 +39,7 @@ function setUi(ui) {
 
 const SSS_SIZE = 20;
 function squadSize() { return state.game === 'sss' ? SSS_SIZE : SQUAD_SIZE; }
+function perClass() { return state.game === 'sss' ? 2 : 1; } // 職分保証: 保全駐在は各職分2体
 
 /** Operators eligible for drawing: everyone, or only the owned ones when an ID is registered. */
 function pool() {
@@ -75,7 +76,9 @@ function setGuarantee(on) {
     b.setAttribute('aria-checked', (b.dataset.guarantee === '1') === state.guarantee ? 'true' : 'false');
   }
   $('guaranteeDesc').textContent = state.guarantee
-    ? `上2行に8職分が1体ずつ(先鋒→特殊の順)。残り${squadSize() - 8}枠はランダム`
+    ? (state.game === 'sss'
+        ? '上4行に8職分が2体ずつ(先鋒→特殊の順)。残り4枠はランダム'
+        : '上2行に8職分が1体ずつ(先鋒→特殊の順)。残り4枠はランダム')
     : '完全ランダム';
 }
 
@@ -204,7 +207,7 @@ function onDraw() {
   if (!state.operators.length) return;
   const ops = pool();
   if (ops.length < squadSize()) { hint.textContent = `所持オペレーターが${ops.length}体しかないため引けません(${squadSize()}体必要)`; return; }
-  state.squad = drawSquad(ops, state.mode, { guarantee: state.guarantee, size: squadSize() });
+  state.squad = drawSquad(ops, state.mode, { guarantee: state.guarantee, size: squadSize(), perClass: perClass() });
   state.revealed = new Array(state.squad.length).fill(false);
   state.selected.clear();
   preloadSquad(state.squad); // warm cache; not awaited
@@ -246,7 +249,7 @@ function toggleSelect(i) {
 async function doReroll() {
   const indices = [...state.selected].sort((a, b) => a - b);
   if (!indices.length) return;
-  const next = rerollSquad(pool(), state.squad, indices, { guarantee: state.guarantee });
+  const next = rerollSquad(pool(), state.squad, indices, { guarantee: state.guarantee, perClass: perClass() });
   const changed = indices.filter((i) => next[i].id !== state.squad[i].id);
   state.squad = next;
   state.selected.clear();

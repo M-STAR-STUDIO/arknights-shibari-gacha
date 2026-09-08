@@ -67,8 +67,8 @@ function shuffle(arr) {
  * Draw a full squad of 12 unique operators.
  * @param {Array} operators
  * @param {string} modeKey
- * @param {{guarantee?: boolean, size?: number}} [opts] guarantee: every one of the 8 classes appears at least once;
- *   size: squad size (default 12; 保全駐在 uses 20)
+ * @param {{guarantee?: boolean, size?: number, perClass?: number}} [opts] guarantee: every one of the 8 classes appears
+ *   at least perClass times (default 1; 保全駐在 uses 2); size: squad size (default 12; 保全駐在 uses 20)
  * @returns {Array} operators
  */
 export function drawSquad(operators, modeKey, opts = {}) {
@@ -90,8 +90,9 @@ export function drawSquad(operators, modeKey, opts = {}) {
   };
 
   if (opts.guarantee) {
-    // slots 1-8: one per class in the fixed class order (先鋒→特殊); slots 9-12: random
-    for (const cls of CLASSES) drawOne((o) => o.cls === cls);
+    // first slots: perClass operators per class in the fixed class order (先鋒→特殊); the rest: random
+    const per = Math.max(1, opts.perClass || 1);
+    for (const cls of CLASSES) for (let k = 0; k < per; k++) drawOne((o) => o.cls === cls);
   }
   while (result.length < size) {
     if (!drawOne(() => true)) break;
@@ -106,8 +107,8 @@ export function drawSquad(operators, modeKey, opts = {}) {
  * @param {Array} operators
  * @param {Array} squad current squad
  * @param {number[]} indices
- * @param {{guarantee?: boolean}} [opts] guarantee: keep every class represented (a rerolled operator whose
- *   class would otherwise disappear from the squad is redrawn from the same class)
+ * @param {{guarantee?: boolean, perClass?: number}} [opts] guarantee: keep at least perClass operators of every class
+ *   (a rerolled operator whose class would otherwise fall below that is redrawn from the same class)
  * @returns {Array} new squad
  */
 export function rerollSquad(operators, squad, indices, opts = {}) {
@@ -121,8 +122,10 @@ export function rerollSquad(operators, squad, indices, opts = {}) {
     const key = poolKey(orig.rarity);
     let cand = pools[key].filter((o) => !used.has(o.id));
     if (opts.guarantee) {
-      // is this class still covered by operators that stay (or were already rerolled)?
-      const covered = next.some((o, j) => j !== i && !pending.has(j) && o.cls === orig.cls);
+      // is this class still covered (perClass times) by operators that stay or were already rerolled?
+      const per = Math.max(1, opts.perClass || 1);
+      const have = next.filter((o, j) => j !== i && !pending.has(j) && o.cls === orig.cls).length;
+      const covered = have >= per;
       if (!covered) {
         const sameCls = cand.filter((o) => o.cls === orig.cls);
         if (sameCls.length) {
