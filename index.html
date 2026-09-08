@@ -84,6 +84,17 @@
         <span class="mode__name">ノーマル</span><span class="mode__sub">NORMAL</span>
       </button>
       <button class="mode" type="button" role="radio" data-mode="monster" aria-checked="false">
+        <span class="horns" aria-hidden="true">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="hornGrad" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0" stop-color="#3fb35c"/><stop offset="0.6" stop-color="#8ff07a"/><stop offset="1" stop-color="#e6ffd6"/>
+              </linearGradient>
+            </defs>
+            <path class="horn horn--l" d="M30 26 C 27 18, 22 12, 16 2 C 24 8, 31 15, 37 26 Z"/>
+            <path class="horn horn--r" d="M70 26 C 73 18, 78 12, 84 2 C 76 8, 69 15, 63 26 Z"/>
+          </svg>
+        </span>
         <span class="mode__name">Mon3tr</span><span class="mode__sub">MONSTER</span>
       </button>
     </div>
