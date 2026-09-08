@@ -88,12 +88,13 @@ export function drawSquad(operators, modeKey, opts = {}) {
   };
 
   if (opts.guarantee) {
-    for (const cls of shuffle(CLASSES.slice())) drawOne((o) => o.cls === cls);
+    // slots 1-8: one per class in the fixed class order (先鋒→特殊); slots 9-12: random
+    for (const cls of CLASSES) drawOne((o) => o.cls === cls);
   }
   while (result.length < SQUAD_SIZE) {
     if (!drawOne(() => true)) break;
   }
-  return opts.guarantee ? shuffle(result) : result;
+  return result;
 }
 
 /**

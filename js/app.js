@@ -61,7 +61,7 @@ function setGuarantee(on) {
   for (const b of document.querySelectorAll('.seg__btn')) {
     b.setAttribute('aria-checked', (b.dataset.guarantee === '1') === state.guarantee ? 'true' : 'false');
   }
-  $('guaranteeDesc').textContent = state.guarantee ? '8職分が必ず1体ずつ。残り4枠はランダム' : '完全ランダム';
+  $('guaranteeDesc').textContent = state.guarantee ? '上2行に8職分が1体ずつ(先鋒→特殊の順)。下の行の4枠はランダム' : '完全ランダム';
 }
 
 function setMode(key) {
