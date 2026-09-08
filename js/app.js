@@ -94,7 +94,13 @@ function renderEmptyGrid() {
 function buildCardFaces(i, op) {
   const num = String(i + 1).padStart(2, '0');
   return `
-    <div class="face face--back"><div class="back-inner"><span class="back-num">${num}</span></div></div>
+    <div class="face face--back"><div class="back-inner">
+      <span class="back-num">${num}</span>
+      <div class="cls" title="${CLASS_JP[op.cls]}">
+        <img alt="${CLASS_JP[op.cls]}" draggable="false">
+        <span class="cls-txt">${CLASS_SHORT[op.cls]}</span>
+      </div>
+    </div></div>
     <div class="face face--front">
       <div class="inner">
         <img class="art" alt="" draggable="false">
@@ -120,8 +126,7 @@ function fillSlot(i, op) {
   const art = front.querySelector('.art');
   const nameFb = front.querySelector('.name-fallback');
   nameFb.textContent = op.name;
-  const clsBox = front.querySelector('.cls');
-  const clsImg = clsBox.querySelector('img');
+  const clsBoxes = [...card.querySelectorAll('.cls')]; // front and back
 
   loadImage(avatarUrl(op)).then((img) => {
     if (slot.dataset.id !== op.id) return;
@@ -130,8 +135,10 @@ function fillSlot(i, op) {
   });
   loadImage(classIconUrl(op.cls)).then((img) => {
     if (slot.dataset.id !== op.id) return;
-    if (img) { clsImg.src = img.src; clsBox.classList.remove('no-icon'); }
-    else clsBox.classList.add('no-icon');
+    for (const box of clsBoxes) {
+      if (img) { box.querySelector('img').src = img.src; box.classList.remove('no-icon'); }
+      else box.classList.add('no-icon');
+    }
   });
 }
 
