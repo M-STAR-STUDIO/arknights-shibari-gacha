@@ -1,4 +1,4 @@
-import { MODES, SQUAD_SIZE, drawSquad, rerollSquad } from './gacha.js';
+import { MODES, SQUAD_SIZE, drawSquad, rerollSquad, drawExtra } from './gacha.js';
 import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad, CLASS_JP, CLASS_SHORT } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
 
@@ -13,6 +13,7 @@ const state = {
   operators: [],
   mode: 'easy',
   guarantee: false,   // 職分保証
+  game: 'normal',     // 'normal' (12体) | 'sss' (保全駐在 20体)
   squad: [],          // 12 operators
   revealed: [],       // boolean per slot
   selected: new Set(),// reroll selection
@@ -34,9 +35,12 @@ function setUi(ui) {
   updateHint();
 }
 
+const SSS_SIZE = 20;
+function squadSize() { return state.game === 'sss' ? SSS_SIZE : SQUAD_SIZE; }
+
 function updateHint() {
   const n = state.revealed.filter(Boolean).length;
-  squadCount.textContent = `${state.squad.length ? n : 0} / ${SQUAD_SIZE}`;
+  squadCount.textContent = `${state.squad.length ? n : 0} / ${state.squad.length || squadSize()}`;
   switch (state.ui) {
     case 'idle': hint.textContent = '難易度を選んで「引く」'; break;
     case 'reveal': hint.textContent = 'タップしてめくる'; break;
@@ -61,7 +65,23 @@ function setGuarantee(on) {
   for (const b of document.querySelectorAll('.seg__btn')) {
     b.setAttribute('aria-checked', (b.dataset.guarantee === '1') === state.guarantee ? 'true' : 'false');
   }
-  $('guaranteeDesc').textContent = state.guarantee ? '上2行に8職分が1体ずつ(先鋒→特殊の順)。下の行の4枠はランダム' : '完全ランダム';
+  $('guaranteeDesc').textContent = state.guarantee
+    ? `上2行に8職分が1体ずつ(先鋒→特殊の順)。残り${squadSize() - 8}枠はランダム`
+    : '完全ランダム';
+}
+
+function setGame(game) {
+  state.game = game === 'sss' ? 'sss' : 'normal';
+  app.dataset.game = state.game;
+  for (const b of document.querySelectorAll('#game .seg__btn')) {
+    b.setAttribute('aria-checked', b.dataset.game === state.game ? 'true' : 'false');
+  }
+  $('gameDesc').textContent = state.game === 'sss'
+    ? '保全駐在の初期編成20体を引く。途中の追加募集は「追加を引く」で1体ずつ'
+    : '通常任務の12体編成';
+  $('btnExtra').hidden = state.game !== 'sss';
+  setGuarantee(state.guarantee); // refresh the guarantee text for the new size
+  if (state.ui === 'idle') { renderEmptyGrid(); updateHint(); }
 }
 
 function setMode(key) {
@@ -77,17 +97,21 @@ function slotEl(i) {
   return grid.children[i];
 }
 
-function renderEmptyGrid() {
-  grid.innerHTML = '';
-  for (let i = 0; i < SQUAD_SIZE; i++) {
-    const slot = document.createElement('div');
-    slot.className = 'slot';
-    slot.dataset.index = i;
-    slot.innerHTML = `
+function makeEmptySlot(i) {
+  const slot = document.createElement('div');
+  slot.className = 'slot';
+  slot.dataset.index = i;
+  slot.innerHTML = `
       <div class="card">
         <div class="face face--empty"><span class="slot-num">${String(i + 1).padStart(2, '0')}</span></div>
       </div>`;
-    grid.appendChild(slot);
+  return slot;
+}
+
+function renderEmptyGrid() {
+  grid.innerHTML = '';
+  for (let i = 0; i < squadSize(); i++) {
+    grid.appendChild(makeEmptySlot(i));
   }
 }
 
@@ -143,7 +167,7 @@ function fillSlot(i, op) {
 }
 
 function renderSquadFaceDown(squad) {
-  for (let i = 0; i < SQUAD_SIZE; i++) {
+  for (let i = 0; i < squad.length; i++) {
     const slot = slotEl(i);
     slot.classList.remove('is-flipped', 'is-selected', 'was-flipped');
     slot.classList.add('is-flippable');
@@ -165,7 +189,7 @@ function reveal(i) {
 
 function revealAll() {
   let delay = 0;
-  for (let i = 0; i < SQUAD_SIZE; i++) {
+  for (let i = 0; i < state.squad.length; i++) {
     if (state.revealed[i]) continue;
     setTimeout(() => reveal(i), delay);
     delay += 70;
@@ -175,8 +199,8 @@ function revealAll() {
 // ---------- actions ----------
 function onDraw() {
   if (!state.operators.length) return;
-  state.squad = drawSquad(state.operators, state.mode, { guarantee: state.guarantee });
-  state.revealed = new Array(SQUAD_SIZE).fill(false);
+  state.squad = drawSquad(state.operators, state.mode, { guarantee: state.guarantee, size: squadSize() });
+  state.revealed = new Array(state.squad.length).fill(false);
   state.selected.clear();
   preloadSquad(state.squad); // warm cache; not awaited
   renderSquadFaceDown(state.squad);
@@ -191,6 +215,22 @@ function onAgain() {
   renderEmptyGrid();
   setUi('idle');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 保全駐在: draw one more operator (追加募集), appended face-down
+function onExtra() {
+  if (state.game !== 'sss' || !state.squad.length) return;
+  const op = drawExtra(state.operators, state.mode, state.squad);
+  if (!op) return;
+  const i = state.squad.length;
+  state.squad.push(op);
+  state.revealed.push(false);
+  grid.appendChild(makeEmptySlot(i));
+  const slot = slotEl(i);
+  slot.classList.add('is-flippable', 'is-extra');
+  fillSlot(i, op);
+  updateHint();
+  slot.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
 function enterReroll() {
@@ -259,13 +299,13 @@ async function openShare() {
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
 
-  const text = tweetText(state.mode);
+  const text = tweetText(state.mode, { game: state.game, count: state.squad.length });
   $('shareText').value = text;
   $('btnTweet').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
 
   try {
     const logo = await getLogo();
-    const canvas = await renderShareImage(state.squad, state.mode, logo, { guarantee: state.guarantee });
+    const canvas = await renderShareImage(state.squad, state.mode, logo, { guarantee: state.guarantee, game: state.game });
     const blob = await canvasToBlob(canvas);
     if (currentUrl) URL.revokeObjectURL(currentUrl);
     currentBlob = blob;
@@ -302,7 +342,7 @@ async function nativeShare() {
   if (!currentBlob) return;
   const file = new File([currentBlob], 'arknights-shibari-gacha.png', { type: 'image/png' });
   try {
-    await navigator.share({ files: [file], text: tweetText(state.mode) });
+    await navigator.share({ files: [file], text: tweetText(state.mode, { game: state.game, count: state.squad.length }) });
   } catch (e) {
     if (e && e.name !== 'AbortError') console.warn(e);
   }
@@ -388,6 +428,13 @@ for (const el of document.querySelectorAll('#detailModal [data-close-detail]')) 
 $('detailModal').addEventListener('click', (e) => { if (e.target.closest('.detail__art')) closeDetail(); });
 
 // ---------- events ----------
+$('game').addEventListener('click', (e) => {
+  const b = e.target.closest('.seg__btn');
+  if (!b || state.ui !== 'idle') return;
+  setGame(b.dataset.game);
+});
+$('btnExtra').addEventListener('click', onExtra);
+
 $('guarantee').addEventListener('click', (e) => {
   const b = e.target.closest('.seg__btn');
   if (!b || state.ui !== 'idle') return;
@@ -405,7 +452,7 @@ grid.addEventListener('click', (e) => {
   if (!slot) return;
   const i = Number(slot.dataset.index);
   if (state.ui === 'reroll') toggleSelect(i);
-  else if (state.ui === 'reveal' && !state.revealed[i]) reveal(i);
+  else if ((state.ui === 'reveal' || state.ui === 'result') && !state.revealed[i]) reveal(i);
   else if (canShowDetail(i)) openDetail(i);
 });
 
@@ -428,6 +475,7 @@ document.addEventListener('keydown', (e) => {
 // ---------- init ----------
 setMode('easy');
 setGuarantee(false);
+setGame('normal');
 renderEmptyGrid();
 setUi('idle');
 loadOperators()

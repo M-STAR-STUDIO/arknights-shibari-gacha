@@ -67,11 +67,13 @@ function shuffle(arr) {
  * Draw a full squad of 12 unique operators.
  * @param {Array} operators
  * @param {string} modeKey
- * @param {{guarantee?: boolean}} [opts] guarantee: every one of the 8 classes appears at least once
+ * @param {{guarantee?: boolean, size?: number}} [opts] guarantee: every one of the 8 classes appears at least once;
+ *   size: squad size (default 12; 保全駐在 uses 20)
  * @returns {Array} operators
  */
 export function drawSquad(operators, modeKey, opts = {}) {
   const mode = MODES[modeKey];
+  const size = opts.size || SQUAD_SIZE;
   const pools = buildPools(operators);
   const used = new Set();
   const result = [];
@@ -91,10 +93,24 @@ export function drawSquad(operators, modeKey, opts = {}) {
     // slots 1-8: one per class in the fixed class order (先鋒→特殊); slots 9-12: random
     for (const cls of CLASSES) drawOne((o) => o.cls === cls);
   }
-  while (result.length < SQUAD_SIZE) {
+  while (result.length < size) {
     if (!drawOne(() => true)) break;
   }
   return result;
+}
+
+/**
+ * Draw one extra operator (保全駐在の追加募集用): same difficulty weights, not already in the squad.
+ * @returns {object|null}
+ */
+export function drawExtra(operators, modeKey, squad) {
+  const mode = MODES[modeKey];
+  const pools = buildPools(operators);
+  const used = new Set(squad.map((o) => o.id));
+  const available = (k) => pools[k].some((o) => !used.has(o.id));
+  const key = pickPoolKey(mode.weights, available);
+  if (key == null) return null;
+  return pick(pools[key].filter((o) => !used.has(o.id)));
 }
 
 /**

@@ -16,9 +16,11 @@ const FRAME = {
   3: '#d9dde2',
 };
 
-export function tweetText(modeKey) {
+export function tweetText(modeKey, opts = {}) {
   const label = MODES[modeKey].label;
-  return `${HASHTAG}【${label}】\n今回の12人\n${SITE_URL}`;
+  const head = opts.game === 'sss' ? `保全駐在 ${label}` : label;
+  const n = opts.count || 12;
+  return `${HASHTAG}【${head}】\n今回の${n}人\n${SITE_URL}`;
 }
 
 function parallelogram(ctx, x, y, w, h, cut) {
@@ -55,27 +57,29 @@ function fitText(ctx, text, maxW, base, min) {
 const LATIN_FONT = '"Rajdhani", "Segoe UI", system-ui, sans-serif';
 const JP_FONT = 'system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Meiryo", sans-serif';
 
-async function drawCard(ctx, op, x, y, art, icon) {
+async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H) {
   const isSix = op.rarity === 6;
+  const K = cw / CARD_W; // scale factor for text / icon sizes
+  const cut = CUT * K;
   // glow for 6
   if (isSix) {
     ctx.save();
     ctx.shadowColor = 'rgba(255,210,90,0.85)';
     ctx.shadowBlur = 34;
-    parallelogram(ctx, x, y, CARD_W, CARD_H, CUT);
+    parallelogram(ctx, x, y, cw, ch, cut);
     ctx.fillStyle = '#f2c14e';
     ctx.fill();
     ctx.restore();
   }
   // frame
-  parallelogram(ctx, x, y, CARD_W, CARD_H, CUT);
-  ctx.fillStyle = isSix ? goldGradient(ctx, x, y, CARD_W, CARD_H) : (FRAME[Math.max(3, op.rarity)]);
+  parallelogram(ctx, x, y, cw, ch, cut);
+  ctx.fillStyle = isSix ? goldGradient(ctx, x, y, cw, ch) : (FRAME[Math.max(3, op.rarity)]);
   ctx.fill();
 
   // inner
-  const p = 5;
-  const ix = x + p, iy = y + p, iw = CARD_W - p * 2, ih = CARD_H - p * 2;
-  const icut = CUT * (iw / CARD_W);
+  const p = Math.max(3, Math.round(5 * K));
+  const ix = x + p, iy = y + p, iw = cw - p * 2, ih = ch - p * 2;
+  const icut = cut * (iw / cw);
   ctx.save();
   parallelogram(ctx, ix, iy, iw, ih, icut);
   ctx.clip();
@@ -92,12 +96,12 @@ async function drawCard(ctx, op, x, y, art, icon) {
     ctx.fillStyle = '#e6ebef';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const size = fitText(ctx, op.name, iw - 16, 22, 13);
+    const size = fitText(ctx, op.name, iw - 16, Math.round(22 * K), 10);
     ctx.font = `700 ${size}px ${JP_FONT}`;
     ctx.fillText(op.name, ix + iw / 2, artY + iw / 2);
   }
   // short fade from art to name area (kept small so the face is not covered)
-  const fadeH = 26;
+  const fadeH = Math.round(26 * K);
   const fade = ctx.createLinearGradient(0, artY + artH - fadeH, 0, artY + artH);
   fade.addColorStop(0, 'rgba(15,20,24,0)');
   fade.addColorStop(1, 'rgba(15,20,24,1)');
@@ -108,31 +112,33 @@ async function drawCard(ctx, op, x, y, art, icon) {
   ctx.fillStyle = '#e6ebef';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const nameSize = fitText(ctx, op.name, iw - 20, 22, 12);
+  const nameSize = fitText(ctx, op.name, iw - Math.round(20 * K), Math.round(22 * K), 10);
   ctx.font = `700 ${nameSize}px ${JP_FONT}`;
-  const nameY = artY + artH + 26;
+  const nameY = artY + artH + Math.round(26 * K);
   ctx.fillText(op.name, ix + iw / 2, nameY);
+
+  // class icon size (needed for the rarity bar length)
+  const s = Math.round(44 * K);
 
   // rarity marker (thin bar, color only)
   ctx.fillStyle = isSix ? '#f2c14e' : FRAME[Math.max(3, op.rarity)];
   ctx.globalAlpha = 0.7;
-  ctx.fillRect(ix + 16, nameY + 24, iw - 32 - 52, 2); // stops short of the class icon
+  ctx.fillRect(ix + 16 * K, nameY + 24 * K, iw - 32 * K - s - 8 * K, 2); // stops short of the class icon
   ctx.globalAlpha = 1;
 
   // subtle diagonal band in the lower area (same shape language as the empty slot)
   ctx.save();
   ctx.beginPath();
-  const by = nameY + 40;
-  ctx.moveTo(ix, by + 50); ctx.lineTo(ix + iw, by + 0); ctx.lineTo(ix + iw, by + 22); ctx.lineTo(ix, by + 72);
+  const by = nameY + 40 * K;
+  ctx.moveTo(ix, by + 50 * K); ctx.lineTo(ix + iw, by + 0); ctx.lineTo(ix + iw, by + 22 * K); ctx.lineTo(ix, by + 72 * K);
   ctx.closePath();
   ctx.fillStyle = 'rgba(255,255,255,0.05)';
   ctx.fill();
   ctx.restore();
 
   // class icon bottom-right
-  const s = 44;
-  const cx = ix + iw - s - 12;
-  const cy = iy + ih - icut - s - 14;
+  const cx = ix + iw - s - 12 * K;
+  const cy = iy + ih - icut - s - 14 * K;
   if (icon) {
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.8)';
@@ -144,7 +150,7 @@ async function drawCard(ctx, op, x, y, art, icon) {
     ctx.lineWidth = 2;
     ctx.strokeRect(cx, cy, s, s);
     ctx.fillStyle = '#e6ebef';
-    ctx.font = `700 22px ${JP_FONT}`;
+    ctx.font = `700 ${Math.round(22 * K)}px ${JP_FONT}`;
     ctx.fillText(CLASS_SHORT[op.cls], cx + s / 2, cy + s / 2 + 1);
   }
   ctx.restore();
@@ -202,45 +208,57 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
   ctx.font = labelIsLatin ? `700 44px ${LATIN_FONT}` : `700 36px ${JP_FONT}`;
   ctx.fillText(mode.label, W - 60, 86);
 
-  // class guarantee badge (image only; deliberately not in the tweet text)
-  if (opts.guarantee) {
+  // badges next to the title (image only): 保全駐在 / 職分保証あり
+  {
+    const badges = [];
+    if (opts.game === 'sss') badges.push(`保全駐在 ${squad.length}体`);
+    if (opts.guarantee) badges.push('職分保証あり');
     ctx.textAlign = 'left';
     ctx.font = `700 34px ${JP_FONT}`;
-    const titleW = ctx.measureText('アークナイツ縛りガチャ').width;
-    ctx.font = `700 19px ${JP_FONT}`;
-    const label = '職分保証あり';
-    const tw = ctx.measureText(label).width + 24;
-    const x = 60 + titleW + 22, y = 58;
-    ctx.fillStyle = 'rgba(159,214,224,0.14)';
-    ctx.fillRect(x, y, tw, 30);
-    ctx.strokeStyle = 'rgba(159,214,224,0.7)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x + 0.5, y + 0.5, tw - 1, 29);
-    ctx.fillStyle = '#9fd6e0';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(label, x + 12, y + 16);
-    ctx.textBaseline = 'alphabetic';
+    let x = 60 + ctx.measureText('アークナイツ縛りガチャ').width + 22;
+    const y = 58;
+    for (const label of badges) {
+      ctx.font = `700 19px ${JP_FONT}`;
+      const tw = ctx.measureText(label).width + 24;
+      ctx.fillStyle = 'rgba(159,214,224,0.14)';
+      ctx.fillRect(x, y, tw, 30);
+      ctx.strokeStyle = 'rgba(159,214,224,0.7)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x + 0.5, y + 0.5, tw - 1, 29);
+      ctx.fillStyle = '#9fd6e0';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x + 12, y + 16);
+      ctx.textBaseline = 'alphabetic';
+      x += tw + 10;
+    }
   }
 
   // divider
   ctx.fillStyle = 'rgba(159,214,224,0.35)';
   ctx.fillRect(60, 100, W - 120, 1);
 
-  // cards
-  const gridW = COLS * CARD_W + (COLS - 1) * GAP;
-  const gridH = ROWS * CARD_H + (ROWS - 1) * GAP;
+  // cards: 2x6 for 12; larger squads use up to 10 columns and shrink the cards to fit
+  const n = squad.length;
+  const cols = n <= 12 ? COLS : Math.min(10, Math.ceil(n / 2));
+  const rows = Math.max(ROWS, Math.ceil(n / cols));
+  const availW = W - 120, availH = H - 118 - 70;
+  let cw = Math.min(CARD_W, Math.floor((availW - (cols - 1) * GAP) / cols));
+  let ch = cw * 2;
+  if (rows * ch + (rows - 1) * GAP > availH) { ch = Math.floor((availH - (rows - 1) * GAP) / rows); cw = Math.floor(ch / 2); }
+  const gridW = cols * cw + (cols - 1) * GAP;
+  const gridH = rows * ch + (rows - 1) * GAP;
   const ox = Math.round((W - gridW) / 2);
-  const oy = 118 + Math.round((H - 118 - 70 - gridH) / 2);
+  const oy = 118 + Math.round((availH - gridH) / 2);
 
   const arts = await Promise.all(squad.map((o) => loadImage(avatarUrl(o))));
   const icons = {};
   for (const c of new Set(squad.map((o) => o.cls))) icons[c] = await loadImage(classIconUrl(c));
 
   for (let i = 0; i < squad.length; i++) {
-    const r = Math.floor(i / COLS), c = i % COLS;
-    const x = ox + c * (CARD_W + GAP);
-    const y = oy + r * (CARD_H + GAP);
-    await drawCard(ctx, squad[i], x, y, arts[i], icons[squad[i].cls]);
+    const r = Math.floor(i / cols), c = i % cols;
+    const x = ox + c * (cw + GAP);
+    const y = oy + r * (ch + GAP);
+    await drawCard(ctx, squad[i], x, y, arts[i], icons[squad[i].cls], cw, ch);
   }
 
   // footer: url left, logo right
