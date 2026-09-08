@@ -477,6 +477,9 @@ async function refreshOwned() {
 $('ownedToggle').addEventListener('click', () => {
   const p = $('ownedPanel');
   p.hidden = !p.hidden; // no auto-focus: opening the panel must not pop the keyboard on phones
+  const t = $('ownedToggle');
+  t.classList.toggle('is-open', !p.hidden);
+  t.setAttribute('aria-expanded', p.hidden ? 'false' : 'true');
 });
 $('ownedInfoBtn').addEventListener('click', () => {
   const b = $('ownedInfoBtn'), d = $('ownedInfo');
