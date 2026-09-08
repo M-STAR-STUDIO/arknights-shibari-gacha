@@ -191,7 +191,7 @@ a { color: var(--accent); }
   padding: 3px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent;
   transition: color .15s, border-color .15s, background .15s;
 }
-.pill[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: rgba(159,214,224,0.12); }
+.pill[aria-pressed="true"] { color: #eefbff; border-color: var(--accent); background: rgba(79,179,196,0.55); box-shadow: 0 0 0 1px rgba(159,214,224,0.35) inset; }
 .mode-top { gap: 6px; }
 /* ID登録 (owned data) panel, opens under the pills */
 .owned { border: 1px dashed var(--line-2); border-radius: 4px; padding: 10px 12px; margin: 2px 0 12px; background: rgba(0,0,0,0.15); }
