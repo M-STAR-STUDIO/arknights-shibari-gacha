@@ -100,20 +100,6 @@ export function drawSquad(operators, modeKey, opts = {}) {
 }
 
 /**
- * Draw one extra operator (保全駐在の追加募集用): same difficulty weights, not already in the squad.
- * @returns {object|null}
- */
-export function drawExtra(operators, modeKey, squad) {
-  const mode = MODES[modeKey];
-  const pools = buildPools(operators);
-  const used = new Set(squad.map((o) => o.id));
-  const available = (k) => pools[k].some((o) => !used.has(o.id));
-  const key = pickPoolKey(mode.weights, available);
-  if (key == null) return null;
-  return pick(pools[key].filter((o) => !used.has(o.id)));
-}
-
-/**
  * Reroll selected indices; each is redrawn from the same rarity pool as the
  * original, excluding every operator currently on the board (including the
  * ones being rerolled and the ones already rerolled in this pass).

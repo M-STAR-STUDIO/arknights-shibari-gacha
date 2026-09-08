@@ -177,16 +177,23 @@ a { color: var(--accent); }
   background: var(--panel-2); border: 0; padding: 5px 14px; font-size: 12px; font-weight: 700; color: var(--text-3);
   cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
-.seg__btn + .seg__btn { border-left: 1px solid var(--line); }
+.seg__btn + .seg__btn { border-left: 1px solid var(--line-2); }
 .seg__btn[aria-checked="true"] { background: rgba(159,214,224,0.16); color: var(--accent); }
 .app:not([data-state="idle"]) .seg__btn { pointer-events: none; }
 .app:not([data-state="idle"]) .seg__btn[aria-checked="false"] { opacity: 0.35; }
 .guarantee__desc { font-size: 11px; color: var(--text-3); margin-top: 6px; min-height: 16px; }
-/* secondary option (保全駐在): deliberately small and muted */
-.guarantee--sub { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--line); opacity: 0.75; }
-.guarantee--sub .guarantee__label { font-size: 11px; color: var(--text-3); font-weight: 600; }
-.guarantee--sub .seg__btn { padding: 3px 10px; font-size: 11px; }
-.guarantee__desc--sub { font-size: 10px; opacity: 0.75; }
+/* quiet 保全駐在 toggle above the DIFFICULTY label */
+.mode-top { display: flex; justify-content: flex-end; margin: -4px 0 4px; }
+.pill {
+  appearance: none; -webkit-appearance: none;
+  background: transparent; border: 1px solid var(--line); border-radius: 999px;
+  color: var(--text-3); font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.pill[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: rgba(159,214,224,0.12); }
+.app:not([data-state="idle"]) .pill { pointer-events: none; }
+.app:not([data-state="idle"]) .pill[aria-pressed="false"] { opacity: 0.35; }
 
 /* ===== squad grid ===== */
 .squad-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }

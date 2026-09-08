@@ -69,6 +69,9 @@
   </header>
 
   <section class="panel panel--mode" aria-label="難易度">
+    <div class="mode-top">
+      <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="保全駐在の初期編成(20体)を引く">保全駐在</button>
+    </div>
     <div class="mode-head">
       <div class="panel__label">DIFFICULTY</div>
       <span class="mode-note" id="modeNote">難易度を変えるには「もう一回引く」を押してください</span>
@@ -121,14 +124,6 @@
       </div>
     </div>
     <div class="guarantee__desc" id="guaranteeDesc">完全ランダム</div>
-    <div class="guarantee guarantee--sub">
-      <span class="guarantee__label">編成</span>
-      <div class="seg" id="game" role="radiogroup" aria-label="編成の種類">
-        <button class="seg__btn" type="button" role="radio" data-game="normal" aria-checked="true">通常 12体</button>
-        <button class="seg__btn" type="button" role="radio" data-game="sss" aria-checked="false">保全駐在 20体</button>
-      </div>
-    </div>
-    <div class="guarantee__desc guarantee__desc--sub" id="gameDesc">通常任務の12体編成</div>
   </section>
 
   <section class="panel panel--squad" aria-label="編成">
@@ -149,9 +144,6 @@
     <div class="actions__row" data-for="result">
       <button class="btn btn--primary" type="button" id="btnShare">シェア</button>
       <button class="btn" type="button" id="btnReroll">選んで再抽選</button>
-    </div>
-    <div class="actions__row" data-for="result">
-      <button class="btn btn--ghost" type="button" id="btnExtra" hidden>追加を引く(保全駐在の追加募集)</button>
     </div>
     <div class="actions__row" data-for="reroll">
       <button class="btn btn--primary" type="button" id="btnRerollGo" disabled>引き直す</button>
@@ -176,7 +168,7 @@
           <li>「シェア」で結果の画像を作成し、保存やXへの投稿ができます。</li>
           <li>ゲームを起動し、引いた12体で編成を組んで任務に挑みます。</li>
         </ol>
-        <p>「編成」で通常任務の12体と、保全駐在の初期編成20体を切り替えられます。操作の詳しい説明は<a class="footer__link" href="guide.html">遊び方ガイド</a>にあります。「職分保証」を「なし」にすると、職分や近接・遠隔のバランスは一切保証されません。医療がひとりもいない、前衛ばかり、といった編成が出るのも仕様です。「あり」にすると、上2行の8枠に先鋒・前衛・重装・狙撃・術師・医療・補助・特殊が1体ずつこの順で入り、下の行の4枠がランダムになります。「あり」では職分ごとの人数差により、人数の少ない職分のオペレーターがやや出やすくなります(詳しくは「よくある質問」)。</p>
+        <p>難易度の上の「保全駐在」を押すと、保全駐在の初期編成20体を引くモードになります。操作の詳しい説明は<a class="footer__link" href="guide.html">遊び方ガイド</a>にあります。「職分保証」を「なし」にすると、職分や近接・遠隔のバランスは一切保証されません。医療がひとりもいない、前衛ばかり、といった編成が出るのも仕様です。「あり」にすると、上2行の8枠に先鋒・前衛・重装・狙撃・術師・医療・補助・特殊が1体ずつこの順で入り、下の行の4枠がランダムになります。「あり」では職分ごとの人数差により、人数の少ない職分のオペレーターがやや出やすくなります(詳しくは「よくある質問」)。</p>
       </div>
     </details>
     <details class="info">
@@ -224,7 +216,7 @@
           <dt>同じレア度のオペレーターは、本当に同じ確率で出ますか?</dt>
           <dd>職分保証「なし」では同じ確率です。レア度が決まったあと、まだ出ていないオペレーターの中から均等に1体を選んでいます。乱数にはブラウザの暗号用乱数を使い、偏りが出ない方法で選んでいます。職分保証「あり」のときは、同じ職分・同じレア度の中では同じ確率ですが、職分ごとの人数が違うため、人数の少ない職分(例: 星6の医療は8体、前衛は29体)のオペレーターは1体あたりの出現率が高くなります。8職分に必ず1体ずつ入れる仕様上、避けられない性質です。</dd>
           <dt>保全駐在でも使えますか?</dt>
-          <dd>「編成」を「保全駐在 20体」にすると、初期編成の20体を引けます。途中の追加募集はゲーム側の提示がランダムなので、サイトからは決められません。おすすめのルールは、結果画面の「追加を引く」で1体ずつ引き、提示された中にそのオペレーターがいたときだけ採用する(いなければ見送る)、という方法です。引いたオペレーターは編成の末尾に裏向きで追加され、シェア画像にも含まれます。</dd>
+          <dd>難易度の上にある「保全駐在」を押してから引くと、保全駐在の初期編成20体を引けます。途中の追加募集はゲーム側がランダムに提示するので、そのまま遊んでください。シェア画像とツイート文には「保全駐在」と表示されます。</dd>
           <dt>未育成のキャラが出ます。ブラックリスト方式は可能ですか?</dt>
           <dd>現在、実装は考えておりません。未育成のキャラが出たのであれば、育成してあげてください。</dd>
           <dt>画像が表示されず名前だけになります。</dt>

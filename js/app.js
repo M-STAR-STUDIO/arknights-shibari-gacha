@@ -1,4 +1,4 @@
-import { MODES, SQUAD_SIZE, drawSquad, rerollSquad, drawExtra } from './gacha.js';
+import { MODES, SQUAD_SIZE, drawSquad, rerollSquad } from './gacha.js';
 import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad, CLASS_JP, CLASS_SHORT } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
 
@@ -73,13 +73,7 @@ function setGuarantee(on) {
 function setGame(game) {
   state.game = game === 'sss' ? 'sss' : 'normal';
   app.dataset.game = state.game;
-  for (const b of document.querySelectorAll('#game .seg__btn')) {
-    b.setAttribute('aria-checked', b.dataset.game === state.game ? 'true' : 'false');
-  }
-  $('gameDesc').textContent = state.game === 'sss'
-    ? '保全駐在の初期編成20体を引く。途中の追加募集は「追加を引く」で1体ずつ'
-    : '通常任務の12体編成';
-  $('btnExtra').hidden = state.game !== 'sss';
+  $('gameToggle').setAttribute('aria-pressed', state.game === 'sss' ? 'true' : 'false');
   setGuarantee(state.guarantee); // refresh the guarantee text for the new size
   if (state.ui === 'idle') { renderEmptyGrid(); updateHint(); }
 }
@@ -215,22 +209,6 @@ function onAgain() {
   renderEmptyGrid();
   setUi('idle');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// 保全駐在: draw one more operator (追加募集), appended face-down
-function onExtra() {
-  if (state.game !== 'sss' || !state.squad.length) return;
-  const op = drawExtra(state.operators, state.mode, state.squad);
-  if (!op) return;
-  const i = state.squad.length;
-  state.squad.push(op);
-  state.revealed.push(false);
-  grid.appendChild(makeEmptySlot(i));
-  const slot = slotEl(i);
-  slot.classList.add('is-flippable', 'is-extra');
-  fillSlot(i, op);
-  updateHint();
-  slot.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
 function enterReroll() {
@@ -428,12 +406,10 @@ for (const el of document.querySelectorAll('#detailModal [data-close-detail]')) 
 $('detailModal').addEventListener('click', (e) => { if (e.target.closest('.detail__art')) closeDetail(); });
 
 // ---------- events ----------
-$('game').addEventListener('click', (e) => {
-  const b = e.target.closest('.seg__btn');
-  if (!b || state.ui !== 'idle') return;
-  setGame(b.dataset.game);
+$('gameToggle').addEventListener('click', () => {
+  if (state.ui !== 'idle') return;
+  setGame(state.game === 'sss' ? 'normal' : 'sss');
 });
-$('btnExtra').addEventListener('click', onExtra);
 
 $('guarantee').addEventListener('click', (e) => {
   const b = e.target.closest('.seg__btn');
