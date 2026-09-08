@@ -1,6 +1,7 @@
 import { MODES, SQUAD_SIZE, drawSquad, rerollSquad } from './gacha.js';
 import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad, CLASS_JP, CLASS_SHORT } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
+import { parseShareId, fetchOwned, loadOwned, saveOwned, clearOwned } from './owned.js';
 
 const $ = (id) => document.getElementById(id);
 const app = $('app');
@@ -14,6 +15,7 @@ const state = {
   mode: 'easy',
   guarantee: false,   // 職分保証
   game: 'normal',     // 'normal' (12体) | 'sss' (保全駐在 20体)
+  owned: null,        // {id, codes, count, fetchedAt} | null  (ID登録: 所持データ)
   squad: [],          // 12 operators
   revealed: [],       // boolean per slot
   selected: new Set(),// reroll selection
@@ -38,11 +40,18 @@ function setUi(ui) {
 const SSS_SIZE = 20;
 function squadSize() { return state.game === 'sss' ? SSS_SIZE : SQUAD_SIZE; }
 
+/** Operators eligible for drawing: everyone, or only the owned ones when an ID is registered. */
+function pool() {
+  if (!state.owned) return state.operators;
+  const codes = new Set(state.owned.codes);
+  return state.operators.filter((o) => codes.has(o.code));
+}
+
 function updateHint() {
   const n = state.revealed.filter(Boolean).length;
   squadCount.textContent = `${state.squad.length ? n : 0} / ${state.squad.length || squadSize()}`;
   switch (state.ui) {
-    case 'idle': hint.textContent = '難易度を選んで「引く」'; break;
+    case 'idle': hint.textContent = state.owned ? `未所持を除外して引きます(所持 ${pool().length}体)` : '難易度を選んで「引く」'; break;
     case 'reveal': hint.textContent = 'タップしてめくる'; break;
     case 'result': hint.textContent = 'タップで詳細表示。持っていないオペレーターは「選んで再抽選」で引き直せます'; break;
     case 'reroll': hint.textContent = '引き直すオペレーターをタップして選択'; break;
@@ -193,7 +202,9 @@ function revealAll() {
 // ---------- actions ----------
 function onDraw() {
   if (!state.operators.length) return;
-  state.squad = drawSquad(state.operators, state.mode, { guarantee: state.guarantee, size: squadSize() });
+  const ops = pool();
+  if (ops.length < squadSize()) { hint.textContent = `所持オペレーターが${ops.length}体しかないため引けません(${squadSize()}体必要)`; return; }
+  state.squad = drawSquad(ops, state.mode, { guarantee: state.guarantee, size: squadSize() });
   state.revealed = new Array(state.squad.length).fill(false);
   state.selected.clear();
   preloadSquad(state.squad); // warm cache; not awaited
@@ -235,7 +246,7 @@ function toggleSelect(i) {
 async function doReroll() {
   const indices = [...state.selected].sort((a, b) => a - b);
   if (!indices.length) return;
-  const next = rerollSquad(state.operators, state.squad, indices, { guarantee: state.guarantee });
+  const next = rerollSquad(pool(), state.squad, indices, { guarantee: state.guarantee });
   const changed = indices.filter((i) => next[i].id !== state.squad[i].id);
   state.squad = next;
   state.selected.clear();
@@ -405,6 +416,78 @@ function closeDetail() {
 for (const el of document.querySelectorAll('#detailModal [data-close-detail]')) el.addEventListener('click', closeDetail);
 $('detailModal').addEventListener('click', (e) => { if (e.target.closest('.detail__art')) closeDetail(); });
 
+// ---------- ID登録 (所持データ / Shared Viewer) ----------
+function renderOwned() {
+  const on = !!state.owned;
+  const t = $('ownedToggle');
+  t.setAttribute('aria-pressed', on ? 'true' : 'false');
+  t.textContent = on ? 'ID登録済み' : 'ID登録';
+  $('ownedActions').hidden = !on;
+  const st = $('ownedStatus');
+  if (on) {
+    const d = new Date(state.owned.fetchedAt);
+    st.className = 'owned__status is-ok';
+    st.textContent = `登録済み: 所持 ${pool().length}体(${d.getMonth() + 1}/${d.getDate()} 取得)。未所持は除外されます。`;
+  } else if (!st.classList.contains('is-err')) {
+    st.className = 'owned__status';
+    st.textContent = '登録すると、未所持のオペレーターは自動的に除外されます。';
+  }
+  if (state.ui === 'idle') updateHint();
+}
+
+async function onOwnedLoad() {
+  const id = parseShareId($('ownedInput').value);
+  const st = $('ownedStatus');
+  if (!id) { st.className = 'owned__status is-err'; st.textContent = '共有URLの形が違います(…/?d=xxxxxx の形か、ID だけを貼ってください)'; return; }
+  const btn = $('ownedLoad');
+  btn.disabled = true; st.className = 'owned__status'; st.textContent = '読み込み中…';
+  try {
+    const owned = await fetchOwned(id);
+    state.owned = owned;
+    saveOwned(owned);
+    st.classList.remove('is-err');
+    renderOwned();
+  } catch (e) {
+    st.className = 'owned__status is-err';
+    st.textContent = e && e.message ? e.message : '読み込みに失敗しました';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function onOwnedClear() {
+  state.owned = null;
+  clearOwned();
+  $('ownedInput').value = '';
+  $('ownedStatus').className = 'owned__status';
+  renderOwned();
+}
+
+// On every visit, silently refresh the stored roster; keep the cached copy if the refresh fails.
+async function refreshOwned() {
+  if (!state.owned) return;
+  try {
+    const fresh = await fetchOwned(state.owned.id);
+    state.owned = fresh;
+    saveOwned(fresh);
+    renderOwned();
+  } catch { /* keep cached roster */ }
+}
+
+$('ownedToggle').addEventListener('click', () => {
+  const p = $('ownedPanel');
+  p.hidden = !p.hidden;
+  if (!p.hidden && !state.owned) $('ownedInput').focus();
+});
+$('ownedInfoBtn').addEventListener('click', () => {
+  const b = $('ownedInfoBtn'), d = $('ownedInfo');
+  d.hidden = !d.hidden;
+  b.setAttribute('aria-expanded', d.hidden ? 'false' : 'true');
+});
+$('ownedLoad').addEventListener('click', onOwnedLoad);
+$('ownedInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') onOwnedLoad(); });
+$('ownedClear').addEventListener('click', onOwnedClear);
+
 // ---------- events ----------
 $('gameToggle').addEventListener('click', () => {
   if (state.ui !== 'idle') return;
@@ -455,7 +538,13 @@ setGame('normal');
 renderEmptyGrid();
 setUi('idle');
 loadOperators()
-  .then((ops) => { state.operators = ops; })
+  .then((ops) => {
+    state.operators = ops;
+    state.owned = loadOwned();
+    if (state.owned) $('ownedInput').value = state.owned.id;
+    renderOwned();
+    refreshOwned(); // background; never blocks drawing
+  })
   .catch((e) => {
     console.error(e);
     hint.textContent = 'データの読み込みに失敗しました。再読み込みしてください。';

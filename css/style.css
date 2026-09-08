@@ -192,6 +192,31 @@ a { color: var(--accent); }
   transition: color .15s, border-color .15s, background .15s;
 }
 .pill[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: rgba(159,214,224,0.12); }
+.mode-top { gap: 6px; }
+/* ID登録 (owned data) panel, opens under the pills */
+.owned { border: 1px dashed var(--line-2); border-radius: 4px; padding: 10px 12px; margin: 2px 0 12px; background: rgba(0,0,0,0.15); }
+.owned__row { display: flex; gap: 8px; align-items: center; }
+.owned__row--actions { margin-top: 8px; }
+.owned__input {
+  flex: 1; min-width: 0; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 3px;
+  font: inherit; font-size: 12px; padding: 7px 9px;
+}
+.owned__input:focus { outline: none; border-color: var(--accent-2); }
+.owned__info {
+  flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line-2); background: transparent;
+  color: var(--text-2); font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 13px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center;
+}
+.owned__info[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+.owned__status { margin-top: 8px; font-size: 12px; color: var(--text-3); min-height: 16px; }
+.owned__status.is-ok { color: var(--accent); }
+.owned__status.is-err { color: #ff8a8a; }
+.owned__detail { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-2); line-height: 1.7; }
+.owned__detail p { margin: 0 0 8px; }
+.owned__detail ol { margin: 0 0 8px; padding-left: 1.4em; }
+.owned__detail strong { color: var(--text); }
+.owned__detail .muted { font-size: 11px; }
+.app:not([data-state="idle"]) .owned { opacity: 0.5; pointer-events: none; }
 .app:not([data-state="idle"]) .pill { pointer-events: none; }
 .app:not([data-state="idle"]) .pill[aria-pressed="false"] { opacity: 0.35; }
 

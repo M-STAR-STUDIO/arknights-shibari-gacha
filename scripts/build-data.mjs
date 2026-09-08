@@ -55,6 +55,7 @@ for (const [id, c] of Object.entries(table)) {
   operators.push({
     id,
     name: c.name,
+    code: c.displayNumber, // 図鑑コード(例: R001)。所持データの照合に使う
     rarity,
     cls: PROFESSION[c.profession],
     sort: c.sortIndex ?? 0,

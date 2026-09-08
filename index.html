@@ -70,7 +70,30 @@
 
   <section class="panel panel--mode" aria-label="難易度">
     <div class="mode-top">
+      <button class="pill" type="button" id="ownedToggle" aria-pressed="false" title="共有IDを登録すると未所持のオペレーターを自動的に除外します">ID登録</button>
       <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="保全駐在の初期編成(20体)を引く">保全駐在</button>
+    </div>
+    <div class="owned" id="ownedPanel" hidden>
+      <div class="owned__row">
+        <input class="owned__input" id="ownedInput" type="text" inputmode="url" placeholder="共有URL または ID" autocomplete="off" spellcheck="false" aria-label="Arknights Shared Viewer の共有URL">
+        <button class="btn btn--sm" type="button" id="ownedLoad">登録</button>
+        <button class="owned__info" type="button" id="ownedInfoBtn" aria-expanded="false" aria-controls="ownedInfo" aria-label="使い方">i</button>
+      </div>
+      <div class="owned__status" id="ownedStatus">登録すると、未所持のオペレーターは自動的に除外されます。</div>
+      <div class="owned__row owned__row--actions" id="ownedActions" hidden>
+        <button class="btn btn--ghost btn--sm" type="button" id="ownedClear">解除</button>
+      </div>
+      <div class="owned__detail" id="ownedInfo" hidden>
+        <p><strong>これは何?</strong> <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>さん制作の <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> の共有URLを登録すると、そこに登録されている所持オペレーターだけが抽選対象になります。ログインやアカウント作成は不要で、ゲームのアカウントとも無関係です。</p>
+        <p><strong>やり方</strong></p>
+        <ol>
+          <li>Memoria の <a class="footer__link" href="https://arknights.memoria-ll.link/" target="_blank" rel="noopener noreferrer">アークナイツ育成管理ツール</a>(Windows)で手持ちのオペレーターを登録する(手入力です。すでに使っている方向けの機能です)</li>
+          <li>ツールの「データ共有」で共有URLを発行する</li>
+          <li>そのURL(または末尾の ID)を上の欄に貼って「登録」を押す</li>
+        </ol>
+        <p><strong>保存と更新</strong> 登録内容はこのブラウザにだけ保存され、このサイトのサーバーには送られません。サイトを開くたびに最新の手持ちを取り直すので、新しく入手したら Memoria 側の登録を更新するだけで反映されます。X アプリ内で開いた場合は別のブラウザ扱いになるため、その場合は登録し直してください。「解除」でいつでも元に戻せます。</p>
+        <p class="muted">共有URLには手持ちの一覧以上の情報(パスワードやゲームID)は含まれません。所持データの取得は提供元の都合で予告なく使えなくなることがあります。その場合も、全オペレーターから引く通常の動作は変わりません。</p>
+      </div>
     </div>
     <div class="mode-head">
       <div class="panel__label">DIFFICULTY</div>
@@ -219,6 +242,8 @@
           <dd>難易度の上にある「保全駐在」を押してから引くと、保全駐在の初期編成20体を引けます。途中の追加募集はゲーム側がランダムに提示するので、そのまま遊んでください。シェア画像とツイート文には「保全駐在」と表示されます。</dd>
           <dt>通信量はどのくらいかかりますか?</dt>
           <dd>1回引くと顔アイコン12枚で合計600KB程度です(同じオペレーターは2回目以降ブラウザに保存されたものを使うので、それより少なくなります)。カードをタップして表示する全身イラストは元の画像が大きく、1枚あたり1〜4MBかかります。モバイル回線で通信量が気になる場合は、全身イラストの表示を控えめにしてください。</dd>
+          <dt>持っているオペレーターだけから引けますか?</dt>
+          <dd>できます。難易度の上の「ID登録」を押し、<a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>さん制作の <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> で発行した共有URLを登録すると、未所持のオペレーターが自動的に除外されます。登録内容はお使いのブラウザにだけ保存され、次回以降は自動で最新の手持ちを取り直します。詳しい手順は「ID登録」の横の「i」に書いてあります。育成状況(昇進やレベル)では絞り込みません。</dd>
           <dt>未育成のキャラが出ます。ブラックリスト方式は可能ですか?</dt>
           <dd>現在、実装は考えておりません。未育成のキャラが出たのであれば、育成してあげてください。</dd>
           <dt>画像が表示されず名前だけになります。</dt>
@@ -245,6 +270,7 @@
       <span class="footer__sep">/</span>
       <a class="footer__link" href="privacy.html">プライバシーポリシー・運営者情報</a>
     </p>
+    <p class="footer__links">所持データ(ID登録): <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>さん制作の <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> を利用</p>
     <p class="footer__links">
       <a class="footer__link" href="guide.html">遊び方ガイド</a>
       <span class="footer__sep">/</span>

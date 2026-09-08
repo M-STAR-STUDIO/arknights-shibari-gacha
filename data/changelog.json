@@ -10,6 +10,10 @@
  ],
  "site": [
   {
+   "date": "2026-09-09",
+   "text": "「ID登録」を追加。Arknights Shared Viewer(OperatorManageToolマン @an_mngtool さん制作)の共有URLを登録すると、未所持のオペレーターを自動的に除外します。"
+  },
+  {
    "date": "2026-09-08",
    "text": "保全駐在モードを追加。難易度の上の「保全駐在」を押してから引くと、初期編成20体を引けます。"
   },
