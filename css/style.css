@@ -145,6 +145,7 @@ a { color: var(--accent); }
 }
 .horns svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 2px rgba(198,255,69,0.9)) drop-shadow(0 0 7px rgba(140,230,60,0.5)); }
 .shard--lit { fill: url(#hLit); }
+.shard--mid { fill: url(#hMid); }
 .shard--dark { fill: url(#hDark); }
 .shard--tip { fill: #f6ffd8; }
 
