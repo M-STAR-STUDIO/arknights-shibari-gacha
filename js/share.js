@@ -34,13 +34,13 @@ function parallelogram(ctx, x, y, w, h, cut) {
 
 function goldGradient(ctx, x, y, w, h) {
   const g = ctx.createLinearGradient(x, y, x + w, y + h);
-  g.addColorStop(0, '#8a5a0c');
-  g.addColorStop(0.2, '#ffcf4d');
-  g.addColorStop(0.38, '#fffbe6');
-  g.addColorStop(0.5, '#ffcf4d');
-  g.addColorStop(0.62, '#fffbe6');
-  g.addColorStop(0.8, '#ffcf4d');
-  g.addColorStop(1, '#8a5a0c');
+  g.addColorStop(0, '#8a4a0a');
+  g.addColorStop(0.2, '#ffa53a');
+  g.addColorStop(0.38, '#ffe3a8');
+  g.addColorStop(0.5, '#ffa53a');
+  g.addColorStop(0.62, '#ffe3a8');
+  g.addColorStop(0.8, '#ffa53a');
+  g.addColorStop(1, '#8a4a0a');
   return g;
 }
 
@@ -64,10 +64,10 @@ async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H) {
   // glow for 6
   if (isSix) {
     ctx.save();
-    ctx.shadowColor = 'rgba(255,210,90,0.85)';
+    ctx.shadowColor = 'rgba(255,170,60,0.85)';
     ctx.shadowBlur = 34;
     parallelogram(ctx, x, y, cw, ch, cut);
-    ctx.fillStyle = '#f2c14e';
+    ctx.fillStyle = '#ffa53a';
     ctx.fill();
     ctx.restore();
   }
@@ -121,7 +121,7 @@ async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H) {
   const s = Math.round(44 * K);
 
   // rarity marker (thin bar, color only)
-  ctx.fillStyle = isSix ? '#f2c14e' : FRAME[Math.max(3, op.rarity)];
+  ctx.fillStyle = isSix ? '#ffa53a' : FRAME[Math.max(3, op.rarity)];
   ctx.globalAlpha = 0.7;
   ctx.fillRect(ix + 16 * K, nameY + 24 * K, iw - 32 * K - s - 8 * K, 2); // stops short of the class icon
   ctx.globalAlpha = 1;
