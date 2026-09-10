@@ -536,6 +536,26 @@ document.addEventListener('keydown', (e) => {
   else if (!$('shareModal').hidden) closeShare();
 });
 
+// ---------- AdSense anchor ad: keep the sticky bar above it ----------
+// Google inserts <ins class="adsbygoogle" data-anchor-status="displayed"> for anchor ads (自動広告).
+function watchAnchorAd() {
+  const apply = () => {
+    const ins = document.querySelector('ins.adsbygoogle[data-anchor-status="displayed"]');
+    let h = 0;
+    if (ins) {
+      const r = ins.getBoundingClientRect();
+      // bottom anchors sit at the bottom edge of the viewport
+      if (r.height > 0 && Math.abs(window.innerHeight - r.bottom) < 4) h = Math.round(r.height);
+    }
+    document.documentElement.style.setProperty('--anchor-h', h + 'px');
+  };
+  const mo = new MutationObserver(apply);
+  mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-anchor-status', 'style'] });
+  window.addEventListener('resize', apply);
+  apply();
+}
+watchAnchorAd();
+
 // ---------- init ----------
 setMode('easy');
 setGuarantee(false);

@@ -443,8 +443,9 @@ a { color: var(--accent); }
 /* ===== actions ===== */
 .actions { margin: 4px 0 8px; padding: 6px 0; }
 /* only the initial 引く button sticks to the bottom so it is reachable without scrolling */
-.app[data-state="idle"] .actions {
-  position: sticky; bottom: 0; z-index: 10;
+.app[data-state="idle"] :root { --anchor-h: 0px; } /* set by app.js when an AdSense anchor ad is displayed */
+.actions {
+  position: sticky; bottom: var(--anchor-h); z-index: 10;
   margin: 0 -16px;
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgba(11,14,17,0), rgba(11,14,17,0.92) 30%);
