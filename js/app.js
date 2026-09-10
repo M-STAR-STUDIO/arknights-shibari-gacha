@@ -536,6 +536,47 @@ document.addEventListener('keydown', (e) => {
   else if (!$('shareModal').hidden) closeShare();
 });
 
+// ---------- ad mock preview (?admock=1): sample banners so the placement can be checked before approval ----------
+function adMockBanner(w, h, big) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d');
+  x.fillStyle = '#f4f6f8'; x.fillRect(0, 0, w, h);
+  if (big) {
+    x.fillStyle = '#dfe4ea'; x.fillRect(0, 0, w, Math.round(h * 0.54));
+    x.fillStyle = '#b8c2cc'; x.font = '700 22px system-ui'; x.textAlign = 'center'; x.fillText('広告(サンプル)', w / 2, Math.round(h * 0.3));
+    x.fillStyle = '#1a2129'; x.font = '700 18px system-ui'; x.textAlign = 'left'; x.fillText('ここに広告が表示されます', 16, h - 95);
+    x.fillStyle = '#66717c'; x.font = '13px system-ui'; x.fillText('サイズは端末幅に合わせて自動で変わります', 16, h - 70);
+    x.fillStyle = '#1a73e8'; x.fillRect(16, h - 48, 110, 32); x.fillStyle = '#fff'; x.font = '700 13px system-ui'; x.fillText('詳しく見る', 36, h - 27);
+  } else {
+    x.fillStyle = '#dfe4ea'; x.fillRect(0, 0, Math.round(h * 1.3), h);
+    x.fillStyle = '#1a2129'; x.font = '700 14px system-ui'; x.textAlign = 'left'; x.fillText('広告(サンプル)', Math.round(h * 1.3) + 10, h / 2 - 2);
+    x.fillStyle = '#66717c'; x.font = '11px system-ui'; x.fillText('アンカー広告は画面下にずっと表示されます', Math.round(h * 1.3) + 10, h / 2 + 14);
+    x.fillStyle = '#1a73e8'; x.fillRect(w - 78, h / 2 - 13, 66, 26); x.fillStyle = '#fff'; x.font = '700 11px system-ui'; x.textAlign = 'center'; x.fillText('詳しく見る', w - 45, h / 2 + 4);
+  }
+  x.fillStyle = '#9aa7b3'; x.font = '9px system-ui'; x.textAlign = 'right'; x.fillText('Ad', w - 4, 10);
+  return c.toDataURL();
+}
+
+function setupAdMock() {
+  if (!/[?&]admock=1/.test(location.search)) return;
+  // in-content sample (below the result buttons)
+  const img = new Image(); img.src = adMockBanner(336, 280, true);
+  img.style.cssText = 'width:336px;max-width:100%;height:auto;display:block';
+  $('adBox').replaceChildren(img);
+  $('adResult').classList.add('is-live');
+  // anchor sample (bottom, fixed) with a close tab like Google draws
+  const ins = document.createElement('ins');
+  ins.className = 'adsbygoogle';
+  ins.setAttribute('data-anchor-status', 'displayed');
+  ins.style.cssText = 'position:fixed;left:0;right:0;bottom:0;height:62px;background:#fff;z-index:1000;display:flex;align-items:center;justify-content:center;box-shadow:0 -2px 8px rgba(0,0,0,.35)';
+  const a = new Image(); a.src = adMockBanner(320, 50, false); a.style.cssText = 'width:320px;height:50px;display:block';
+  const tab = document.createElement('button'); tab.type = 'button'; tab.textContent = '×'; tab.setAttribute('aria-label', '閉じる');
+  tab.style.cssText = 'position:absolute;right:0;top:-20px;width:34px;height:20px;border:0;background:#fff;border-radius:6px 0 0 0;box-shadow:0 -2px 6px rgba(0,0,0,.3);font:14px system-ui;color:#5f6368';
+  tab.addEventListener('click', () => { ins.remove(); document.documentElement.style.setProperty('--anchor-h', '0px'); });
+  ins.append(a, tab);
+  document.body.appendChild(ins);
+}
+setupAdMock();
+
 // ---------- AdSense anchor ad: keep the sticky bar above it ----------
 // Google inserts <ins class="adsbygoogle" data-anchor-status="displayed"> for anchor ads (自動広告).
 function watchAnchorAd() {
