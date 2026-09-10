@@ -488,6 +488,13 @@ a { color: var(--accent); }
 .btn--lg { padding: 16px 24px; font-size: 18px; letter-spacing: 0.2em; }
 .btn.is-busy { opacity: 0.6; pointer-events: none; }
 
+/* ===== ad slot (below the result buttons, above ABOUT) ===== */
+.ad { margin: 22px 0 18px; }
+.ad__label { font-size: 10px; letter-spacing: 0.12em; color: var(--text-3); text-align: center; margin-bottom: 6px; }
+.ad__box { min-height: 0; display: flex; justify-content: center; }
+.ad__box .adsbygoogle { display: block; width: 100%; }
+.ad:not(.is-live) { display: none; } /* hidden until an ad unit is configured */
+
 /* ===== info (collapsed by default) ===== */
 .panel--info { margin-top: 6px; }
 .info { border-top: 1px solid var(--line); }
