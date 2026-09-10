@@ -558,11 +558,6 @@ function adMockBanner(w, h, big) {
 
 function setupAdMock() {
   if (!/[?&]admock=1/.test(location.search)) return;
-  // in-content sample (below the result buttons)
-  const img = new Image(); img.src = adMockBanner(336, 280, true);
-  img.style.cssText = 'width:336px;max-width:100%;height:auto;display:block';
-  $('adBox').replaceChildren(img);
-  $('adResult').classList.add('is-live');
   // anchor sample (bottom, fixed) with a close tab like Google draws
   const ins = document.createElement('ins');
   ins.className = 'adsbygoogle';
