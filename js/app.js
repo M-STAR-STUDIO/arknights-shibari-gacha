@@ -293,7 +293,6 @@ async function openShare() {
 
   const text = tweetText(state.mode, { game: state.game, count: state.squad.length });
   $('shareText').value = text;
-  $('btnTweet').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
 
   try {
     const logo = await getLogo();
@@ -314,8 +313,8 @@ async function openShare() {
     const canNative = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
     $('btnNativeShare').hidden = !canNative;
     $('shareNote').textContent = canNative
-      ? '「画像ごと共有」でXアプリ等に直接送れます。使えない場合は画像を保存してから投稿してください。'
-      : '画像を保存してから「Xで投稿」で添付してください。';
+      ? '「共有」でXなどのアプリに画像ごと送れます。'
+      : '画像を保存してから投稿してください。';
   } catch (e) {
     console.error(e);
     preview.innerHTML = '<div class="spinner">画像の生成に失敗しました</div>';
@@ -337,17 +336,6 @@ async function nativeShare() {
     await navigator.share({ files: [file], text: tweetText(state.mode, { game: state.game, count: state.squad.length }) });
   } catch (e) {
     if (e && e.name !== 'AbortError') console.warn(e);
-  }
-}
-
-async function copyText() {
-  const t = $('shareText').value;
-  try {
-    await navigator.clipboard.writeText(t);
-    $('btnCopyText').textContent = 'コピーしました';
-    setTimeout(() => { $('btnCopyText').textContent = '文章をコピー'; }, 1500);
-  } catch {
-    $('shareText').select();
   }
 }
 
@@ -528,7 +516,6 @@ $('btnRerollCancel').addEventListener('click', cancelReroll);
 $('btnRerollGo').addEventListener('click', doReroll);
 $('btnShare').addEventListener('click', openShare);
 $('btnNativeShare').addEventListener('click', nativeShare);
-$('btnCopyText').addEventListener('click', copyText);
 for (const el of document.querySelectorAll('#shareModal [data-close]')) el.addEventListener('click', closeShare);
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
