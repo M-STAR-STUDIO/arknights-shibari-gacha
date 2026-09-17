@@ -586,6 +586,23 @@ function watchAnchorAd() {
 }
 watchAnchorAd();
 
+// ---------- language suggestion (JA page only): offer /en/ or /ko/ to browsers set to those languages ----------
+function suggestLanguage() {
+  const el = $('langSuggest');
+  if (!el || document.documentElement.lang !== 'ja') return;
+  try { if (localStorage.getItem('shibari-gacha:lang-dismissed')) return; } catch { /* ignore */ }
+  const langs = (navigator.languages || [navigator.language || '']).map((l) => String(l).toLowerCase());
+  const first = langs[0] || '';
+  if (first.startsWith('ja')) return;
+  const pick = langs.find((l) => l.startsWith('en') || l.startsWith('ko'));
+  if (!pick) return;
+  const target = pick.startsWith('ko') ? { href: 'ko/', text: '한국어 페이지가 있습니다: ', link: '한국어로 보기' } : { href: 'en/', text: 'This site is also available in English: ', link: 'Open the English version' };
+  el.innerHTML = `${target.text}<a href="${target.href}">${target.link}</a><button type="button" aria-label="close">×</button>`;
+  el.hidden = false;
+  el.querySelector('button').addEventListener('click', () => { el.hidden = true; try { localStorage.setItem('shibari-gacha:lang-dismissed', '1'); } catch { /* ignore */ } });
+}
+suggestLanguage();
+
 // ---------- init ----------
 setMode('easy');
 setGuarantee(false);

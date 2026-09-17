@@ -22,7 +22,6 @@ const L = {
     jsonName: 'Arknights Challenge Gacha',
     jsonDesc: 'Draw 12 random operators from the Arknights roster and play with exactly that squad.',
     switcher: { ja: '日本語', en: 'English', ko: '한국어', label: 'Language' },
-    beta: 'Trial English version. Operator names use the EN server data; the guide pages are still Japanese.',
     h1: 'Arknights<span class="title__sub">Challenge Gacha</span>',
     lead: '12 random operators from the whole roster. Clear the stage with exactly that squad.',
     leadSub: 'Don\'t own someone? Use "Reroll selected" to redraw just that card at the same rarity.',
@@ -151,7 +150,6 @@ const L = {
     jsonName: '명일방주 제약 가챠',
     jsonDesc: '명일방주 전체 오퍼레이터 중 랜덤 12명을 뽑아 그 편성 그대로 도전하는 제약 플레이 도구.',
     switcher: { ja: '日本語', en: 'English', ko: '한국어', label: '언어' },
-    beta: '시험 운영 중인 한국어판입니다. 오퍼레이터 이름은 한국 서버 데이터를 사용하며, 안내 페이지는 아직 일본어입니다.',
     h1: '명일방주<span class="title__sub">제약 가챠</span>',
     lead: '전체 오퍼레이터 중 랜덤 12명. 뽑은 편성 그대로 도전.',
     leadSub: '없는 오퍼레이터가 나오면 「골라서 다시 뽑기」로 그 카드만 같은 등급에서 다시 뽑을 수 있습니다.',
@@ -327,8 +325,7 @@ function build(d) {
   h = rep(h, `<a class="lang__link" href="ko/" hreflang="ko" lang="ko">한국어</a>`, d.lang === 'ko' ? `<a class="lang__link" href="./" hreflang="ko" lang="ko" aria-current="page">한국어</a>` : `<a class="lang__link" href="../ko/" hreflang="ko" lang="ko">한국어</a>`, 'switch ko');
   h = rep(h, `<nav class="lang" aria-label="言語">`, `<nav class="lang" aria-label="${d.switcher.label}">`, 'switch label');
   // beta notice
-  h = rep(h, `<p class="lead lead--sub">持っていないオペレーターが出たら「選んで再抽選」で、そのカードだけ同じレア度から引き直せます。</p>`, `<p class="lead lead--sub">${d.leadSub}</p>
-    <p class="beta">${d.beta}</p>`, 'lead sub');
+  h = rep(h, `<p class="lead lead--sub">持っていないオペレーターが出たら「選んで再抽選」で、そのカードだけ同じレア度から引き直せます。</p>`, `<p class="lead lead--sub">${d.leadSub}</p>`, 'lead sub');
   // header
   h = rep(h, `<h1 class="title">アークナイツ<span class="title__sub">縛りガチャ</span></h1>`, `<h1 class="title">${d.h1}</h1>`, 'h1');
   h = rep(h, `<p class="lead">全オペレーターからランダムに12体。引いたそのままの編成で挑む。</p>`, `<p class="lead">${d.lead}</p>`, 'lead');
