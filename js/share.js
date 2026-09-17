@@ -1,9 +1,14 @@
 // Share image (2 rows x 6 columns, 1600x900) drawn on canvas.
 import { MODES } from './gacha.js';
-import { avatarUrl, classIconUrl, loadImage, CLASS_SHORT } from './assets.js';
+import { avatarUrl, classIconUrl, loadImage } from './assets.js';
+import { T, SITE_URL, HASHTAG, CLASS_ABBR } from './i18n.js';
 
-export const SITE_URL = 'https://mstar-studio.com/arknights-shibari-gacha/';
-export const HASHTAG = '#アークナイツ縛りガチャ';
+export { SITE_URL, HASHTAG };
+
+/** Difficulty label for images/text (無双 is localized; EASY/NORMAL/MONSTER are shared). */
+export function modeLabel(modeKey) {
+  return modeKey === 'musou' ? T.musouLabel : MODES[modeKey].label;
+}
 
 const W = 1600, H = 900;
 const CARD_W = 184, CARD_H = 368, GAP = 22, CUT = 30;
@@ -17,10 +22,10 @@ const FRAME = {
 };
 
 export function tweetText(modeKey, opts = {}) {
-  const label = MODES[modeKey].label;
-  const head = opts.game === 'sss' ? `保全駐在 ${label}` : label;
+  const label = modeLabel(modeKey);
+  const head = opts.game === 'sss' ? `${T.sssName} ${label}` : label;
   const n = opts.count || 12;
-  const body = `${HASHTAG}【${head}】\n今回の${n}人`;
+  const body = `${HASHTAG}【${head}】\n${T.tweetBody(n)}`;
   return opts.noUrl ? body : `${body}\n${SITE_URL}`;
 }
 
@@ -152,7 +157,7 @@ async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H) {
     ctx.strokeRect(cx, cy, s, s);
     ctx.fillStyle = '#e6ebef';
     ctx.font = `700 ${Math.round(22 * K)}px ${JP_FONT}`;
-    ctx.fillText(CLASS_SHORT[op.cls], cx + s / 2, cy + s / 2 + 1);
+    ctx.fillText(CLASS_ABBR[op.cls], cx + s / 2, cy + s / 2 + 1);
   }
   ctx.restore();
 }
@@ -197,7 +202,7 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
   ctx.fillText('R O S T E R   R A N D O M I Z E R', 60, 44);
   ctx.fillStyle = '#e6ebef';
   ctx.font = `700 34px ${JP_FONT}`;
-  ctx.fillText('アークナイツ縛りガチャ', 60, 84);
+  ctx.fillText(T.siteTitle, 60, 84);
 
   // difficulty label (right)
   ctx.textAlign = 'right';
@@ -205,18 +210,19 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
   ctx.font = `600 16px ${LATIN_FONT}`;
   ctx.fillText('D I F F I C U L T Y', W - 60, 44);
   ctx.fillStyle = mode.color || '#9fd6e0';
-  const labelIsLatin = /^[A-Z0-9 ★]+$/.test(mode.label);
+  const label = modeLabel(modeKey);
+  const labelIsLatin = /^[A-Z0-9 ★]+$/.test(label);
   ctx.font = labelIsLatin ? `700 44px ${LATIN_FONT}` : `700 36px ${JP_FONT}`;
-  ctx.fillText(mode.label, W - 60, 86);
+  ctx.fillText(label, W - 60, 86);
 
   // badges next to the title (image only): 保全駐在 / 職分保証あり
   {
     const badges = [];
-    if (opts.game === 'sss') badges.push(`保全駐在 ${squad.length}体`);
-    if (opts.guarantee) badges.push('職分保証あり');
+    if (opts.game === 'sss') badges.push(T.badgeSss(squad.length));
+    if (opts.guarantee) badges.push(T.badgeGuarantee);
     ctx.textAlign = 'left';
     ctx.font = `700 34px ${JP_FONT}`;
-    let x = 60 + ctx.measureText('アークナイツ縛りガチャ').width + 22;
+    let x = 60 + ctx.measureText(T.siteTitle).width + 22;
     const y = 58;
     for (const label of badges) {
       ctx.font = `700 19px ${JP_FONT}`;

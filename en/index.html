@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="google-site-verification" content="He9XhBj6uh7KS9mC5KNXgd33Gkc8yb-Pm_dyMlKiBso">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arknights Challenge Gacha | Random 12-operator squads for challenge runs</title>
+<meta name="description" content="Draw 12 random operators from the entire Arknights roster and clear stages with exactly that squad. Four difficulties, class guarantee, rerolls for operators you don't own, and a shareable result image. Free, no sign-up, works on your phone.">
+<meta name="theme-color" content="#0b0e11">
+<link rel="canonical" href="https://mstar-studio.com/arknights-shibari-gacha/en/">
+<link rel="alternate" hreflang="ja" href="https://mstar-studio.com/arknights-shibari-gacha/">
+<link rel="alternate" hreflang="en" href="https://mstar-studio.com/arknights-shibari-gacha/en/">
+<link rel="alternate" hreflang="ko" href="https://mstar-studio.com/arknights-shibari-gacha/ko/">
+<link rel="alternate" hreflang="x-default" href="https://mstar-studio.com/arknights-shibari-gacha/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Arknights Challenge Gacha">
+<meta property="og:title" content="Arknights Challenge Gacha | Random 12-operator squads">
+<meta property="og:description" content="12 random operators. Clear the stage with exactly that squad.">
+<meta property="og:url" content="https://mstar-studio.com/arknights-shibari-gacha/en/">
+<meta property="og:image" content="https://mstar-studio.com/arknights-shibari-gacha/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arknights Challenge Gacha | Random 12-operator squads">
+<meta name="twitter:description" content="12 random operators. Clear the stage with exactly that squad.">
+<meta name="twitter:image" content="https://mstar-studio.com/arknights-shibari-gacha/assets/ogp.png">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8043531064519803" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Arknights Challenge Gacha",
+  "url": "https://mstar-studio.com/arknights-shibari-gacha/en/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any",
+  "isAccessibleForFree": true,
+  "inLanguage": "en",
+  "description": "Draw 12 random operators from the Arknights roster and play with exactly that squad.",
+  "author": { "@type": "Organization", "name": "M Star Studio", "url": "https://mstar-studio.com/" }
+}
+</script>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<main class="app" id="app" data-state="idle">
+  <header class="header">
+    <div class="header__meta"><span class="header__tag">ROSTER RANDOMIZER</span><span class="header__line"></span>
+      <nav class="lang" aria-label="Language">
+        <a class="lang__link" href="../" hreflang="ja" lang="ja">日本語</a>
+        <a class="lang__link" href="./" hreflang="en" lang="en" aria-current="page">English</a>
+        <a class="lang__link" href="../ko/" hreflang="ko" lang="ko">한국어</a>
+      </nav>
+    </div>
+    <h1 class="title">Arknights<span class="title__sub">Challenge Gacha</span></h1>
+    <p class="lead">12 random operators from the whole roster. Clear the stage with exactly that squad.</p>
+    <p class="lead lead--sub">Don't own someone? Use "Reroll selected" to redraw just that card at the same rarity.</p>
+    <p class="beta">Trial English version. Operator names use the EN server data; the guide pages are still Japanese.</p>
+  </header>
+
+  <section class="panel panel--mode" aria-label="Difficulty">
+    <div class="mode-top">
+      <button class="pill" type="button" id="ownedToggle" aria-pressed="false" title="Link a shared roster ID to exclude operators you don't own">Link ID</button>
+      <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="Draw the 20-operator starting squad for Stationary Security Service">SSS</button>
+    </div>
+    <div class="owned" id="ownedPanel" hidden>
+      <div class="owned__row">
+        <input class="owned__input" id="ownedInput" type="text" inputmode="url" placeholder="Share URL or ID" autocomplete="off" spellcheck="false" aria-label="Arknights Shared Viewer share URL">
+        <button class="btn btn--sm" type="button" id="ownedLoad">Link</button>
+        <button class="owned__info" type="button" id="ownedInfoBtn" aria-expanded="false" aria-controls="ownedInfo" aria-label="How it works">i</button>
+      </div>
+      <div class="owned__status" id="ownedStatus">Link your roster to exclude operators you don't own.</div>
+      <div class="owned__row owned__row--actions" id="ownedActions" hidden>
+        <button class="btn btn--ghost btn--sm" type="button" id="ownedClear">Unlink</button>
+      </div>
+      <div class="owned__detail" id="ownedInfo" hidden>
+        <p><strong>About linking</strong> Paste a share URL from <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> (made by <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン, @an_mngtool</a>) and only the operators registered there will be drawn. No login or account is needed here, and it has nothing to do with your game account.</p>
+        <p><strong>Steps</strong></p>
+        <ol>
+          <li>Register your operators in Memoria's <a class="footer__link" href="https://arknights.memoria-ll.link/en/" target="_blank" rel="noopener noreferrer">Arknights Operators Manager</a> (Windows; manual entry, meant for people already using it)</li>
+          <li>Create a share URL from the tool's share feature</li>
+          <li>Paste the URL (or just the ID at the end) above and press "Link"</li>
+        </ol>
+        <p><strong>Storage and updates</strong> The link is stored only in this browser and never sent to this site's server. The roster is refreshed every time you open the site, so updating Memoria is enough. The in-app browser of X counts as a different browser, so link again there if needed. "Unlink" removes it at any time.</p>
+        <p class="muted">A share URL contains nothing beyond your operator list (no password or game ID). The roster service may become unavailable without notice; drawing from the full roster keeps working regardless.</p>
+      </div>
+    </div>
+    <div class="mode-head">
+      <div class="panel__label">DIFFICULTY</div>
+      <span class="mode-note" id="modeNote">To change the difficulty, press "Draw again"</span>
+    </div>
+    <div class="modes" id="modes" role="radiogroup" aria-label="Difficulty">
+      <button class="mode" type="button" role="radio" data-mode="musou" aria-checked="false">
+        <span class="mode__name">All ★6</span><span class="mode__sub">MUSOU</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="easy" aria-checked="true">
+        <span class="mode__name">Easy</span><span class="mode__sub">EASY</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="normal" aria-checked="false">
+        <span class="mode__name">Normal</span><span class="mode__sub">NORMAL</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="monster" aria-checked="false">
+        <span class="horns" aria-hidden="true">
+          <svg viewBox="0 0 100 40" preserveAspectRatio="xMidYMax meet">
+            <defs>
+              <linearGradient id="hLit" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5faa22"/><stop offset="0.55" stop-color="#c6ff45"/><stop offset="1" stop-color="#f6ffd8"/></linearGradient>
+              <linearGradient id="hMid" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3f8a1e"/><stop offset="1" stop-color="#9ee23c"/></linearGradient>
+              <linearGradient id="hDark" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#070a08"/><stop offset="1" stop-color="#20301a"/></linearGradient>
+            </defs>
+            <g class="horn horn--l">
+              <path class="shard shard--lit" d="M10 40 L8 34 L5 32 L7 27 L14 35 L16 40 Z"/>
+              <path class="shard shard--dark" d="M16 40 L14 35 L7 27 L18 34 L19 40 Z"/>
+              <path class="shard shard--lit" d="M14 40 L12 25 L15 23 L11 3 L13.5 2 L24 40 Z"/>
+              <path class="shard shard--mid" d="M24 40 L13.5 2 L30 40 Z"/>
+              <path class="shard shard--dark" d="M30 40 L13.5 2 L36 40 Z"/>
+              <path class="shard shard--tip" d="M11 3 L13.5 2 L15.5 8 L12.5 8 Z"/>
+            </g>
+            <g class="horn horn--r" transform="translate(100,0) scale(-1,1)">
+              <path class="shard shard--lit" d="M10 40 L8 34 L5 32 L7 27 L14 35 L16 40 Z"/>
+              <path class="shard shard--dark" d="M16 40 L14 35 L7 27 L18 34 L19 40 Z"/>
+              <path class="shard shard--lit" d="M14 40 L12 25 L15 23 L11 3 L13.5 2 L24 40 Z"/>
+              <path class="shard shard--mid" d="M24 40 L13.5 2 L30 40 Z"/>
+              <path class="shard shard--dark" d="M30 40 L13.5 2 L36 40 Z"/>
+              <path class="shard shard--tip" d="M11 3 L13.5 2 L15.5 8 L12.5 8 Z"/>
+            </g>
+          </svg>
+        </span>
+        <span class="mode__name">Mon3tr</span><span class="mode__sub">MONSTER</span>
+      </button>
+    </div>
+    <div class="mode-desc" id="modeDesc" aria-live="polite"></div>
+    <div class="guarantee">
+      <span class="guarantee__label">Class guarantee</span>
+      <div class="seg" id="guarantee" role="radiogroup" aria-label="Class guarantee">
+        <button class="seg__btn" type="button" role="radio" data-guarantee="0" aria-checked="true">Off</button>
+        <button class="seg__btn" type="button" role="radio" data-guarantee="1" aria-checked="false">On</button>
+      </div>
+    </div>
+    <div class="guarantee__desc" id="guaranteeDesc">Fully random</div>
+  </section>
+
+  <section class="panel panel--squad" aria-label="Squad">
+    <div class="squad-head">
+      <div class="panel__label">SQUAD <span class="squad-count" id="squadCount">0 / 12</span></div>
+      <div class="squad-actions" id="squadActions">
+        <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">Flip all</button>
+      </div>
+    </div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+    <p class="hint" id="hint"></p>
+  </section>
+
+  <section class="actions" id="actions">
+    <div class="actions__row" data-for="idle">
+      <button class="btn btn--primary btn--lg" type="button" id="btnDraw">DRAW</button>
+    </div>
+    <div class="actions__row" data-for="result">
+      <button class="btn btn--primary" type="button" id="btnShare">Share</button>
+      <button class="btn" type="button" id="btnReroll">Reroll selected</button>
+    </div>
+    <div class="actions__row" data-for="reroll">
+      <button class="btn btn--primary" type="button" id="btnRerollGo" disabled>Reroll</button>
+      <button class="btn btn--danger" type="button" id="btnRerollCancel">Cancel</button>
+    </div>
+  </section>
+  <section class="again" id="again">
+    <button class="btn btn--ghost" type="button" id="btnAgain">Draw again</button>
+  </section>
+
+
+  <section class="panel panel--info" aria-label="About this site">
+    <div class="panel__label">ABOUT</div>
+    <details class="info">
+      <summary>About this site &amp; how to play</summary>
+      <div class="info__body">
+        <p>Arknights Challenge Gacha is an unofficial fan tool for challenge runs in the mobile tower-defense game <em>Arknights</em>. It picks 12 random operators from every operator released on the global (EN/JP/KR) servers, and you clear stages with exactly that squad. No sign-up, no login, works in your phone's browser. The fun happens in the game; this site only creates the restriction.</p>
+        <p><strong>Basic flow</strong></p>
+        <ol>
+          <li><strong>Pick a difficulty.</strong> Default is Easy. Difficulty only changes the rarity odds of the operators you draw, not the stage. "All ★6" and "Easy" suit well-developed accounts; "Normal" and "Mon3tr" mix in ★3 and below.</li>
+          <li><strong>Press DRAW.</strong> 12 cards appear face down. Even face down, the card color shows the rarity and the icon shows the class.</li>
+          <li><strong>Flip the cards.</strong> Tap to flip one at a time, or "Flip all". Tap a flipped card again to see the full illustration, name, rarity and class.</li>
+          <li><strong>Reroll operators you don't own.</strong> Press "Reroll selected", tap the cards, then "Reroll". Only those cards are redrawn at the same rarity, without duplicates. No limit. Under-leveled operators are not a reason to reroll: raise them instead.</li>
+          <li><strong>Share.</strong> "Share" builds a result image on the spot and sends it, with hashtags, to X or other apps. If the share button is missing on your device, save the image and post it.</li>
+          <li><strong>Build the squad in game and go.</strong> Support units from friends are off by default.</li>
+        </ol>
+        <p><strong>Class guarantee</strong> "Off" is fully random: no medic, four guards, anything can happen. "On" fills the top two rows with one operator of each class in order (Vanguard, Guard, Defender, Sniper, Caster, Medic, Supporter, Specialist) and draws the last four slots at random. With "On", operators from smaller classes appear a little more often (see FAQ).</p>
+        <p><strong>SSS</strong> Press the small "SSS" pill above the difficulty to draw a 20-operator starting squad for Stationary Security Service. With class guarantee on, each class gets two operators (top four rows) and the last four slots are random.</p>
+        <p><strong>Link ID</strong> Link a share URL from Arknights Shared Viewer to exclude operators you don't own. Details are behind the "i" next to the "Link ID" pill. Everything works without linking.</p>
+      </div>
+    </details>
+    <details class="info">
+      <summary>Difficulties and odds</summary>
+      <div class="info__body">
+        <p>Difficulty sets the rarity odds. For each of the 12 slots the rarity is rolled first, then one operator is picked uniformly from that rarity among those not yet drawn. No duplicates within a squad. With class guarantee on, the first 8 slots are rolled per class before the remaining 4.</p>
+        <div class="table-wrap">
+        <table class="info__table">
+          <thead><tr><th>Difficulty</th><th>★6</th><th>★5</th><th>★4</th><th>★3</th><th>★1–2</th></tr></thead>
+          <tbody>
+            <tr><td>All ★6</td><td>100%</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr><td>Easy</td><td>50%</td><td>30%</td><td>20%</td><td>-</td><td>-</td></tr>
+            <tr><td>Normal</td><td>30%</td><td>40%</td><td>20%</td><td>5%</td><td>5%</td></tr>
+            <tr><td>Mon3tr</td><td>10%</td><td>50%</td><td>20%</td><td>10%</td><td>10%</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>Card frames: ★6 glossy gold, ★5 yellow, ★4 blue, ★3 and below white.</p>
+      </div>
+    </details>
+    <details class="info">
+      <summary>Extra rule ideas</summary>
+      <div class="info__body">
+        <ul>
+          <li><strong>No rerolls</strong>: leave unowned slots empty.</li>
+          <li><strong>Promotion / level caps</strong>: E1 only, level 50, and so on.</li>
+          <li><strong>No support units</strong>.</li>
+          <li><strong>Skill lock</strong>: everyone on skill 1, or pick skills at random.</li>
+          <li><strong>Farming runs</strong>: clear material stages or Annihilation with the drawn squad only.</li>
+          <li><strong>Same squad with friends</strong>: share the image and compare results on the same stage.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="info">
+      <summary>FAQ</summary>
+      <div class="info__body">
+        <dl class="faq">
+          <dt>Do CN-only operators appear?</dt>
+          <dd>No. The roster follows the global (JP) server data, so only operators released on global servers are included. Names are taken from the EN server data.</dd>
+          <dt>When are new operators added?</dt>
+          <dd>The roster updates automatically every week, usually within a week of release.</dd>
+          <dt>Are collab and event-only operators included?</dt>
+          <dd>Yes. If one you can't obtain shows up, use "Reroll selected". Reserve operators and other non-playable characters are excluded.</dd>
+          <dt>Are operators of the same rarity equally likely?</dt>
+          <dd>With class guarantee off, yes: after the rarity roll, one operator is picked uniformly using the browser's cryptographic random generator. With class guarantee on, operators are equally likely within the same class and rarity, but smaller classes (for example 8 ★6 medics vs 29 ★6 guards) get a higher per-operator rate. That is inherent to guaranteeing one per class.</dd>
+          <dt>Can I draw only from operators I own?</dt>
+          <dd>Yes. Press "Link ID" and paste a share URL from Arknights Shared Viewer (by OperatorManageToolマン, @an_mngtool). Unowned operators are then excluded. The link is stored only in your browser. Level or promotion is not used for filtering.</dd>
+          <dt>Is anything saved?</dt>
+          <dd>No. Results disappear when you close the page; save the image if you want to keep them.</dd>
+          <dt>Is it free? Do I need an account?</dt>
+          <dd>Free, no sign-up, no login, and no connection to your game account.</dd>
+        </dl>
+      </div>
+    </details>
+  </section>
+
+  <footer class="footer">
+    <p class="footer__legal">
+      This is an unofficial fan site made by an individual and is not affiliated with Hypergryph or Yostar.<br>
+      Arknights and all operator names and images are © Hypergryph / Yostar.<br>
+      Operator images and data come from community-published game data. Requests from rights holders will be handled promptly.
+    </p>
+    <p class="footer__credit">
+      <span class="footer__by">Made by</span> <span class="footer__studio">M Star Studio</span>
+    </p>
+    <p class="footer__contact">
+      <a class="footer__link footer__link--contact" href="https://x.com/MStarStudio96" target="_blank" rel="noopener noreferrer">Contact (X: @MStarStudio96)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../privacy.html">Privacy policy (Japanese)</a>
+    </p>
+    <p class="footer__links footer__provider">Roster linking uses <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> by <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン (@an_mngtool)</a></p>
+    <p class="footer__links">
+      <a class="footer__link" href="../guide.html">Guide (JA)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../rules.html">Rule ideas (JA)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../changelog.html">Changelog (JA)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../operators.html">Operator list (JA)</a>
+    </p>
+  </footer>
+</main>
+
+<div class="modal modal--detail" id="detailModal" hidden>
+  <div class="modal__backdrop" data-close-detail></div>
+  <div class="detail" role="dialog" aria-modal="true" aria-labelledby="detailName">
+    <button class="modal__close detail__close" type="button" data-close-detail aria-label="Close">×</button>
+    <div class="detail__art" id="detailArt"><div class="spinner">LOADING...</div></div>
+    <div class="detail__info">
+      <div class="detail__rarity" id="detailRarity"></div>
+      <div class="detail__name" id="detailName"></div>
+      <div class="detail__cls" id="detailCls"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="shareModal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="modal__head">
+      <div class="panel__label" id="shareTitle">SHARE</div>
+      <button class="modal__close" type="button" data-close aria-label="Close">×</button>
+    </div>
+    <div class="share-preview" id="sharePreview"></div>
+    <textarea class="share-text" id="shareText" rows="4" readonly></textarea>
+    <div class="share-btns">
+      <button class="btn btn--primary" type="button" id="btnNativeShare" hidden>Share</button>
+      <a class="btn" id="btnSaveImage" download="arknights-shibari-gacha.png">Save image</a>
+    </div>
+    <p class="share-note" id="shareNote">Save the image, then post it.</p>
+  </div>
+</div>
+
+<script type="module" src="../js/app.js"></script>
+</body>
+</html>

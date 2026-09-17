@@ -1,6 +1,7 @@
 import { MODES, SQUAD_SIZE, drawSquad, rerollSquad } from './gacha.js';
-import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad, CLASS_JP, CLASS_SHORT } from './assets.js';
+import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
+import { T, CLASS_NAME, CLASS_ABBR, OPERATORS_URL } from './i18n.js';
 import { parseShareId, fetchOwned, loadOwned, saveOwned, clearOwned } from './owned.js';
 
 const $ = (id) => document.getElementById(id);
@@ -24,7 +25,7 @@ const state = {
 
 // ---------- data ----------
 async function loadOperators() {
-  const res = await fetch('data/operators.json', { cache: 'no-cache' });
+  const res = await fetch(OPERATORS_URL, { cache: 'no-cache' });
   if (!res.ok) throw new Error('operators.json load failed');
   const json = await res.json();
   return json.operators;
@@ -52,10 +53,10 @@ function updateHint() {
   const n = state.revealed.filter(Boolean).length;
   squadCount.textContent = `${state.squad.length ? n : 0} / ${state.squad.length || squadSize()}`;
   switch (state.ui) {
-    case 'idle': hint.textContent = state.owned ? `未所持を除外して引きます(所持 ${pool().length}体)` : '難易度を選んで「引く」'; break;
-    case 'reveal': hint.textContent = 'タップしてめくる'; break;
-    case 'result': hint.textContent = 'タップで詳細表示。持っていないオペレーターは「選んで再抽選」で引き直せます'; break;
-    case 'reroll': hint.textContent = '引き直すオペレーターをタップして選択'; break;
+    case 'idle': hint.textContent = state.owned ? T.hintIdleOwned(pool().length) : T.hintIdle; break;
+    case 'reveal': hint.textContent = T.hintReveal; break;
+    case 'result': hint.textContent = T.hintResult; break;
+    case 'reroll': hint.textContent = T.hintReroll; break;
   }
 }
 
@@ -77,9 +78,9 @@ function setGuarantee(on) {
   }
   $('guaranteeDesc').textContent = state.guarantee
     ? (state.game === 'sss'
-        ? '上4行に8職分が2体ずつ(先鋒→特殊の順)。残り4枠はランダム'
-        : '上2行に8職分が1体ずつ(先鋒→特殊の順)。残り4枠はランダム')
-    : '完全ランダム';
+        ? T.guaranteeSss
+        : T.guaranteeNormal)
+    : T.guaranteeOff;
 }
 
 function setGame(game) {
@@ -126,9 +127,9 @@ function buildCardFaces(i, op) {
   return `
     <div class="face face--back"><div class="back-inner">
       <span class="back-num">${num}</span>
-      <div class="cls" title="${CLASS_JP[op.cls]}">
-        <img alt="${CLASS_JP[op.cls]}" draggable="false">
-        <span class="cls-txt">${CLASS_SHORT[op.cls]}</span>
+      <div class="cls" title="${CLASS_NAME[op.cls]}">
+        <img alt="${CLASS_NAME[op.cls]}" draggable="false">
+        <span class="cls-txt">${CLASS_ABBR[op.cls]}</span>
       </div>
     </div></div>
     <div class="face face--front">
@@ -136,9 +137,9 @@ function buildCardFaces(i, op) {
         <img class="art" alt="" draggable="false">
         <div class="name-fallback"></div>
         <div class="strip"></div>
-        <div class="cls" title="${CLASS_JP[op.cls]}">
-          <img alt="${CLASS_JP[op.cls]}" draggable="false">
-          <span class="cls-txt">${CLASS_SHORT[op.cls]}</span>
+        <div class="cls" title="${CLASS_NAME[op.cls]}">
+          <img alt="${CLASS_NAME[op.cls]}" draggable="false">
+          <span class="cls-txt">${CLASS_ABBR[op.cls]}</span>
         </div>
       </div>
     </div>
@@ -206,7 +207,7 @@ function revealAll() {
 function onDraw() {
   if (!state.operators.length) return;
   const ops = pool();
-  if (ops.length < squadSize()) { hint.textContent = `所持オペレーターが${ops.length}体しかないため引けません(${squadSize()}体必要)`; return; }
+  if (ops.length < squadSize()) { hint.textContent = T.hintNotEnough(ops.length, squadSize()); return; }
   state.squad = drawSquad(ops, state.mode, { guarantee: state.guarantee, size: squadSize(), perClass: perClass() });
   state.revealed = new Array(state.squad.length).fill(false);
   state.selected.clear();
@@ -243,7 +244,7 @@ function toggleSelect(i) {
   if (state.selected.has(i)) { state.selected.delete(i); slot.classList.remove('is-selected'); }
   else { state.selected.add(i); slot.classList.add('is-selected'); }
   $('btnRerollGo').disabled = state.selected.size === 0;
-  hint.textContent = state.selected.size ? `${state.selected.size}体を引き直す` : '引き直すオペレーターをタップして選択';
+  hint.textContent = state.selected.size ? T.hintRerollCount(state.selected.size) : T.hintReroll;
 }
 
 async function doReroll() {
@@ -275,7 +276,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 // ---------- share ----------
 let logoPromise = null;
 function getLogo() {
-  if (!logoPromise) logoPromise = loadImage('assets/logo-mstar-studio.png');
+  if (!logoPromise) logoPromise = loadImage(new URL('../assets/logo-mstar-studio.png', import.meta.url).href);
   return logoPromise;
 }
 
@@ -304,7 +305,7 @@ async function openShare() {
     preview.innerHTML = '';
     const img = new Image();
     img.src = currentUrl;
-    img.alt = 'シェア画像';
+    img.alt = T.shareAlt;
     preview.appendChild(img);
     $('btnSaveImage').href = currentUrl;
     $('btnSaveImage').removeAttribute('aria-disabled');
@@ -313,11 +314,11 @@ async function openShare() {
     const canNative = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
     $('btnNativeShare').hidden = !canNative;
     $('shareNote').textContent = canNative
-      ? '「共有」でXなどのアプリに画像ごと送れます。'
-      : '画像を保存してから投稿してください。';
+      ? T.shareNoteNative
+      : T.shareNoteSave;
   } catch (e) {
     console.error(e);
-    preview.innerHTML = '<div class="spinner">画像の生成に失敗しました</div>';
+    preview.innerHTML = `<div class="spinner">${T.shareFail}</div>`;
     $('btnSaveImage').setAttribute('aria-disabled', 'true');
   } finally {
     btnShare.classList.remove('is-busy');
@@ -336,7 +337,7 @@ async function nativeShare() {
     // image + hashtag text + site URL (URL passed separately so apps like X pick up both text and link)
     await navigator.share({
       files: [file],
-      title: 'アークナイツ縛りガチャ',
+      title: T.siteTitle,
       text: tweetText(state.mode, { game: state.game, count: state.squad.length, noUrl: true }),
       url: SITE_URL,
     });
@@ -388,7 +389,7 @@ async function openDetail(i) {
   $('detailName').textContent = op.name;
   $('detailRarity').textContent = '★'.repeat(op.rarity);
   $('detailRarity').dataset.rarity = op.rarity;
-  $('detailCls').textContent = CLASS_JP[op.cls];
+  $('detailCls').textContent = CLASS_NAME[op.cls];
   artBox.innerHTML = '<div class="spinner">LOADING...</div>';
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
@@ -402,7 +403,7 @@ async function openDetail(i) {
     else el.setAttribute('role', 'img'), el.setAttribute('aria-label', op.name);
     artBox.appendChild(el);
   } else {
-    artBox.innerHTML = '<div class="spinner">画像を読み込めませんでした</div>';
+    artBox.innerHTML = `<div class="spinner">${T.detailArtFail}</div>`;
   }
 }
 function closeDetail() {
@@ -418,16 +419,16 @@ function renderOwned() {
   const on = !!state.owned;
   const t = $('ownedToggle');
   t.setAttribute('aria-pressed', on ? 'true' : 'false');
-  t.textContent = on ? 'ID登録済み' : 'ID登録';
+  t.textContent = on ? T.ownedOn : T.ownedOff;
   $('ownedActions').hidden = !on;
   const st = $('ownedStatus');
   if (on) {
     const d = new Date(state.owned.fetchedAt);
     st.className = 'owned__status is-ok';
-    st.textContent = `登録済み: 所持 ${pool().length}体(${d.getMonth() + 1}/${d.getDate()} 取得)。未所持は除外されます。`;
+    st.textContent = T.ownedStatus(pool().length, d.getMonth() + 1, d.getDate());
   } else if (!st.classList.contains('is-err')) {
     st.className = 'owned__status';
-    st.textContent = '登録すると、未所持のオペレーターは自動的に除外されます。';
+    st.textContent = T.ownedStatusOff;
   }
   if (state.ui === 'idle') updateHint();
 }
@@ -435,9 +436,9 @@ function renderOwned() {
 async function onOwnedLoad() {
   const id = parseShareId($('ownedInput').value);
   const st = $('ownedStatus');
-  if (!id) { st.className = 'owned__status is-err'; st.textContent = '共有URLの形が違います(…/?d=xxxxxx の形か、ID だけを貼ってください)'; return; }
+  if (!id) { st.className = 'owned__status is-err'; st.textContent = T.ownedBadUrl; return; }
   const btn = $('ownedLoad');
-  btn.disabled = true; st.className = 'owned__status'; st.textContent = '読み込み中…';
+  btn.disabled = true; st.className = 'owned__status'; st.textContent = T.ownedLoading;
   try {
     const owned = await fetchOwned(id);
     state.owned = owned;
@@ -446,7 +447,7 @@ async function onOwnedLoad() {
     renderOwned();
   } catch (e) {
     st.className = 'owned__status is-err';
-    st.textContent = e && e.message ? e.message : '読み込みに失敗しました';
+    st.textContent = e && e.message ? e.message : T.ownedFail;
   } finally {
     btn.disabled = false;
   }
@@ -601,7 +602,7 @@ loadOperators()
   })
   .catch((e) => {
     console.error(e);
-    hint.textContent = 'データの読み込みに失敗しました。再読み込みしてください。';
+    hint.textContent = T.hintLoadFail;
     $('btnDraw').disabled = true;
   });
 

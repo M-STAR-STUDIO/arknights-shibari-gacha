@@ -21,7 +21,9 @@
 | `data/operators.json` | オペレーター一覧(自動生成) |
 | `data/changelog.json` | オペレーターの追加・除外の記録(自動追記)とサイトの更新履歴(手動) |
 | `changelog.html` / `operators.html` | 更新履歴ページ、対象オペレーター一覧ページ(JSONから描画) |
-| `scripts/build-data.mjs` | 上記 JSON を生成するスクリプト |
+| `scripts/build-data.mjs` | 上記 JSON を生成するスクリプト(英語・韓国語の名前データ `operators.en.json` / `operators.ko.json` も同時に生成) |
+| `js/i18n.js` | 画面文言の辞書(`<html lang>` で切り替え) |
+| `en/index.html` / `ko/index.html` | 英語版・韓国語版(お試し)。`scripts/build-locales.mjs` が `index.html` から生成する。**index.html を直したら再実行する** |
 
 ## データと画像の取得元
 

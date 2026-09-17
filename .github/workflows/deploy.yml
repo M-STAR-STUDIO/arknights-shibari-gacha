@@ -26,9 +26,9 @@ jobs:
         run: |
           V=${GITHUB_SHA::8}
           # <link href="css/x.css"> / <script src="js/x.js">
-          sed -i -E "s#((href|src)=\"(css|js)/[A-Za-z0-9_-]+\.(css|js))\"#\1?v=$V\"#g" *.html
+          sed -i -E "s#((href|src)=\"(\.\./)?(css|js)/[A-Za-z0-9_-]+\.(css|js))\"#\1?v=$V\"#g" *.html en/*.html ko/*.html
           # import ... from './x.js' (html inline modules and js files)
-          sed -i -E "s#(from '\./[A-Za-z0-9_/-]+\.js)'#\1?v=$V'#g" *.html js/*.js
+          sed -i -E "s#(from '\./[A-Za-z0-9_/-]+\.js)'#\1?v=$V'#g" *.html en/*.html ko/*.html js/*.js
           # dynamic import('./js/x.js')
           sed -i -E "s#(import\('\./[A-Za-z0-9_/-]+\.js)'\)#\1?v=$V')#g" *.html js/*.js
           grep -o "style.css?v=[0-9a-f]*" index.html | head -1

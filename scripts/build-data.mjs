@@ -9,6 +9,11 @@ import { fileURLToPath } from 'node:url';
 
 const SOURCE_URL =
   'https://raw.githubusercontent.com/ArknightsAssets/ArknightsGamedata/master/jp/gamedata/excel/character_table.json';
+// Localized names for the trial EN/KO pages (same roster as JP; only names differ).
+const LOCALES = {
+  en: 'https://raw.githubusercontent.com/ArknightsAssets/ArknightsGamedata/master/en/gamedata/excel/character_table.json',
+  ko: 'https://raw.githubusercontent.com/ArknightsAssets/ArknightsGamedata/master/kr/gamedata/excel/character_table.json',
+};
 
 const RARITY = {
   TIER_1: 1, TIER_2: 2, TIER_3: 3, TIER_4: 4, TIER_5: 5, TIER_6: 6,
@@ -99,6 +104,21 @@ const out = {
 
 await mkdir(dataDir, { recursive: true });
 await writeFile(outPath, JSON.stringify(out), 'utf8');
+
+// localized copies: same ids/rarity/cls/code, names from the en / kr tables (fallback: JP name)
+for (const [lang, url] of Object.entries(LOCALES)) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+    const tbl = await r.json();
+    let missing = 0;
+    const localized = operators.map((o) => { const n = tbl[o.id]?.name; if (!n) missing++; return { ...o, name: n || o.name }; });
+    await writeFile(resolve(dataDir, `operators.${lang}.json`), JSON.stringify({ ...out, lang, operators: localized }), 'utf8');
+    console.log(`wrote operators.${lang}.json (${missing} names fell back to JP)`);
+  } catch (e) {
+    console.warn(`locale ${lang} skipped: ${e.message}`);
+  }
+}
 await writeFile(logPath, JSON.stringify(log, null, 1), 'utf8');
 console.log(`wrote ${operators.length} operators -> ${outPath}`);
 console.log('by rarity:', counts);

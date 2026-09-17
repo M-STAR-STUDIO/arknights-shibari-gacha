@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="google-site-verification" content="He9XhBj6uh7KS9mC5KNXgd33Gkc8yb-Pm_dyMlKiBso">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>명일방주 제약 가챠 | 랜덤 12명 편성으로 도전하는 제약 플레이 도구</title>
+<meta name="description" content="명일방주 전체 오퍼레이터 중에서 랜덤으로 12명을 뽑아, 그 편성 그대로 작전에 도전하는 제약 플레이용 무료 도구. 난이도 4단계, 직군 보장, 미보유 오퍼레이터 다시 뽑기, 결과 이미지 공유 지원. 가입 없이 스마트폰에서 바로 사용.">
+<meta name="theme-color" content="#0b0e11">
+<link rel="canonical" href="https://mstar-studio.com/arknights-shibari-gacha/ko/">
+<link rel="alternate" hreflang="ja" href="https://mstar-studio.com/arknights-shibari-gacha/">
+<link rel="alternate" hreflang="en" href="https://mstar-studio.com/arknights-shibari-gacha/en/">
+<link rel="alternate" hreflang="ko" href="https://mstar-studio.com/arknights-shibari-gacha/ko/">
+<link rel="alternate" hreflang="x-default" href="https://mstar-studio.com/arknights-shibari-gacha/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명일방주 제약 가챠">
+<meta property="og:title" content="명일방주 제약 가챠 | 랜덤 12명으로 도전">
+<meta property="og:description" content="전체 오퍼레이터 중 랜덤 12명. 뽑은 편성 그대로 도전.">
+<meta property="og:url" content="https://mstar-studio.com/arknights-shibari-gacha/ko/">
+<meta property="og:image" content="https://mstar-studio.com/arknights-shibari-gacha/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="명일방주 제약 가챠 | 랜덤 12명으로 도전">
+<meta name="twitter:description" content="전체 오퍼레이터 중 랜덤 12명. 뽑은 편성 그대로 도전.">
+<meta name="twitter:image" content="https://mstar-studio.com/arknights-shibari-gacha/assets/ogp.png">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8043531064519803" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "명일방주 제약 가챠",
+  "url": "https://mstar-studio.com/arknights-shibari-gacha/ko/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any",
+  "isAccessibleForFree": true,
+  "inLanguage": "ko",
+  "description": "명일방주 전체 오퍼레이터 중 랜덤 12명을 뽑아 그 편성 그대로 도전하는 제약 플레이 도구.",
+  "author": { "@type": "Organization", "name": "M Star Studio", "url": "https://mstar-studio.com/" }
+}
+</script>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<main class="app" id="app" data-state="idle">
+  <header class="header">
+    <div class="header__meta"><span class="header__tag">ROSTER RANDOMIZER</span><span class="header__line"></span>
+      <nav class="lang" aria-label="언어">
+        <a class="lang__link" href="../" hreflang="ja" lang="ja">日本語</a>
+        <a class="lang__link" href="../en/" hreflang="en" lang="en">English</a>
+        <a class="lang__link" href="./" hreflang="ko" lang="ko" aria-current="page">한국어</a>
+      </nav>
+    </div>
+    <h1 class="title">명일방주<span class="title__sub">제약 가챠</span></h1>
+    <p class="lead">전체 오퍼레이터 중 랜덤 12명. 뽑은 편성 그대로 도전.</p>
+    <p class="lead lead--sub">없는 오퍼레이터가 나오면 「골라서 다시 뽑기」로 그 카드만 같은 등급에서 다시 뽑을 수 있습니다.</p>
+    <p class="beta">시험 운영 중인 한국어판입니다. 오퍼레이터 이름은 한국 서버 데이터를 사용하며, 안내 페이지는 아직 일본어입니다.</p>
+  </header>
+
+  <section class="panel panel--mode" aria-label="난이도 선택">
+    <div class="mode-top">
+      <button class="pill" type="button" id="ownedToggle" aria-pressed="false" title="공유 ID를 등록하면 미보유 오퍼레이터를 자동으로 제외합니다">ID 등록</button>
+      <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="보안파견 초기 편성(20명)을 뽑기">보안파견</button>
+    </div>
+    <div class="owned" id="ownedPanel" hidden>
+      <div class="owned__row">
+        <input class="owned__input" id="ownedInput" type="text" inputmode="url" placeholder="공유 URL 또는 ID" autocomplete="off" spellcheck="false" aria-label="Arknights Shared Viewer 공유 URL">
+        <button class="btn btn--sm" type="button" id="ownedLoad">등록</button>
+        <button class="owned__info" type="button" id="ownedInfoBtn" aria-expanded="false" aria-controls="ownedInfo" aria-label="사용 방법">i</button>
+      </div>
+      <div class="owned__status" id="ownedStatus">등록하면 미보유 오퍼레이터가 자동으로 제외됩니다.</div>
+      <div class="owned__row owned__row--actions" id="ownedActions" hidden>
+        <button class="btn btn--ghost btn--sm" type="button" id="ownedClear">해제</button>
+      </div>
+      <div class="owned__detail" id="ownedInfo" hidden>
+        <p><strong>ID 등록이란</strong> <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>님이 만든 <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a>의 공유 URL을 등록하면, 거기에 등록된 보유 오퍼레이터만 뽑기 대상이 됩니다. 로그인이나 계정 생성은 필요 없고, 게임 계정과도 무관합니다.</p>
+        <p><strong>등록 순서</strong></p>
+        <ol>
+          <li>Memoria의 <a class="footer__link" href="https://arknights.memoria-ll.link/" target="_blank" rel="noopener noreferrer">명일방주 육성 관리 도구</a>(Windows)에 보유 오퍼레이터를 등록(수동 입력. 이미 쓰고 있는 분을 위한 기능입니다)</li>
+          <li>도구의 데이터 공유 기능으로 공유 URL 발급</li>
+          <li>그 URL(또는 끝의 ID)을 위 칸에 붙여넣고 「등록」</li>
+        </ol>
+        <p><strong>저장과 갱신</strong> 등록 내용은 이 브라우저에만 저장되며 이 사이트의 서버로는 전송되지 않습니다. 사이트를 열 때마다 최신 보유 목록을 다시 가져오므로 Memoria 쪽만 갱신하면 됩니다. X 앱 안에서 열면 다른 브라우저로 취급되니 그 경우 다시 등록해 주세요. 「해제」로 언제든 되돌릴 수 있습니다.</p>
+        <p class="muted">공유 URL에는 보유 목록 이외의 정보(비밀번호, 게임 ID)는 들어 있지 않습니다. 제공처 사정으로 예고 없이 사용할 수 없게 될 수 있으며, 그 경우에도 전체에서 뽑는 기본 동작은 그대로입니다.</p>
+      </div>
+    </div>
+    <div class="mode-head">
+      <div class="panel__label">DIFFICULTY</div>
+      <span class="mode-note" id="modeNote">난이도를 바꾸려면 「다시 뽑기」를 누르세요</span>
+    </div>
+    <div class="modes" id="modes" role="radiogroup" aria-label="난이도 선택">
+      <button class="mode" type="button" role="radio" data-mode="musou" aria-checked="false">
+        <span class="mode__name">무쌍</span><span class="mode__sub">ALL ★6</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="easy" aria-checked="true">
+        <span class="mode__name">이지</span><span class="mode__sub">EASY</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="normal" aria-checked="false">
+        <span class="mode__name">노멀</span><span class="mode__sub">NORMAL</span>
+      </button>
+      <button class="mode" type="button" role="radio" data-mode="monster" aria-checked="false">
+        <span class="horns" aria-hidden="true">
+          <svg viewBox="0 0 100 40" preserveAspectRatio="xMidYMax meet">
+            <defs>
+              <linearGradient id="hLit" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5faa22"/><stop offset="0.55" stop-color="#c6ff45"/><stop offset="1" stop-color="#f6ffd8"/></linearGradient>
+              <linearGradient id="hMid" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3f8a1e"/><stop offset="1" stop-color="#9ee23c"/></linearGradient>
+              <linearGradient id="hDark" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#070a08"/><stop offset="1" stop-color="#20301a"/></linearGradient>
+            </defs>
+            <g class="horn horn--l">
+              <path class="shard shard--lit" d="M10 40 L8 34 L5 32 L7 27 L14 35 L16 40 Z"/>
+              <path class="shard shard--dark" d="M16 40 L14 35 L7 27 L18 34 L19 40 Z"/>
+              <path class="shard shard--lit" d="M14 40 L12 25 L15 23 L11 3 L13.5 2 L24 40 Z"/>
+              <path class="shard shard--mid" d="M24 40 L13.5 2 L30 40 Z"/>
+              <path class="shard shard--dark" d="M30 40 L13.5 2 L36 40 Z"/>
+              <path class="shard shard--tip" d="M11 3 L13.5 2 L15.5 8 L12.5 8 Z"/>
+            </g>
+            <g class="horn horn--r" transform="translate(100,0) scale(-1,1)">
+              <path class="shard shard--lit" d="M10 40 L8 34 L5 32 L7 27 L14 35 L16 40 Z"/>
+              <path class="shard shard--dark" d="M16 40 L14 35 L7 27 L18 34 L19 40 Z"/>
+              <path class="shard shard--lit" d="M14 40 L12 25 L15 23 L11 3 L13.5 2 L24 40 Z"/>
+              <path class="shard shard--mid" d="M24 40 L13.5 2 L30 40 Z"/>
+              <path class="shard shard--dark" d="M30 40 L13.5 2 L36 40 Z"/>
+              <path class="shard shard--tip" d="M11 3 L13.5 2 L15.5 8 L12.5 8 Z"/>
+            </g>
+          </svg>
+        </span>
+        <span class="mode__name">Mon3tr</span><span class="mode__sub">MONSTER</span>
+      </button>
+    </div>
+    <div class="mode-desc" id="modeDesc" aria-live="polite"></div>
+    <div class="guarantee">
+      <span class="guarantee__label">직군 보장</span>
+      <div class="seg" id="guarantee" role="radiogroup" aria-label="직군 보장">
+        <button class="seg__btn" type="button" role="radio" data-guarantee="0" aria-checked="true">없음</button>
+        <button class="seg__btn" type="button" role="radio" data-guarantee="1" aria-checked="false">있음</button>
+      </div>
+    </div>
+    <div class="guarantee__desc" id="guaranteeDesc">완전 랜덤</div>
+  </section>
+
+  <section class="panel panel--squad" aria-label="편성">
+    <div class="squad-head">
+      <div class="panel__label">SQUAD <span class="squad-count" id="squadCount">0 / 12</span></div>
+      <div class="squad-actions" id="squadActions">
+        <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">모두 뒤집기</button>
+      </div>
+    </div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+    <p class="hint" id="hint"></p>
+  </section>
+
+  <section class="actions" id="actions">
+    <div class="actions__row" data-for="idle">
+      <button class="btn btn--primary btn--lg" type="button" id="btnDraw">뽑기</button>
+    </div>
+    <div class="actions__row" data-for="result">
+      <button class="btn btn--primary" type="button" id="btnShare">공유</button>
+      <button class="btn" type="button" id="btnReroll">골라서 다시 뽑기</button>
+    </div>
+    <div class="actions__row" data-for="reroll">
+      <button class="btn btn--primary" type="button" id="btnRerollGo" disabled>다시 뽑기</button>
+      <button class="btn btn--danger" type="button" id="btnRerollCancel">취소</button>
+    </div>
+  </section>
+  <section class="again" id="again">
+    <button class="btn btn--ghost" type="button" id="btnAgain">다시 뽑기</button>
+  </section>
+
+
+  <section class="panel panel--info" aria-label="이 사이트에 대해">
+    <div class="panel__label">ABOUT</div>
+    <details class="info">
+      <summary>이 사이트에 대해 · 사용 방법</summary>
+      <div class="info__body">
+        <p>「명일방주 제약 가챠」는 모바일 타워 디펜스 게임 『명일방주』의 제약 플레이를 위해 만든 비공식 팬 도구입니다. 글로벌(EN/JP/KR) 서버에 실장된 전체 오퍼레이터 중에서 랜덤으로 12명을 뽑고, 그 12명 그대로 편성해 작전에 도전합니다. 가입·로그인 없이 스마트폰 브라우저에서 바로 쓸 수 있습니다. 재미의 본체는 게임 쪽에 있고, 이 사이트는 「제약을 만드는 것」만 담당합니다.</p>
+        <p><strong>기본 흐름</strong></p>
+        <ol>
+          <li><strong>난이도 선택.</strong> 기본은 「이지」입니다. 난이도는 뽑히는 오퍼레이터의 등급 확률만 바꾸며, 스테이지 난이도와는 관계없습니다. 「무쌍」「이지」는 보유가 충실한 분, 「노멀」「Mon3tr」은 ★3 이하도 섞입니다.</li>
+          <li><strong>「뽑기」를 누름.</strong> 12장의 카드가 뒷면으로 놓입니다. 뒷면이어도 카드 색으로 등급을, 오른쪽 아래 아이콘으로 직군을 알 수 있습니다.</li>
+          <li><strong>카드 뒤집기.</strong> 탭하면 한 장씩 뒤집힙니다. 「모두 뒤집기」로 한 번에 뒤집을 수도 있습니다. 뒤집힌 카드를 다시 탭하면 전신 일러스트와 이름·등급·직군이 표시됩니다.</li>
+          <li><strong>없는 오퍼레이터는 다시 뽑기.</strong> 「골라서 다시 뽑기」를 누르고 해당 카드를 탭해 선택한 뒤 「다시 뽑기」. 선택한 카드만 같은 등급에서 다시 뽑히며 중복되지 않습니다. 횟수 제한 없음. 미육성 오퍼레이터는 다시 뽑지 말고 이 기회에 키우는 것을 권장합니다.</li>
+          <li><strong>공유.</strong> 「공유」를 누르면 12명을 나열한 결과 이미지가 그 자리에서 만들어지고, 해시태그와 함께 X 등 앱으로 보낼 수 있습니다. 공유 버튼이 없는 환경에서는 「이미지 저장」 후 올려 주세요.</li>
+          <li><strong>게임에서 편성해 도전.</strong> 친구 지원 오퍼레이터는 쓰지 않는 것이 기본입니다.</li>
+        </ol>
+        <p><strong>직군 보장</strong> 「없음」은 완전 랜덤이라 메딕이 한 명도 없거나 가드만 넷인 편성도 나옵니다. 「있음」이면 위 2줄 8칸에 뱅가드·가드·디펜더·스나이퍼·캐스터·메딕·서포터·스페셜리스트가 이 순서로 1명씩 들어가고, 아래 4칸은 랜덤입니다. 「있음」에서는 인원이 적은 직군의 오퍼레이터가 조금 더 자주 나옵니다(FAQ 참고).</p>
+        <p><strong>보안파견</strong> 난이도 위의 작은 「보안파견」을 누르고 뽑으면 보안파견 초기 편성 20명을 뽑습니다. 직군 보장 「있음」이면 각 직군 2명씩(위 4줄), 나머지 4칸은 랜덤입니다.</p>
+        <p><strong>ID 등록</strong> 난이도 위의 「ID 등록」에서 Arknights Shared Viewer 공유 URL을 등록하면 미보유 오퍼레이터가 자동으로 제외됩니다. 자세한 내용은 「ID 등록」 옆의 「i」에 있습니다. 등록하지 않아도 모든 기능을 쓸 수 있습니다.</p>
+      </div>
+    </details>
+    <details class="info">
+      <summary>난이도와 확률</summary>
+      <div class="info__body">
+        <p>난이도는 뽑히는 오퍼레이터의 등급 확률을 정합니다. 먼저 확률로 등급을 정하고, 그 등급 중 아직 나오지 않은 오퍼레이터에서 균등하게 1명을 고르는 과정을 12번 반복합니다. 한 편성 안에서 같은 오퍼레이터는 중복되지 않습니다. 직군 보장 「있음」이면 먼저 8개 직군 각각 1명을 정한 뒤 나머지 4칸을 뽑습니다.</p>
+        <div class="table-wrap">
+        <table class="info__table">
+          <thead><tr><th>난이도</th><th>★6</th><th>★5</th><th>★4</th><th>★3</th><th>★1·2</th></tr></thead>
+          <tbody>
+            <tr><td>무쌍</td><td>100%</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr><td>이지</td><td>50%</td><td>30%</td><td>20%</td><td>-</td><td>-</td></tr>
+            <tr><td>노멀</td><td>30%</td><td>40%</td><td>20%</td><td>5%</td><td>5%</td></tr>
+            <tr><td>Mon3tr</td><td>10%</td><td>50%</td><td>20%</td><td>10%</td><td>10%</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>카드 테두리 색: ★6 광택 있는 금색, ★5 노랑, ★4 파랑, ★3 이하 흰색.</p>
+      </div>
+    </details>
+    <details class="info">
+      <summary>추가 규칙 예시</summary>
+      <div class="info__body">
+        <ul>
+          <li><strong>다시 뽑기 금지</strong>: 미보유 칸은 비운 채 도전.</li>
+          <li><strong>정예화·레벨 제한</strong>: 1정예까지, 레벨 50까지 등.</li>
+          <li><strong>지원 유닛 금지</strong>.</li>
+          <li><strong>스킬 고정</strong>: 전원 1스킬, 또는 랜덤으로 결정.</li>
+          <li><strong>파밍에 적용</strong>: 재료 파밍이나 섬멸 작전을 뽑은 편성만으로.</li>
+          <li><strong>친구와 같은 편성</strong>: 이미지를 공유해 같은 스테이지에서 결과 비교.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="info">
+      <summary>자주 묻는 질문</summary>
+      <div class="info__body">
+        <dl class="faq">
+          <dt>대륙판(중국 서버) 한정 오퍼레이터도 나오나요?</dt>
+          <dd>아니요. 글로벌(JP) 서버 데이터를 기준으로 하므로 글로벌 서버에 실장된 오퍼레이터만 대상입니다. 이름은 한국 서버 데이터를 사용합니다.</dd>
+          <dt>새 오퍼레이터는 언제 반영되나요?</dt>
+          <dd>목록은 매주 자동 갱신되며, 보통 실장 후 1주일 안에 반영됩니다.</dd>
+          <dt>콜라보·배포 오퍼레이터도 포함되나요?</dt>
+          <dd>포함됩니다. 지금 얻을 수 없는 오퍼레이터가 나오면 「골라서 다시 뽑기」로 교체하세요. 예비 오퍼레이터 등 편성에 쓸 수 없는 캐릭터는 제외합니다.</dd>
+          <dt>같은 등급의 오퍼레이터는 정말 같은 확률인가요?</dt>
+          <dd>직군 보장 「없음」에서는 같은 확률입니다. 등급이 정해진 뒤 브라우저의 암호용 난수로 균등하게 1명을 고릅니다. 「있음」에서는 같은 직군·같은 등급 안에서는 같은 확률이지만, 직군별 인원이 달라 인원이 적은 직군(예: ★6 메딕 8명 vs 가드 29명)의 오퍼레이터가 1명당 출현율이 높아집니다. 각 직군 1명을 보장하는 이상 피할 수 없는 성질입니다.</dd>
+          <dt>보유한 오퍼레이터만으로 뽑을 수 있나요?</dt>
+          <dd>가능합니다. 「ID 등록」을 누르고 Arknights Shared Viewer(OperatorManageToolマン @an_mngtool 님 제작)의 공유 URL을 등록하면 미보유 오퍼레이터가 제외됩니다. 등록 내용은 브라우저에만 저장됩니다. 정예화나 레벨로는 거르지 않습니다.</dd>
+          <dt>결과는 저장되나요?</dt>
+          <dd>저장되지 않습니다. 페이지를 닫으면 사라지니 남기려면 이미지를 저장하세요.</dd>
+          <dt>무료인가요? 로그인이 필요한가요?</dt>
+          <dd>무료이며 가입·로그인이 필요 없고, 게임 계정과 연동하지도 않습니다.</dd>
+        </dl>
+      </div>
+    </details>
+  </section>
+
+  <footer class="footer">
+    <p class="footer__legal">
+      이 사이트는 개인이 만든 비공식 팬 콘텐츠이며 Hypergryph·Yostar와는 관계가 없습니다.<br>
+      『명일방주』 및 오퍼레이터의 명칭·이미지 등에 관한 권리는 © Hypergryph / Yostar에 있습니다.<br>
+      오퍼레이터 이미지·데이터는 커뮤니티가 공개한 게임 데이터를 이용합니다. 권리자의 요청이 있으면 신속히 대응합니다.
+    </p>
+    <p class="footer__credit">
+      <span class="footer__by">제작</span> <span class="footer__studio">M Star Studio</span>
+    </p>
+    <p class="footer__contact">
+      <a class="footer__link footer__link--contact" href="https://x.com/MStarStudio96" target="_blank" rel="noopener noreferrer">문의 (X: @MStarStudio96)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../privacy.html">개인정보 처리방침 (일본어)</a>
+    </p>
+    <p class="footer__links footer__provider">보유 데이터(ID 등록): <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>님 제작 <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> 이용</p>
+    <p class="footer__links">
+      <a class="footer__link" href="../guide.html">가이드 (일본어)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../rules.html">추가 규칙 모음 (일본어)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../changelog.html">업데이트 내역 (일본어)</a>
+      <span class="footer__sep">/</span>
+      <a class="footer__link" href="../operators.html">오퍼레이터 목록 (일본어)</a>
+    </p>
+  </footer>
+</main>
+
+<div class="modal modal--detail" id="detailModal" hidden>
+  <div class="modal__backdrop" data-close-detail></div>
+  <div class="detail" role="dialog" aria-modal="true" aria-labelledby="detailName">
+    <button class="modal__close detail__close" type="button" data-close-detail aria-label="닫기">×</button>
+    <div class="detail__art" id="detailArt"><div class="spinner">LOADING...</div></div>
+    <div class="detail__info">
+      <div class="detail__rarity" id="detailRarity"></div>
+      <div class="detail__name" id="detailName"></div>
+      <div class="detail__cls" id="detailCls"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="shareModal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="modal__head">
+      <div class="panel__label" id="shareTitle">SHARE</div>
+      <button class="modal__close" type="button" data-close aria-label="닫기">×</button>
+    </div>
+    <div class="share-preview" id="sharePreview"></div>
+    <textarea class="share-text" id="shareText" rows="4" readonly></textarea>
+    <div class="share-btns">
+      <button class="btn btn--primary" type="button" id="btnNativeShare" hidden>공유</button>
+      <a class="btn" id="btnSaveImage" download="arknights-shibari-gacha.png">이미지 저장</a>
+    </div>
+    <p class="share-note" id="shareNote">이미지를 저장한 뒤 올려 주세요.</p>
+  </div>
+</div>
+
+<script type="module" src="../js/app.js"></script>
+</body>
+</html>
