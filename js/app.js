@@ -333,7 +333,13 @@ async function nativeShare() {
   if (!currentBlob) return;
   const file = new File([currentBlob], 'arknights-shibari-gacha.png', { type: 'image/png' });
   try {
-    await navigator.share({ files: [file], text: tweetText(state.mode, { game: state.game, count: state.squad.length }) });
+    // image + hashtag text + site URL (URL passed separately so apps like X pick up both text and link)
+    await navigator.share({
+      files: [file],
+      title: 'アークナイツ縛りガチャ',
+      text: tweetText(state.mode, { game: state.game, count: state.squad.length, noUrl: true }),
+      url: SITE_URL,
+    });
   } catch (e) {
     if (e && e.name !== 'AbortError') console.warn(e);
   }

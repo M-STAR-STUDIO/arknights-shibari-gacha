@@ -20,7 +20,8 @@ export function tweetText(modeKey, opts = {}) {
   const label = MODES[modeKey].label;
   const head = opts.game === 'sss' ? `保全駐在 ${label}` : label;
   const n = opts.count || 12;
-  return `${HASHTAG}【${head}】\n今回の${n}人\n${SITE_URL}`;
+  const body = `${HASHTAG}【${head}】\n今回の${n}人`;
+  return opts.noUrl ? body : `${body}\n${SITE_URL}`;
 }
 
 function parallelogram(ctx, x, y, w, h, cut) {
