@@ -557,10 +557,8 @@ body { padding-bottom: var(--anchor-h); }
   background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 3px;
   font: inherit; font-size: 13px; padding: 8px;
 }
-.share-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-.share-btns .btn { padding: 11px 8px; font-size: 14px; }
-.share-btns .btn--primary { grid-column: 1 / -1; }
-.share-btns:has(> [hidden]) { grid-template-columns: 1fr; }
+.share-btns { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
+.share-btns .btn { padding: 12px 8px; font-size: 14px; width: 100%; }
 .share-note { margin: 10px 0 0; font-size: 11px; color: var(--text-3); }
 
 /* ===== operator detail (long press) ===== */
