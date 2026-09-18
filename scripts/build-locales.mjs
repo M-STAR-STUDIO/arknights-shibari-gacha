@@ -15,18 +15,18 @@ const L = {
   en: {
     lang: 'en',
     title: 'Arknights Challenge Gacha | Random 12-operator squads for challenge runs',
-    description: 'Draw 12 random operators from the entire Arknights roster and clear stages with exactly that squad. Four difficulties, class guarantee, rerolls for operators you don\'t own, and a shareable result image. Free, no sign-up, works on your phone.',
+    description: 'Roll 12 random operators from the entire Arknights roster and clear stages with exactly that squad. Four difficulties, class guarantee, rerolls for operators you don\'t own, and a shareable result image. Free, no sign-up, works on your phone.',
     ogTitle: 'Arknights Challenge Gacha | Random 12-operator squads',
     ogDesc: '12 random operators. Clear the stage with exactly that squad.',
     siteName: 'Arknights Challenge Gacha',
     jsonName: 'Arknights Challenge Gacha',
-    jsonDesc: 'Draw 12 random operators from the Arknights roster and play with exactly that squad.',
+    jsonDesc: 'Roll 12 random operators from the Arknights roster and play with exactly that squad.',
     switcher: { ja: '日本語', en: 'English', ko: '한국어', label: 'Language' },
     h1: 'Arknights<span class="title__sub">Challenge Gacha</span>',
     lead: '12 random operators from the whole roster. Clear the stage with exactly that squad.',
-    leadSub: 'Don\'t own someone? Use "Reroll selected" to redraw just that card at the same rarity.',
+    leadSub: 'Don\'t own someone? Use "Reroll selected" to reroll just that card at the same rarity.',
     ownedTitle: 'Link a shared roster ID to exclude operators you don\'t own',
-    sssTitle: 'Draw the 20-operator starting squad for Stationary Security Service',
+    sssTitle: 'Roll the 20-operator starting squad for Stationary Security Service',
     ownedPill: 'Link ID',
     sssPill: 'SSS',
     ownedPlaceholder: 'Share URL or ID',
@@ -36,7 +36,7 @@ const L = {
     ownedStatus: 'Link your roster to exclude operators you don\'t own.',
     ownedClear: 'Unlink',
     ownedDetail: `
-        <p><strong>About linking</strong> Paste a share URL from <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> (made by <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン, @an_mngtool</a>) and only the operators registered there will be drawn. No login or account is needed here, and it has nothing to do with your game account.</p>
+        <p><strong>About linking</strong> Paste a share URL from <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> (made by <a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン, @an_mngtool</a>) and only the operators registered there will be rolled. No login or account is needed here, and it has nothing to do with your game account.</p>
         <p><strong>Steps</strong></p>
         <ol>
           <li>Register your operators in Memoria's <a class="footer__link" href="https://arknights.memoria-ll.link/en/" target="_blank" rel="noopener noreferrer">Arknights Operators Manager</a> (Windows; manual entry, meant for people already using it)</li>
@@ -44,13 +44,13 @@ const L = {
           <li>Paste the URL (or just the ID at the end) above and press "Link"</li>
         </ol>
         <p><strong>Storage and updates</strong> The link is stored only in this browser and never sent to this site's server. The roster is refreshed every time you open the site, so updating Memoria is enough. The in-app browser of X counts as a different browser, so link again there if needed. "Unlink" removes it at any time.</p>
-        <p class="muted">A share URL contains nothing beyond your operator list (no password or game ID). The roster service may become unavailable without notice; drawing from the full roster keeps working regardless.</p>`,
-    modeNote: 'To change the difficulty, press "Draw again"',
+        <p class="muted">A share URL contains nothing beyond your operator list (no password or game ID). The roster service may become unavailable without notice; rolling from the full roster keeps working regardless.</p>`,
+    modeNote: 'To change the difficulty, press "Roll again"',
     modesAria: 'Difficulty',
     musou: 'All ★6', musouSub: 'MUSOU', easy: 'Easy', normal: 'Normal',
     guaranteeLabel: 'Class guarantee', guaranteeAria: 'Class guarantee', gOff: 'Off', gOn: 'On', gDesc: 'Fully random',
     squadAria: 'Squad', revealAll: 'Flip all',
-    draw: 'DRAW', share: 'Share', reroll: 'Reroll selected', rerollGo: 'Reroll', cancel: 'Cancel', again: 'Draw again',
+    draw: 'ROLL', share: 'Share', reroll: 'Reroll selected', rerollGo: 'Reroll', cancel: 'Cancel', again: 'Roll again',
     infoAria: 'About this site',
     info: `
     <div class="panel__label">ABOUT</div>
@@ -60,22 +60,22 @@ const L = {
         <p>Arknights Challenge Gacha is an unofficial fan tool for challenge runs in the mobile tower-defense game <em>Arknights</em>. It picks 12 random operators from every operator released on the global (EN/JP/KR) servers, and you clear stages with exactly that squad. No sign-up, no login, works in your phone's browser. The fun happens in the game; this site only creates the restriction.</p>
         <p><strong>Basic flow</strong></p>
         <ol>
-          <li><strong>Pick a difficulty.</strong> Default is Easy. Difficulty only changes the rarity odds of the operators you draw, not the stage. "All ★6" and "Easy" suit well-developed accounts; "Normal" and "Mon3tr" mix in ★3 and below.</li>
-          <li><strong>Press DRAW.</strong> 12 cards appear face down. Even face down, the card color shows the rarity and the icon shows the class.</li>
+          <li><strong>Pick a difficulty.</strong> Default is Easy. Difficulty only changes the rarity odds of the operators you roll, not the stage. "All ★6" and "Easy" suit well-developed accounts; "Normal" and "Mon3tr" mix in ★3 and below.</li>
+          <li><strong>Press ROLL.</strong> 12 cards appear face down. Even face down, the card color shows the rarity and the icon shows the class.</li>
           <li><strong>Flip the cards.</strong> Tap to flip one at a time, or "Flip all". Tap a flipped card again to see the full illustration, name, rarity and class.</li>
-          <li><strong>Reroll operators you don't own.</strong> Press "Reroll selected", tap the cards, then "Reroll". Only those cards are redrawn at the same rarity, without duplicates. No limit. Under-leveled operators are not a reason to reroll: raise them instead.</li>
+          <li><strong>Reroll operators you don't own.</strong> Press "Reroll selected", tap the cards, then "Reroll". Only those cards are rerolled at the same rarity, without duplicates. No limit. Under-leveled operators are not a reason to reroll: raise them instead.</li>
           <li><strong>Share.</strong> "Share" builds a result image on the spot and sends it, with hashtags, to X or other apps. If the share button is missing on your device, save the image and post it.</li>
           <li><strong>Build the squad in game and go.</strong> Support units from friends are off by default.</li>
         </ol>
-        <p><strong>Class guarantee</strong> "Off" is fully random: no medic, four guards, anything can happen. "On" fills the top two rows with one operator of each class in order (Vanguard, Guard, Defender, Sniper, Caster, Medic, Supporter, Specialist) and draws the last four slots at random. With "On", operators from smaller classes appear a little more often (see FAQ).</p>
-        <p><strong>SSS</strong> Press the small "SSS" pill above the difficulty to draw a 20-operator starting squad for Stationary Security Service. With class guarantee on, each class gets two operators (top four rows) and the last four slots are random.</p>
+        <p><strong>Class guarantee</strong> "Off" is fully random: no medic, four guards, anything can happen. "On" fills the top two rows with one operator of each class in order (Vanguard, Guard, Defender, Sniper, Caster, Medic, Supporter, Specialist) and rolls the last four slots at random. With "On", operators from smaller classes appear a little more often (see FAQ).</p>
+        <p><strong>SSS</strong> Press the small "SSS" pill above the difficulty to roll a 20-operator starting squad for Stationary Security Service. With class guarantee on, each class gets two operators (top four rows) and the last four slots are random.</p>
         <p><strong>Link ID</strong> Link a share URL from Arknights Shared Viewer to exclude operators you don't own. Details are behind the "i" next to the "Link ID" pill. Everything works without linking.</p>
       </div>
     </details>
     <details class="info">
       <summary>Difficulties and odds</summary>
       <div class="info__body">
-        <p>Difficulty sets the rarity odds. For each of the 12 slots the rarity is rolled first, then one operator is picked uniformly from that rarity among those not yet drawn. No duplicates within a squad. With class guarantee on, the first 8 slots are rolled per class before the remaining 4.</p>
+        <p>Difficulty sets the rarity odds. For each of the 12 slots the rarity is rolled first, then one operator is picked uniformly from that rarity among those not yet rolled. No duplicates within a squad. With class guarantee on, the first 8 slots are rolled per class before the remaining 4.</p>
         <div class="table-wrap">
         <table class="info__table">
           <thead><tr><th>Difficulty</th><th>★6</th><th>★5</th><th>★4</th><th>★3</th><th>★1–2</th></tr></thead>
@@ -98,7 +98,7 @@ const L = {
           <li><strong>Promotion / level caps</strong>: E1 only, level 50, and so on.</li>
           <li><strong>No support units</strong>.</li>
           <li><strong>Skill lock</strong>: everyone on skill 1, or pick skills at random.</li>
-          <li><strong>Farming runs</strong>: clear material stages or Annihilation with the drawn squad only.</li>
+          <li><strong>Farming runs</strong>: clear material stages or Annihilation with the rolled squad only.</li>
           <li><strong>Same squad with friends</strong>: share the image and compare results on the same stage.</li>
         </ul>
       </div>
@@ -115,8 +115,16 @@ const L = {
           <dd>Yes. If one you can't obtain shows up, use "Reroll selected". Reserve operators and other non-playable characters are excluded.</dd>
           <dt>Are operators of the same rarity equally likely?</dt>
           <dd>With class guarantee off, yes: after the rarity roll, one operator is picked uniformly using the browser's cryptographic random generator. With class guarantee on, operators are equally likely within the same class and rarity, but smaller classes (for example 8 ★6 medics vs 29 ★6 guards) get a higher per-operator rate. That is inherent to guaranteeing one per class.</dd>
-          <dt>Can I draw only from operators I own?</dt>
+          <dt>Does it work for Stationary Security Service?</dt>
+          <dd>Yes. Press "SSS" above the difficulty, then roll to get a 20-operator starting squad. With class guarantee on, each of the 8 classes gets two operators (top four rows) and the last four slots are random. Mid-run recruitment is already randomized by the game, so just play it as is. The share image and post text are labeled "SSS".</dd>
+          <dt>How much data does it use?</dt>
+          <dd>One roll loads 12 face icons, about 600 KB in total (less on later rolls, since your browser keeps the icons it has already loaded). The full illustrations shown when you tap a card are large, 1–4 MB each, so go easy on them if you are on mobile data.</dd>
+          <dt>Can I roll only from operators I own?</dt>
           <dd>Yes. Press "Link ID" and paste a share URL from Arknights Shared Viewer (by OperatorManageToolマン, @an_mngtool). Unowned operators are then excluded. The link is stored only in your browser. Level or promotion is not used for filtering.</dd>
+          <dt>I keep getting operators I haven't raised. Can you add a blacklist?</dt>
+          <dd>There are no plans for one. If an unraised operator shows up, please raise them.</dd>
+          <dt>Images don't show, only names.</dt>
+          <dd>Images are loaded from external sites and may fail on some connections. The rarity color and class icon still show, and the name is displayed in place of the image.</dd>
           <dt>Is anything saved?</dt>
           <dd>No. Results disappear when you close the page; save the image if you want to keep them.</dd>
           <dt>Is it free? Do I need an account?</dt>
@@ -243,8 +251,16 @@ const L = {
           <dd>포함됩니다. 지금 얻을 수 없는 오퍼레이터가 나오면 「골라서 다시 뽑기」로 교체하세요. 예비 오퍼레이터 등 편성에 쓸 수 없는 캐릭터는 제외합니다.</dd>
           <dt>같은 등급의 오퍼레이터는 정말 같은 확률인가요?</dt>
           <dd>직군 보장 「없음」에서는 같은 확률입니다. 등급이 정해진 뒤 브라우저의 암호용 난수로 균등하게 1명을 고릅니다. 「있음」에서는 같은 직군·같은 등급 안에서는 같은 확률이지만, 직군별 인원이 달라 인원이 적은 직군(예: ★6 메딕 8명 vs 가드 29명)의 오퍼레이터가 1명당 출현율이 높아집니다. 각 직군 1명을 보장하는 이상 피할 수 없는 성질입니다.</dd>
+          <dt>보안파견에서도 쓸 수 있나요?</dt>
+          <dd>난이도 위의 「보안파견」을 누른 뒤 뽑으면 보안파견 초기 편성 20명을 뽑을 수 있습니다. 직군 보장 「있음」이면 8개 직군이 2명씩(위 4줄) 들어가고 나머지 4칸은 랜덤입니다. 도중의 추가 모집은 게임이 랜덤으로 제시하므로 그대로 진행하세요. 공유 이미지와 게시글에는 「보안파견」이라고 표시됩니다.</dd>
+          <dt>데이터는 얼마나 쓰나요?</dt>
+          <dd>한 번 뽑으면 얼굴 아이콘 12장, 합계 약 600KB입니다(이미 불러온 오퍼레이터는 브라우저에 저장된 것을 쓰므로 그보다 적어집니다). 카드를 탭하면 나오는 전신 일러스트는 원본이 커서 1장당 1~4MB입니다. 모바일 데이터가 신경 쓰이면 전신 일러스트는 적당히 봐 주세요.</dd>
           <dt>보유한 오퍼레이터만으로 뽑을 수 있나요?</dt>
           <dd>가능합니다. 「ID 등록」을 누르고 Arknights Shared Viewer(OperatorManageToolマン @an_mngtool 님 제작)의 공유 URL을 등록하면 미보유 오퍼레이터가 제외됩니다. 등록 내용은 브라우저에만 저장됩니다. 정예화나 레벨로는 거르지 않습니다.</dd>
+          <dt>미육성 오퍼레이터가 나옵니다. 블랙리스트 기능은 없나요?</dt>
+          <dd>현재 구현 계획은 없습니다. 미육성 오퍼레이터가 나왔다면 이 기회에 키워 주세요.</dd>
+          <dt>이미지가 안 나오고 이름만 보입니다.</dt>
+          <dd>이미지는 외부 사이트에서 불러오기 때문에 통신 환경에 따라 표시되지 않을 수 있습니다. 그 경우에도 등급 색과 직군 아이콘은 그대로 표시되며, 이미지 대신 이름이 표시됩니다.</dd>
           <dt>결과는 저장되나요?</dt>
           <dd>저장되지 않습니다. 페이지를 닫으면 사라지니 남기려면 이미지를 저장하세요.</dd>
           <dt>무료인가요? 로그인이 필요한가요?</dt>
