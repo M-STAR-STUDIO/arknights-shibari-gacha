@@ -43,7 +43,7 @@ const DICT = {
   en: {
     siteTitle: 'Arknights Challenge Gacha',
     siteUrl: BASE + 'en/',
-    hashtag: '#ArknightsChallengeGacha #Arknights',
+    hashtag: '#アークナイツ縛りガチャ',
     tweetBody: (n) => `My ${n} operators`,
     musouLabel: 'ALL ★6',
     sssName: 'SSS',
@@ -78,7 +78,7 @@ const DICT = {
   ko: {
     siteTitle: '명일방주 제약 가챠',
     siteUrl: BASE + 'ko/',
-    hashtag: '#명일방주제약가챠 #명일방주',
+    hashtag: '#アークナイツ縛りガチャ',
     tweetBody: (n) => `이번 ${n}명`,
     musouLabel: '무쌍',
     sssName: '보안파견',
