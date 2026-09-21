@@ -513,6 +513,10 @@ body { padding-bottom: var(--anchor-h); }
 .info__body ol, .info__body ul { margin: 0 0 10px; padding-left: 1.4em; }
 .info__body li { margin-bottom: 4px; }
 .info__body strong { color: var(--text); font-weight: 700; }
+.reads { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.reads__label { font-size: 11px; color: var(--text-3); letter-spacing: 0.08em; margin-right: 2px; }
+.reads a { font-size: 12px; color: var(--accent); text-decoration: none; border: 1px solid var(--line); border-radius: 2px; padding: 3px 10px; }
+.reads a:hover { border-color: var(--accent); }
 .table-wrap { overflow-x: auto; margin: 0 0 10px; }
 .info__table { border-collapse: collapse; width: 100%; font-size: 12px; font-family: var(--font-latin); }
 .info__table th, .info__table td { border: 1px solid var(--line); padding: 5px 6px; text-align: center; white-space: nowrap; }

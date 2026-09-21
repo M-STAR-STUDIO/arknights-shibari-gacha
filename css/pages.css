@@ -31,3 +31,10 @@
 .rarity-block.r4 .panel__label { color: var(--r4); }
 .names { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .names li { background: var(--panel-2); border: 1px solid var(--line); border-radius: 2px; padding: 3px 9px; font-size: 12px; color: var(--text); }
+
+/* Article pages (beginners, strategy, stats, glossary, about) */
+.doc .steps li, .doc ul li { margin-bottom: 8px; }
+.doc li strong, .doc p strong { color: var(--text); }
+.doc ol, .doc ul { padding-left: 1.4em; margin: 0 0 10px; }
+.info__table--text th, .info__table--text td { white-space: normal; text-align: left; font-family: var(--font-jp); line-height: 1.6; }
+.info__table--text td:first-child { white-space: nowrap; }
