@@ -221,6 +221,7 @@ a { color: var(--accent); }
 .owned__info[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
 .owned__status { margin-top: 8px; font-size: 12px; color: var(--text-3); min-height: 16px; }
 .owned__status.is-ok { color: var(--accent); }
+.owned__note { margin-top: 6px; font-size: 11px; line-height: 1.6; color: var(--r5); }
 .owned__status.is-err { color: #ff8a8a; }
 .owned__detail { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-2); line-height: 1.7; }
 .owned__detail p { margin: 0 0 8px; }

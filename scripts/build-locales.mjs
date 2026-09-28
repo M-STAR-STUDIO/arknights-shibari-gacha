@@ -47,6 +47,7 @@ const L = {
           <li>Paste the URL (or just the ID at the end) above and press "Link"</li>
         </ol>
         <p><strong>Storage and updates</strong> The link is stored only in this browser and never sent to this site's server. The roster is refreshed every time you open the site, so updating Memoria is enough. The in-app browser of X counts as a different browser, so link again there if needed. "Unlink" removes it at any time.</p>
+        <p><strong>If your share URL changes</strong> After you update the Memoria app and share again, your share URL (ID) changes once. If the old URL stays linked here, your roster stops updating. Paste the new share URL above and link again.</p>
         <p class="muted">A share URL contains nothing beyond your operator list (no password or game ID). The roster service may become unavailable without notice; rolling from the full roster keeps working regardless.</p>`,
     modeNote: 'To change the difficulty, press "Roll again"',
     modesAria: 'Difficulty',
@@ -188,6 +189,7 @@ const L = {
           <li>그 URL(또는 끝의 ID)을 위 칸에 붙여넣고 「등록」</li>
         </ol>
         <p><strong>저장과 갱신</strong> 등록 내용은 이 브라우저에만 저장되며 이 사이트의 서버로는 전송되지 않습니다. 사이트를 열 때마다 최신 보유 목록을 다시 가져오므로 Memoria 쪽만 갱신하면 됩니다. X 앱 안에서 열면 다른 브라우저로 취급되니 그 경우 다시 등록해 주세요. 「해제」로 언제든 되돌릴 수 있습니다.</p>
+        <p><strong>공유 URL이 바뀐 경우</strong> Memoria 앱을 업데이트한 뒤 다시 공유하면 공유 URL(ID)이 한 번 새로 바뀝니다. 이전 URL을 등록한 채로 두면 보유 목록이 갱신되지 않습니다. 새 공유 URL을 위 칸에 붙여넣고 다시 등록해 주세요.</p>
         <p class="muted">공유 URL에는 보유 목록 이외의 정보(비밀번호, 게임 ID)는 들어 있지 않습니다. 제공처 사정으로 예고 없이 사용할 수 없게 될 수 있으며, 그 경우에도 전체에서 뽑는 기본 동작은 그대로입니다.</p>`,
     modeNote: '난이도를 바꾸려면 「다시 뽑기」를 누르세요',
     modesAria: '난이도 선택',

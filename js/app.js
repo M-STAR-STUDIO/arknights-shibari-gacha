@@ -2,7 +2,7 @@ import { MODES, SQUAD_SIZE, CLASSES, drawSquad, rerollSquad } from './gacha.js';
 import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
 import { T, CLASS_NAME, CLASS_ABBR, OPERATORS_URL } from './i18n.js';
-import { parseShareId, fetchOwned, loadOwned, saveOwned, clearOwned, loadSkipUnraised, saveSkipUnraised } from './owned.js';
+import { parseShareId, fetchOwned, loadOwned, saveOwned, clearOwned, loadSkipUnraised, saveSkipUnraised, isLegacyId } from './owned.js';
 
 const $ = (id) => document.getElementById(id);
 const app = $('app');
@@ -674,6 +674,9 @@ function renderOwned() {
   t.textContent = on ? T.ownedOn : T.ownedOff;
   $('ownedActions').hidden = !on;
   const st = $('ownedStatus');
+  const note = $('ownedNote');
+  note.hidden = !(on && isLegacyId(state.owned.id));
+  note.textContent = note.hidden ? '' : T.ownedLegacy;
   const skip = $('ownedSkip');
   skip.textContent = T.ownedSkip;
   skip.setAttribute('aria-pressed', state.skipUnraised ? 'true' : 'false');

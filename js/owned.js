@@ -20,6 +20,11 @@ export function parseShareId(input) {
   return /^[A-Za-z0-9_-]{4,64}$/.test(id) ? id : null;
 }
 
+/** 旧形式の共有ID(6・10文字)かどうか。新形式は11文字。アプリ更新後に共有し直すと新形式のIDに変わる。 */
+export function isLegacyId(id) {
+  return String(id || '').length !== 11;
+}
+
 async function getJson(url) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
