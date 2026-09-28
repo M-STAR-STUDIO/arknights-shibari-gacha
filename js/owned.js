@@ -6,6 +6,7 @@ const API = 'https://api.memoria-ll.link/v2/public/';
 // 移行前の入口。新APIが旧形式IDを取得できなかったとき(502)と、通信できなかったときだけ使う。
 const LEGACY_API = 'https://us-central1-arknights-sharing-view.cloudfunctions.net/getCharacterDataHttp?id=';
 const KEY = 'shibari-gacha:owned:v1';
+const SKIP_KEY = 'shibari-gacha:owned-skip-unraised:v1';
 const TIMEOUT_MS = 10000;
 
 /** 共有URL(…/?d=xxxx)または ID そのものから ID を取り出す。無効なら null。 */
@@ -34,7 +35,8 @@ async function getJson(url) {
 
 /**
  * 所持データを取得する。potential が 1 以上のものだけを所持扱いにする。
- * @returns {Promise<{id:string, codes:string[], count:number, fetchedAt:string}>}
+ * unraised は、所持しているが昇進0・レベル1のままのオペレーター(未育成を除外する設定で使う)。
+ * @returns {Promise<{id:string, codes:string[], unraised:string[], count:number, fetchedAt:string}>}
  */
 export async function fetchOwned(id) {
   let r = await getJson(`${API}${encodeURIComponent(id)}/operators`);
@@ -47,11 +49,13 @@ export async function fetchOwned(id) {
   if (r.status === 429) throw new Error('アクセスが集中しています。1分ほど待ってからもう一度お試しください');
   if (!r.json) throw new Error(`取得に失敗しました (${r.status})`);
   const chars = Array.isArray(r.json.characters) ? r.json.characters : [];
-  const codes = [...new Set(
-    chars.filter((c) => Number(c.potential) >= 1).map((c) => String(c.code || '')).filter(Boolean),
-  )];
+  const held = chars.filter((c) => Number(c.potential) >= 1 && c.code);
+  const codes = [...new Set(held.map((c) => String(c.code)))];
   if (!codes.length) throw new Error('所持オペレーターが見つかりませんでした');
-  return { id, codes, count: codes.length, fetchedAt: new Date().toISOString() };
+  const unraised = [...new Set(
+    held.filter((c) => Number(c.elite) === 0 && Number(c.level) === 1).map((c) => String(c.code)),
+  )];
+  return { id, codes, unraised, count: codes.length, fetchedAt: new Date().toISOString() };
 }
 
 export function loadOwned() {
@@ -69,4 +73,13 @@ export function saveOwned(owned) {
 
 export function clearOwned() {
   try { localStorage.removeItem(KEY); } catch { /* ignore */ }
+}
+
+/** 未育成(昇進0・レベル1)を除外する設定。ID登録とは別に覚えておく。 */
+export function loadSkipUnraised() {
+  try { return localStorage.getItem(SKIP_KEY) === '1'; } catch { return false; }
+}
+
+export function saveSkipUnraised(on) {
+  try { if (on) localStorage.setItem(SKIP_KEY, '1'); else localStorage.removeItem(SKIP_KEY); } catch { /* ignore */ }
 }

@@ -125,9 +125,9 @@ const L = {
           <dt>How much data does it use?</dt>
           <dd>One roll loads 12 face icons, about 600 KB in total (less on later rolls, since your browser keeps the icons it has already loaded). The full illustrations shown when you tap a card are large, 1–4 MB each, so go easy on them if you are on mobile data.</dd>
           <dt>Can I roll only from operators I own?</dt>
-          <dd>Yes. Press "Link ID" and paste a share URL from Arknights Shared Viewer (by OperatorManageToolマン, @an_mngtool). Unowned operators are then excluded. The link is stored only in your browser. Level or promotion is not used for filtering.</dd>
+          <dd>Yes. Press "Link ID" and paste a share URL from Arknights Shared Viewer (by OperatorManageToolマン, @an_mngtool). Unowned operators are then excluded. The link is stored only in your browser. After linking, "Exclude unraised (E0 Lv1)" also leaves out operators you have not raised at all. No other level or promotion filter is available.</dd>
           <dt>I keep getting operators I haven't raised. Can you add a blacklist?</dt>
-          <dd>There are no plans for one. If an unraised operator shows up, please raise them.</dd>
+          <dd>There are no plans for one. If an unraised operator shows up, please raise them. If you have linked an ID, there is a setting that leaves out operators still at Elite 0, level 1.</dd>
           <dt>Images don't show, only names.</dt>
           <dd>Images are loaded from external sites and may fail on some connections. The rarity color and class icon still show, and the name is displayed in place of the image.</dd>
           <dt>Is anything saved?</dt>
@@ -266,9 +266,9 @@ const L = {
           <dt>데이터는 얼마나 쓰나요?</dt>
           <dd>한 번 뽑으면 얼굴 아이콘 12장, 합계 약 600KB입니다(이미 불러온 오퍼레이터는 브라우저에 저장된 것을 쓰므로 그보다 적어집니다). 카드를 탭하면 나오는 전신 일러스트는 원본이 커서 1장당 1~4MB입니다. 모바일 데이터가 신경 쓰이면 전신 일러스트는 적당히 봐 주세요.</dd>
           <dt>보유한 오퍼레이터만으로 뽑을 수 있나요?</dt>
-          <dd>가능합니다. 「ID 등록」을 누르고 Arknights Shared Viewer(OperatorManageToolマン @an_mngtool 님 제작)의 공유 URL을 등록하면 미보유 오퍼레이터가 제외됩니다. 등록 내용은 브라우저에만 저장됩니다. 정예화나 레벨로는 거르지 않습니다.</dd>
+          <dd>가능합니다. 「ID 등록」을 누르고 Arknights Shared Viewer(OperatorManageToolマン @an_mngtool 님 제작)의 공유 URL을 등록하면 미보유 오퍼레이터가 제외됩니다. 등록 내용은 브라우저에만 저장됩니다. 등록 후 「미육성(정예화0·레벨1) 제외」를 누르면 전혀 키우지 않은 오퍼레이터도 뽑기에서 뺄 수 있습니다. 그 밖의 육성 상태(정예화나 레벨)로는 거르지 않습니다.</dd>
           <dt>미육성 오퍼레이터가 나옵니다. 블랙리스트 기능은 없나요?</dt>
-          <dd>현재 구현 계획은 없습니다. 미육성 오퍼레이터가 나왔다면 이 기회에 키워 주세요.</dd>
+          <dd>현재 구현 계획은 없습니다. 미육성 오퍼레이터가 나왔다면 이 기회에 키워 주세요. 다만 ID를 등록한 경우에 한해, 정예화0·레벨1 그대로인 오퍼레이터를 뽑기에서 빼는 설정이 있습니다.</dd>
           <dt>이미지가 안 나오고 이름만 보입니다.</dt>
           <dd>이미지는 외부 사이트에서 불러오기 때문에 통신 환경에 따라 표시되지 않을 수 있습니다. 그 경우에도 등급 색과 직군 아이콘은 그대로 표시되며, 이미지 대신 이름이 표시됩니다.</dd>
           <dt>결과는 저장되나요?</dt>

@@ -206,7 +206,8 @@ a { color: var(--accent); }
 /* ID登録 (owned data) panel, opens under the pills */
 .owned { border: 1px dashed var(--line-2); border-radius: 4px; padding: 10px 12px; margin: 2px 0 12px; background: rgba(0,0,0,0.15); }
 .owned__row { display: flex; gap: 8px; align-items: center; }
-.owned__row--actions { margin-top: 8px; }
+.owned__row--actions { margin-top: 8px; justify-content: space-between; flex-wrap: wrap; }
+.owned__skip { padding: 4px 12px; font-size: 11px; min-height: 30px; }
 .owned__input {
   flex: 1; min-width: 0; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 3px;
   font: inherit; font-size: 12px; padding: 7px 9px;

@@ -104,6 +104,7 @@
       </div>
       <div class="owned__status" id="ownedStatus">登録すると、未所持のオペレーターは自動的に除外されます。</div>
       <div class="owned__row owned__row--actions" id="ownedActions" hidden>
+        <button class="chip owned__skip" type="button" id="ownedSkip" aria-pressed="false"></button>
         <button class="btn btn--ghost btn--sm" type="button" id="ownedClear">解除</button>
       </div>
       <div class="owned__detail" id="ownedInfo" hidden>
@@ -276,9 +277,9 @@
           <dt>通信量はどのくらいかかりますか?</dt>
           <dd>1回引くと顔アイコン12枚で合計600KB程度です(同じオペレーターは2回目以降ブラウザに保存されたものを使うので、それより少なくなります)。カードをタップして表示する全身イラストは元の画像が大きく、1枚あたり1〜4MBかかります。モバイル回線で通信量が気になる場合は、全身イラストの表示を控えめにしてください。</dd>
           <dt>持っているオペレーターだけから引けますか?</dt>
-          <dd>できます。難易度の上の「ID登録」を押し、<a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>様制作の <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> で発行した共有URLを登録すると、未所持のオペレーターが自動的に除外されます。登録内容はお使いのブラウザにだけ保存され、次回以降は自動で最新の手持ちを取り直します。詳しい手順は「ID登録」の横の「i」に書いてあります。育成状況(昇進やレベル)では絞り込みません。</dd>
+          <dd>できます。難易度の上の「ID登録」を押し、<a class="footer__link" href="https://x.com/an_mngtool" target="_blank" rel="noopener noreferrer">OperatorManageToolマン(@an_mngtool)</a>様制作の <a class="footer__link" href="https://sharing-view.memoria-ll.link/" target="_blank" rel="noopener noreferrer">Arknights Shared Viewer</a> で発行した共有URLを登録すると、未所持のオペレーターが自動的に除外されます。登録内容はお使いのブラウザにだけ保存され、次回以降は自動で最新の手持ちを取り直します。詳しい手順は「ID登録」の横の「i」に書いてあります。登録後に「未育成(昇進0・レベル1)を除外」を押すと、まったく育てていないオペレーターも抽選から外せます。それ以外の育成状況(昇進やレベル)では絞り込みません。</dd>
           <dt>未育成のキャラが出ます。ブラックリスト方式は可能ですか?</dt>
-          <dd>現在、実装は考えておりません。未育成のキャラが出たのであれば、育成してあげてください。</dd>
+          <dd>現在、実装は考えておりません。未育成のキャラが出たのであれば、育成してあげてください。なお、ID登録をしている場合に限り、昇進0・レベル1のままのオペレーターを抽選から外す設定を用意しています。</dd>
           <dt>画像が表示されず名前だけになります。</dt>
           <dd>画像は外部サイトから読み込んでいるため、通信環境によって表示されないことがあります。その場合はレア度の色と職分アイコンはそのまま表示し、画像の代わりに名前を表示します。</dd>
           <dt>引いた結果は保存されますか?</dt>

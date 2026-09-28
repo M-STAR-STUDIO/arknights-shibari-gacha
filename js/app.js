@@ -2,7 +2,7 @@ import { MODES, SQUAD_SIZE, CLASSES, drawSquad, rerollSquad } from './gacha.js';
 import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
 import { T, CLASS_NAME, CLASS_ABBR, OPERATORS_URL } from './i18n.js';
-import { parseShareId, fetchOwned, loadOwned, saveOwned, clearOwned } from './owned.js';
+import { parseShareId, fetchOwned, loadOwned, saveOwned, clearOwned, loadSkipUnraised, saveSkipUnraised } from './owned.js';
 
 const $ = (id) => document.getElementById(id);
 const app = $('app');
@@ -20,7 +20,8 @@ const state = {
   classes: new Set(), // 職分指定 (空 = 指定なし = 全職分)
   pinned: new Map(),  // キャラ固定: slot index -> operator (引き直しても変わらない)
   pinMode: false,     // キャラ固定の選択中
-  owned: null,        // {id, codes, count, fetchedAt} | null  (ID登録: 所持データ)
+  owned: null,        // {id, codes, unraised, count, fetchedAt} | null  (ID登録: 所持データ)
+  skipUnraised: false,// ID登録時のみ: 昇進0・レベル1のオペレーターを抽選から外す
   squad: [],          // 12 operators
   revealed: [],       // boolean per slot
   selected: new Set(),// reroll selection
@@ -48,11 +49,17 @@ const SSS_SIZE = 20;
 function squadSize() { return state.game === 'sss' ? SSS_SIZE : state.count; }
 function perClass() { return state.game === 'sss' ? 2 : 1; } // 職分保証: 保全駐在は各職分2体
 
-/** Everyone, or only the owned ones when an ID is registered. */
+/** Owned operators that are still at 昇進0・レベル1 (empty until the roster has been fetched with that data). */
+function unraisedCodes() {
+  return new Set((state.owned && state.owned.unraised) || []);
+}
+
+/** Everyone, or only the owned ones when an ID is registered (minus the unraised ones when that is switched on). */
 function ownedPool() {
   if (!state.owned) return state.operators;
   const codes = new Set(state.owned.codes);
-  return state.operators.filter((o) => codes.has(o.code));
+  const skip = state.skipUnraised ? unraisedCodes() : new Set();
+  return state.operators.filter((o) => codes.has(o.code) && !skip.has(o.code));
 }
 
 /** Operators eligible for drawing: ownedPool() narrowed to the selected classes (職分指定). */
@@ -66,7 +73,10 @@ function updateHint() {
   squadCount.textContent = `${state.squad.length ? n : state.pinned.size} / ${state.squad.length || squadSize()}`;
   if (state.pinMode) { hint.textContent = state.ui === 'idle' ? T.hintPinIdle : T.hintPinResult; return; }
   switch (state.ui) {
-    case 'idle': hint.textContent = state.owned ? T.hintIdleOwned(ownedPool().length) : T.hintIdle; break;
+    case 'idle':
+      hint.textContent = !state.owned ? T.hintIdle
+        : state.skipUnraised ? T.hintIdleOwnedSkip(ownedPool().length) : T.hintIdleOwned(ownedPool().length);
+      break;
     case 'reveal': hint.textContent = T.hintReveal; break;
     case 'result': hint.textContent = T.hintResult; break;
     case 'reroll': hint.textContent = T.hintReroll; break;
@@ -537,6 +547,7 @@ async function openShare() {
     const canvas = await renderShareImage(state.squad, state.mode, logo, {
       guarantee: state.guarantee, game: state.game, classes: CLASSES.filter((c) => state.classes.has(c)),
       pinned: [...state.pinned.keys()],
+      skipUnraised: !!state.owned && state.skipUnraised,
     });
     const blob = await canvasToBlob(canvas);
     if (currentUrl) URL.revokeObjectURL(currentUrl);
@@ -663,10 +674,17 @@ function renderOwned() {
   t.textContent = on ? T.ownedOn : T.ownedOff;
   $('ownedActions').hidden = !on;
   const st = $('ownedStatus');
+  const skip = $('ownedSkip');
+  skip.textContent = T.ownedSkip;
+  skip.setAttribute('aria-pressed', state.skipUnraised ? 'true' : 'false');
   if (on) {
     const d = new Date(state.owned.fetchedAt);
     st.className = 'owned__status is-ok';
-    st.textContent = T.ownedStatus(ownedPool().length, d.getMonth() + 1, d.getDate());
+    const codes = new Set(state.owned.codes);
+    const total = state.operators.filter((o) => codes.has(o.code)).length;
+    st.textContent = state.skipUnraised
+      ? T.ownedStatusSkip(total, total - ownedPool().length, d.getMonth() + 1, d.getDate())
+      : T.ownedStatus(total, d.getMonth() + 1, d.getDate());
   } else if (!st.classList.contains('is-err')) {
     st.className = 'owned__status';
     st.textContent = T.ownedStatusOff;
@@ -728,6 +746,12 @@ $('ownedInfoBtn').addEventListener('click', () => {
 $('ownedLoad').addEventListener('click', onOwnedLoad);
 $('ownedInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') onOwnedLoad(); });
 $('ownedClear').addEventListener('click', onOwnedClear);
+$('ownedSkip').addEventListener('click', () => {
+  if (state.ui !== 'idle' || !state.owned) return;
+  state.skipUnraised = !state.skipUnraised;
+  saveSkipUnraised(state.skipUnraised);
+  renderOwned();
+});
 
 $('customToggle').addEventListener('click', () => {
   const p = $('customPanel');
@@ -885,6 +909,7 @@ loadOperators()
   .then((ops) => {
     state.operators = ops;
     state.owned = loadOwned();
+    state.skipUnraised = loadSkipUnraised();
     if (state.owned) $('ownedInput').value = state.owned.id;
     renderOwned();
     refreshOwned(); // background; never blocks drawing

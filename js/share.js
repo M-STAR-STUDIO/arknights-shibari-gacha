@@ -255,6 +255,7 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
     if (opts.game === 'sss') badges.push(T.badgeSss(squad.length));
     if (opts.guarantee) badges.push(T.badgeGuarantee);
     if (opts.pinned && opts.pinned.length) badges.push(T.badgePinned(opts.pinned.length));
+    if (opts.skipUnraised) badges.push(T.badgeSkip);
     const cls = opts.classes || [];
     if (cls.length) badges.push(cls.length <= 3 ? T.badgeClasses(cls.map((c) => CLASS_NAME[c]).join(T.listSep)) : T.badgeClassCount(cls.length));
     ctx.textAlign = 'left';
