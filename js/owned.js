@@ -1,10 +1,12 @@
 // ID登録(所持データ): Arknights Shared Viewer (Memoria-ll / OperatorManageToolマン @an_mngtool) の共有IDから
-// 所持オペレーターを取得する。API: https://github.com/Memoria-ll/sharing-backend (MIT)
+// 所持オペレーターを取得する。API の仕様: https://github.com/Memoria-ll/sharing-view/blob/main/README.md
 // 取得した所持リストはこのブラウザの localStorage にだけ保存し、このサイトのサーバーには送らない。
 
-const API = 'https://us-central1-arknights-sharing-view.cloudfunctions.net/getCharacterDataHttp?id=';
+const API = 'https://api.memoria-ll.link/v2/public/';
+// 移行前の入口。新APIが旧形式IDを取得できなかったとき(502)と、通信できなかったときだけ使う。
+const LEGACY_API = 'https://us-central1-arknights-sharing-view.cloudfunctions.net/getCharacterDataHttp?id=';
 const KEY = 'shibari-gacha:owned:v1';
-const TIMEOUT_MS = 6000;
+const TIMEOUT_MS = 10000;
 
 /** 共有URL(…/?d=xxxx)または ID そのものから ID を取り出す。無効なら null。 */
 export function parseShareId(input) {
@@ -17,24 +19,34 @@ export function parseShareId(input) {
   return /^[A-Za-z0-9_-]{4,64}$/.test(id) ? id : null;
 }
 
+async function getJson(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { cache: 'no-store', credentials: 'omit', signal: ctrl.signal });
+    return { status: res.status, json: res.ok ? await res.json() : null };
+  } catch (e) {
+    return { status: 0, timeout: !!(e && e.name === 'AbortError'), json: null };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * 所持データを取得する。potential が 1 以上のものだけを所持扱いにする。
  * @returns {Promise<{id:string, codes:string[], count:number, fetchedAt:string}>}
  */
 export async function fetchOwned(id) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
-  let res;
-  try {
-    res = await fetch(API + encodeURIComponent(id), { cache: 'no-store', signal: ctrl.signal });
-  } catch (e) {
-    throw new Error(e && e.name === 'AbortError' ? '応答がありません(時間切れ)' : '通信に失敗しました');
-  } finally {
-    clearTimeout(timer);
+  let r = await getJson(`${API}${encodeURIComponent(id)}/operators`);
+  if (r.status === 0 || r.status === 502) {
+    const legacy = await getJson(LEGACY_API + encodeURIComponent(id));
+    if (legacy.status !== 0) r = legacy;
   }
-  if (!res.ok) throw new Error(res.status === 404 ? '共有IDが見つかりません' : `取得に失敗しました (${res.status})`);
-  const json = await res.json();
-  const chars = Array.isArray(json.characters) ? json.characters : [];
+  if (r.status === 0) throw new Error(r.timeout ? '応答がありません(時間切れ)' : '通信に失敗しました');
+  if (r.status === 404) throw new Error('共有IDが見つかりません');
+  if (r.status === 429) throw new Error('アクセスが集中しています。1分ほど待ってからもう一度お試しください');
+  if (!r.json) throw new Error(`取得に失敗しました (${r.status})`);
+  const chars = Array.isArray(r.json.characters) ? r.json.characters : [];
   const codes = [...new Set(
     chars.filter((c) => Number(c.potential) >= 1).map((c) => String(c.code || '')).filter(Boolean),
   )];
