@@ -267,7 +267,7 @@ function onPinTap(i) {
   markPinned(i, state.pinned.has(i));
 }
 
-// ----- picker: search by name; 異格 switches the list to alter operators -----
+// ----- picker: search by name (alter operators included); 異格 narrows the list to alter operators -----
 let pickSlot = -1;
 let pickAlter = false;
 
@@ -277,11 +277,13 @@ const kana = (s) => String(s || '').normalize('NFKC').toLowerCase().replace(/\s+
 function pickerMatches() {
   const q = kana($('pinSearch').value);
   const byId = new Map(state.operators.map((o) => [o.id, o]));
+  // names that start with the query come first, so テキサス is listed before 血掟テキサス
+  const head = (o) => (q && kana(o.name).startsWith(q) ? 0 : 1);
   return state.operators
-    .filter((o) => !!o.alt === pickAlter)
+    .filter((o) => !pickAlter || o.alt)
     .filter((o) => !q || kana(o.name).includes(q) || (o.alt && kana(byId.get(o.alt)?.name).includes(q)))
     .map((o, k) => [o, k])
-    .sort((a, b) => b[0].rarity - a[0].rarity || a[1] - b[1])
+    .sort((a, b) => head(a[0]) - head(b[0]) || b[0].rarity - a[0].rarity || a[1] - b[1])
     .map(([o]) => o);
 }
 
