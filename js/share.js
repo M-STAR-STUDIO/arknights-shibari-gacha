@@ -1,7 +1,7 @@
 // Share image (2 rows x 6 columns, 1600x900) drawn on canvas.
 import { MODES } from './gacha.js';
 import { avatarUrl, classIconUrl, loadImage } from './assets.js';
-import { T, SITE_URL, HASHTAG, CLASS_ABBR } from './i18n.js';
+import { T, SITE_URL, HASHTAG, CLASS_ABBR, CLASS_NAME } from './i18n.js';
 
 export { SITE_URL, HASHTAG };
 
@@ -63,7 +63,38 @@ function fitText(ctx, text, maxW, base, min) {
 const LATIN_FONT = '"Rajdhani", "Segoe UI", system-ui, sans-serif';
 const JP_FONT = 'system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Meiryo", sans-serif';
 
-async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H) {
+const PIN_COLOR = '#b07cff'; // キャラ固定: lock mark
+
+/** Lock mark (rounded square + padlock) with its top-left corner at x, y. */
+function drawLock(ctx, x, y, s) {
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = PIN_COLOR;
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, s, s, s * 0.18); else ctx.rect(x, y, s, s);
+  ctx.fill();
+  ctx.restore();
+  ctx.save();
+  const u = s / 24; // padlock drawn on a 24-unit grid
+  ctx.translate(x, y);
+  ctx.strokeStyle = '#fff';
+  ctx.fillStyle = '#fff';
+  ctx.lineWidth = 2.4 * u;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(8 * u, 11 * u);
+  ctx.lineTo(8 * u, 9 * u);
+  ctx.arc(12 * u, 9 * u, 4 * u, Math.PI, 0);
+  ctx.lineTo(16 * u, 11 * u);
+  ctx.stroke();
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(6 * u, 11 * u, 12 * u, 9 * u, 1.8 * u); else ctx.rect(6 * u, 11 * u, 12 * u, 9 * u);
+  ctx.fill();
+  ctx.restore();
+}
+
+async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H, pinned = false) {
   const isSix = op.rarity === 6;
   const K = cw / CARD_W; // scale factor for text / icon sizes
   const cut = CUT * K;
@@ -160,6 +191,9 @@ async function drawCard(ctx, op, x, y, art, icon, cw = CARD_W, ch = CARD_H) {
     ctx.fillText(CLASS_ABBR[op.cls], cx + s / 2, cy + s / 2 + 1);
   }
   ctx.restore();
+
+  // キャラ固定: lock mark in the top-left corner, below the cut
+  if (pinned) drawLock(ctx, ix + Math.round(8 * K), iy + icut + Math.round(6 * K), Math.round(40 * K));
 }
 
 /**
@@ -220,6 +254,9 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
     const badges = [];
     if (opts.game === 'sss') badges.push(T.badgeSss(squad.length));
     if (opts.guarantee) badges.push(T.badgeGuarantee);
+    if (opts.pinned && opts.pinned.length) badges.push(T.badgePinned(opts.pinned.length));
+    const cls = opts.classes || [];
+    if (cls.length) badges.push(cls.length <= 3 ? T.badgeClasses(cls.map((c) => CLASS_NAME[c]).join(T.listSep)) : T.badgeClassCount(cls.length));
     ctx.textAlign = 'left';
     ctx.font = `700 34px ${JP_FONT}`;
     let x = 60 + ctx.measureText(T.siteTitle).width + 22;
@@ -246,10 +283,12 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
 
   // cards: 2x6 for 12; larger squads use up to 10 columns and shrink the cards to fit
   const n = squad.length;
-  const cols = n <= 12 ? COLS : Math.min(10, Math.ceil(n / 2));
-  const rows = Math.max(ROWS, Math.ceil(n / cols));
+  // up to 6: one row; 7-12: two rows; more: up to 10 columns
+  const cols = n <= COLS ? n : n <= 12 ? Math.ceil(n / 2) : Math.min(10, Math.ceil(n / 2));
+  const rows = Math.ceil(n / cols);
   const availW = W - 120, availH = H - 118 - 70;
-  let cw = Math.min(CARD_W, Math.floor((availW - (cols - 1) * GAP) / cols));
+  // a single row has room to spare: let the cards grow a little
+  let cw = Math.min(rows === 1 ? Math.round(CARD_W * 1.3) : CARD_W, Math.floor((availW - (cols - 1) * GAP) / cols));
   let ch = cw * 2;
   if (rows * ch + (rows - 1) * GAP > availH) { ch = Math.floor((availH - (rows - 1) * GAP) / rows); cw = Math.floor(ch / 2); }
   const gridW = cols * cw + (cols - 1) * GAP;
@@ -257,15 +296,17 @@ export async function renderShareImage(squad, modeKey, logo, opts = {}) {
   const ox = Math.round((W - gridW) / 2);
   const oy = 118 + Math.round((availH - gridH) / 2);
 
+  const pinnedSet = new Set(opts.pinned || []);
   const arts = await Promise.all(squad.map((o) => loadImage(avatarUrl(o))));
   const icons = {};
   for (const c of new Set(squad.map((o) => o.cls))) icons[c] = await loadImage(classIconUrl(c));
 
   for (let i = 0; i < squad.length; i++) {
     const r = Math.floor(i / cols), c = i % cols;
-    const x = ox + c * (cw + GAP);
+    const inRow = r === rows - 1 ? n - r * cols : cols; // center a short last row
+    const x = ox + c * (cw + GAP) + Math.round(((cols - inRow) * (cw + GAP)) / 2);
     const y = oy + r * (ch + GAP);
-    await drawCard(ctx, squad[i], x, y, arts[i], icons[squad[i].cls], cw, ch);
+    await drawCard(ctx, squad[i], x, y, arts[i], icons[squad[i].cls], cw, ch, pinnedSet.has(i));
   }
 
   // footer: url left, logo right

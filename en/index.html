@@ -69,7 +69,19 @@
   <section class="panel panel--mode" aria-label="Difficulty">
     <div class="mode-top">
       <button class="pill" type="button" id="ownedToggle" aria-pressed="false" title="Link a shared roster ID to exclude operators you don't own">Link ID</button>
+      <button class="pill" type="button" id="customToggle" aria-pressed="false" aria-expanded="false" aria-controls="customPanel" title="Choose the squad size (1-12) and the classes to roll from">Size / Class</button>
       <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="Roll the 20-operator starting squad for Stationary Security Service">SSS</button>
+    </div>
+    <div class="owned custom" id="customPanel" hidden>
+      <div class="custom__label" id="customCountLabel">Squad size</div>
+      <div class="custom__nums" id="customNums" role="radiogroup" aria-labelledby="customCountLabel"></div>
+      <div class="custom__note" id="customSssNote" hidden></div>
+      <div class="custom__label" id="customClassLabel">Classes</div>
+      <div class="custom__classes" id="customClasses" role="group" aria-labelledby="customClassLabel"></div>
+      <div class="custom__foot">
+        <div class="owned__status" id="customStatus"></div>
+        <button class="btn btn--ghost btn--sm" type="button" id="customReset">Reset</button>
+      </div>
     </div>
     <div class="owned" id="ownedPanel" hidden>
       <div class="owned__row">
@@ -150,8 +162,11 @@
   <section class="panel panel--squad" aria-label="Squad">
     <div class="squad-head">
       <div class="panel__label">SQUAD <span class="squad-count" id="squadCount">0 / 12</span></div>
-      <div class="squad-actions" id="squadActions">
-        <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">Flip all</button>
+      <div class="squad-tools">
+        <button class="btn btn--ghost btn--sm btn--pin" type="button" id="btnPin" aria-pressed="false">Lock operators</button>
+        <div class="squad-actions" id="squadActions">
+          <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">Flip all</button>
+        </div>
       </div>
     </div>
     <div class="grid" id="grid" aria-live="polite"></div>
@@ -193,6 +208,8 @@
         </ol>
         <p><strong>Class guarantee</strong> "Off" is fully random: no medic, four guards, anything can happen. "On" fills the top two rows with one operator of each class in order (Vanguard, Guard, Defender, Sniper, Caster, Medic, Supporter, Specialist) and rolls the last four slots at random. With "On", operators from smaller classes appear a little more often (see FAQ).</p>
         <p><strong>SSS</strong> Press the small "SSS" pill above the difficulty to roll a 20-operator starting squad for Stationary Security Service. With class guarantee on, each class gets two operators (top four rows) and the last four slots are random.</p>
+        <p><strong>Squad size and classes</strong> Press "Size / Class" above the difficulty to roll anywhere from 1 to 12 operators. Pick classes to roll only from those (none picked means all classes). For example, size 1 plus Medic rolls a single medic. When classes are restricted, the share image says so.</p>
+        <p><strong>Lock operators</strong> Press "Lock operators" at the top right of the squad, then tap an empty slot to search for an operator by name. The "Alter" button next to the search box switches the list to alter operators only. After a roll, press "Lock operators" and tap a card to lock that operator. Locked operators stay face up and unchanged through "Roll again" and rerolls. Locked cards carry a lock mark in the top-left corner, both on screen and in the share image. To unlock, press "Lock operators" and tap the locked card.</p>
         <p><strong>Link ID</strong> Link a share URL from Arknights Shared Viewer to exclude operators you don't own. Details are behind the "i" next to the "Link ID" pill. Everything works without linking.</p>
       </div>
     </details>
@@ -295,6 +312,21 @@
       <div class="detail__name" id="detailName"></div>
       <div class="detail__cls" id="detailCls"></div>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="pinModal" hidden>
+  <div class="modal__backdrop" data-close-pin></div>
+  <div class="modal__box pinbox" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <div class="modal__head">
+      <div class="pinbox__title" id="pinTitle">Choose an operator to lock</div>
+      <button class="modal__close" type="button" data-close-pin aria-label="Close">×</button>
+    </div>
+    <div class="pinbox__search">
+      <input class="owned__input" id="pinSearch" type="search" placeholder="Search by name" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      <button class="chip pinbox__alter" type="button" id="pinAlter" aria-pressed="false">Alter</button>
+    </div>
+    <div class="pinbox__list" id="pinList"></div>
   </div>
 </div>
 

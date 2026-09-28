@@ -82,7 +82,19 @@
   <section class="panel panel--mode" aria-label="難易度">
     <div class="mode-top">
       <button class="pill" type="button" id="ownedToggle" aria-pressed="false" title="共有IDを登録すると未所持のオペレーターを自動的に除外します">ID登録</button>
+      <button class="pill" type="button" id="customToggle" aria-pressed="false" aria-expanded="false" aria-controls="customPanel" title="引く人数(1〜12体)と職分を指定します">人数・職分</button>
       <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="保全駐在の初期編成(20体)を引く">保全駐在</button>
+    </div>
+    <div class="owned custom" id="customPanel" hidden>
+      <div class="custom__label" id="customCountLabel">人数</div>
+      <div class="custom__nums" id="customNums" role="radiogroup" aria-labelledby="customCountLabel"></div>
+      <div class="custom__note" id="customSssNote" hidden></div>
+      <div class="custom__label" id="customClassLabel">職分</div>
+      <div class="custom__classes" id="customClasses" role="group" aria-labelledby="customClassLabel"></div>
+      <div class="custom__foot">
+        <div class="owned__status" id="customStatus"></div>
+        <button class="btn btn--ghost btn--sm" type="button" id="customReset">指定をリセット</button>
+      </div>
     </div>
     <div class="owned" id="ownedPanel" hidden>
       <div class="owned__row">
@@ -163,8 +175,11 @@
   <section class="panel panel--squad" aria-label="編成">
     <div class="squad-head">
       <div class="panel__label">SQUAD <span class="squad-count" id="squadCount">0 / 12</span></div>
-      <div class="squad-actions" id="squadActions">
-        <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">全部めくる</button>
+      <div class="squad-tools">
+        <button class="btn btn--ghost btn--sm btn--pin" type="button" id="btnPin" aria-pressed="false">キャラ固定</button>
+        <div class="squad-actions" id="squadActions">
+          <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">全部めくる</button>
+        </div>
       </div>
     </div>
     <div class="grid" id="grid" aria-live="polite"></div>
@@ -206,6 +221,8 @@
         </ol>
         <p><strong>職分保証</strong> 「なし」は完全ランダムで、職分や近接・遠隔のバランスは一切保証されません。医療がひとりもいない、前衛ばかり、といった編成が出るのも仕様です。「あり」にすると、上2行の8枠に先鋒・前衛・重装・狙撃・術師・医療・補助・特殊が1体ずつこの順で入り、下の行の4枠がランダムになります。「あり」では職分ごとの人数差により、人数の少ない職分のオペレーターがやや出やすくなります(詳しくは「よくある質問」)。</p>
         <p><strong>保全駐在</strong> 難易度の上の小さな「保全駐在」を押してから引くと、保全駐在の初期編成20体を引くモードになります。職分保証「あり」のときは各職分2体ずつ(上4行)が入り、残り4枠がランダムです。途中の追加募集はゲーム側の提示に従ってください。</p>
+        <p><strong>人数・職分の指定</strong> 難易度の上の「人数・職分」を押すと、引く人数を1〜12体から選べます。職分を選ぶと、選んだ職分のオペレーターだけが出ます(何も選ばなければ全職分)。たとえば「1体」と「医療」を選べば、医療オペレーターを1体だけ引けます。職分を指定した場合は、シェア画像にその旨が表示されます。</p>
+        <p><strong>キャラ固定</strong> 編成の右上の「キャラ固定」を押してから空の枠をタップすると、固定するオペレーターを名前で検索して選べます。検索欄の隣の「異格」を押すと、異格オペレーターだけの一覧に切り替わります。引いたあとに「キャラ固定」を押してカードをタップすると、そのオペレーターを固定できます。固定したオペレーターは「もう一回引く」でも再抽選でも変わらず、表向きのまま残ります。固定中のカードには、画面でもシェア画像でも左上に鍵のマークが付きます。解除するには、「キャラ固定」を押してから固定中のカードをタップしてください。</p>
         <p><strong>ID登録</strong> 難易度の上の「ID登録」から、Arknights Shared Viewer の共有URLを登録すると、未所持のオペレーターが自動的に除外されます。手順と注意点は「ID登録」の横の「i」にまとめています。登録しなくても、すべての機能はそのまま使えます。</p>
         <p><strong>遊び方のコツ</strong> はじめは「イージー」で恒常ステージの再攻略から入ると、縛りの感覚がつかめます。慣れてきたら「ノーマル」で星3以下が混ざる編成に挑戦したり、<a class="footer__link" href="rules.html">縛りルール集</a>の追加ルール(引き直しなし、第1スキル固定、撤退禁止など)を1つ足したりすると、同じステージでも景色が変わります。詳しい操作は<a class="footer__link" href="guide.html">遊び方ガイド</a>にあります。</p>
       </div>
@@ -319,6 +336,21 @@
       <div class="detail__name" id="detailName"></div>
       <div class="detail__cls" id="detailCls"></div>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="pinModal" hidden>
+  <div class="modal__backdrop" data-close-pin></div>
+  <div class="modal__box pinbox" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <div class="modal__head">
+      <div class="pinbox__title" id="pinTitle">固定するオペレーターを選択</div>
+      <button class="modal__close" type="button" data-close-pin aria-label="閉じる">×</button>
+    </div>
+    <div class="pinbox__search">
+      <input class="owned__input" id="pinSearch" type="search" placeholder="名前で検索" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      <button class="chip pinbox__alter" type="button" id="pinAlter" aria-pressed="false">異格</button>
+    </div>
+    <div class="pinbox__list" id="pinList"></div>
   </div>
 </div>
 

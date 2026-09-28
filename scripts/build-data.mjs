@@ -70,6 +70,28 @@ for (const [id, c] of Object.entries(table)) {
 operators.sort((a, b) => a.sort - b.sort);
 for (const o of operators) delete o.sort;
 
+// 異格: alt = id of the base operator. Found by name (漢字の冠 + 元の名前, e.g. 血掟テキサス) or by id
+// (char_1019_siege2 -> char_112_siege); the rest is listed by hand.
+const ALT_MANUAL = { char_1035_wisdel: 'char_113_cqbw' };
+{
+  const byName = new Map(operators.map((o) => [o.name, o]));
+  const byStem = new Map(operators.map((o) => [o.id.replace(/^char_\d+_/, ''), o]));
+  const baseOf = (o) => {
+    if (ALT_MANUAL[o.id]) return operators.find((x) => x.id === ALT_MANUAL[o.id]);
+    for (let i = 2; i < o.name.length; i++) {
+      const prefix = o.name.slice(0, i);
+      const base = byName.get(o.name.slice(i));
+      if (base && base.id !== o.id && (/^[\u4e00-\u9fff]+$/.test(prefix) || /[A-Z]$/.test(prefix))) return base;
+    }
+    const m = o.id.match(/^char_\d+_([a-z0-9]+?)\d$/);
+    const base = m && byStem.get(m[1]);
+    return base && base.id !== o.id ? base : null;
+  };
+  let n = 0;
+  for (const o of operators) { const b = baseOf(o); if (b) { o.alt = b.id; n++; } }
+  console.log(`alter operators: ${n}`);
+}
+
 const counts = {};
 for (const o of operators) counts[o.rarity] = (counts[o.rarity] || 0) + 1;
 

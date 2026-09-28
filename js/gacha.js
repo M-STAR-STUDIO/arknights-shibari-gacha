@@ -64,11 +64,32 @@ function shuffle(arr) {
 }
 
 /**
+ * Classes for the guaranteed slots, in class order. Every class gets perClass slots when they fit;
+ * when the squad is too small for that, a random subset of the classes is used (no class twice in a round).
+ */
+function guaranteeSlots(classes, perClass, size, have = []) {
+  const count = new Map(classes.map((c) => [c, 0]));
+  const had = (c) => have.filter((h) => h === c).length; // already in the squad (キャラ固定)
+  let room = size;
+  for (let k = 0; k < perClass && room > 0; k++) {
+    const need = classes.filter((c) => had(c) <= k);
+    const round = room >= need.length ? need : shuffle(need.slice()).slice(0, room);
+    for (const c of round) count.set(c, count.get(c) + 1);
+    room -= round.length;
+  }
+  const slots = [];
+  for (const c of classes) for (let k = 0; k < count.get(c); k++) slots.push(c);
+  return slots;
+}
+
+/**
  * Draw a full squad of 12 unique operators.
  * @param {Array} operators
  * @param {string} modeKey
- * @param {{guarantee?: boolean, size?: number, perClass?: number}} [opts] guarantee: every one of the 8 classes appears
- *   at least perClass times (default 1; 保全駐在 uses 2); size: squad size (default 12; 保全駐在 uses 20)
+ * @param {{guarantee?: boolean, size?: number, perClass?: number, have?: string[]}} [opts] have: classes of the
+ *   operators that are already in the squad (キャラ固定), counted toward the guarantee; guarantee: every class found in
+ *   operators appears at least perClass times (default 1; 保全駐在 uses 2), as far as the size allows;
+ *   size: squad size (default 12; 保全駐在 uses 20). Filter operators beforehand to restrict the classes.
  * @returns {Array} operators
  */
 export function drawSquad(operators, modeKey, opts = {}) {
@@ -92,7 +113,8 @@ export function drawSquad(operators, modeKey, opts = {}) {
   if (opts.guarantee) {
     // first slots: perClass operators per class in the fixed class order (先鋒→特殊); the rest: random
     const per = Math.max(1, opts.perClass || 1);
-    for (const cls of CLASSES) for (let k = 0; k < per; k++) drawOne((o) => o.cls === cls);
+    const classes = CLASSES.filter((c) => operators.some((o) => o.cls === c));
+    for (const cls of guaranteeSlots(classes, per, size, opts.have || [])) drawOne((o) => o.cls === cls);
   }
   while (result.length < size) {
     if (!drawOne(() => true)) break;

@@ -1,4 +1,4 @@
-import { MODES, SQUAD_SIZE, drawSquad, rerollSquad } from './gacha.js';
+import { MODES, SQUAD_SIZE, CLASSES, drawSquad, rerollSquad } from './gacha.js';
 import { avatarUrl, classIconUrl, fullArtUrl, loadImage, preloadSquad } from './assets.js';
 import { renderShareImage, canvasToBlob, tweetText, SITE_URL } from './share.js';
 import { T, CLASS_NAME, CLASS_ABBR, OPERATORS_URL } from './i18n.js';
@@ -16,6 +16,10 @@ const state = {
   mode: 'easy',
   guarantee: false,   // 職分保証
   game: 'normal',     // 'normal' (12体) | 'sss' (保全駐在 20体)
+  count: SQUAD_SIZE,  // 人数指定 (1〜12。保全駐在のときは使わない)
+  classes: new Set(), // 職分指定 (空 = 指定なし = 全職分)
+  pinned: new Map(),  // キャラ固定: slot index -> operator (引き直しても変わらない)
+  pinMode: false,     // キャラ固定の選択中
   owned: null,        // {id, codes, count, fetchedAt} | null  (ID登録: 所持データ)
   squad: [],          // 12 operators
   revealed: [],       // boolean per slot
@@ -35,25 +39,34 @@ async function loadOperators() {
 function setUi(ui) {
   state.ui = ui;
   app.dataset.state = ui;
+  if (ui !== 'idle' && ui !== 'result') state.pinMode = false;
+  renderPinButton();
   updateHint();
 }
 
 const SSS_SIZE = 20;
-function squadSize() { return state.game === 'sss' ? SSS_SIZE : SQUAD_SIZE; }
+function squadSize() { return state.game === 'sss' ? SSS_SIZE : state.count; }
 function perClass() { return state.game === 'sss' ? 2 : 1; } // 職分保証: 保全駐在は各職分2体
 
-/** Operators eligible for drawing: everyone, or only the owned ones when an ID is registered. */
-function pool() {
+/** Everyone, or only the owned ones when an ID is registered. */
+function ownedPool() {
   if (!state.owned) return state.operators;
   const codes = new Set(state.owned.codes);
   return state.operators.filter((o) => codes.has(o.code));
 }
 
+/** Operators eligible for drawing: ownedPool() narrowed to the selected classes (職分指定). */
+function pool() {
+  const ops = ownedPool();
+  return state.classes.size ? ops.filter((o) => state.classes.has(o.cls)) : ops;
+}
+
 function updateHint() {
   const n = state.revealed.filter(Boolean).length;
-  squadCount.textContent = `${state.squad.length ? n : 0} / ${state.squad.length || squadSize()}`;
+  squadCount.textContent = `${state.squad.length ? n : state.pinned.size} / ${state.squad.length || squadSize()}`;
+  if (state.pinMode) { hint.textContent = state.ui === 'idle' ? T.hintPinIdle : T.hintPinResult; return; }
   switch (state.ui) {
-    case 'idle': hint.textContent = state.owned ? T.hintIdleOwned(pool().length) : T.hintIdle; break;
+    case 'idle': hint.textContent = state.owned ? T.hintIdleOwned(ownedPool().length) : T.hintIdle; break;
     case 'reveal': hint.textContent = T.hintReveal; break;
     case 'result': hint.textContent = T.hintResult; break;
     case 'reroll': hint.textContent = T.hintReroll; break;
@@ -76,19 +89,85 @@ function setGuarantee(on) {
   for (const b of document.querySelectorAll('.seg__btn')) {
     b.setAttribute('aria-checked', (b.dataset.guarantee === '1') === state.guarantee ? 'true' : 'false');
   }
-  $('guaranteeDesc').textContent = state.guarantee
-    ? (state.game === 'sss'
-        ? T.guaranteeSss
-        : T.guaranteeNormal)
-    : T.guaranteeOff;
+  $('guaranteeDesc').textContent = guaranteeText();
+}
+
+function guaranteeText() {
+  if (!state.guarantee) return T.guaranteeOff;
+  const k = state.classes.size || CLASSES.length;
+  const n = squadSize();
+  const per = perClass();
+  if (k === 1) return T.guaranteeSingle;
+  if (n < k) return T.guaranteeSubset(n);
+  if (k === CLASSES.length && state.game === 'sss') return T.guaranteeSss;
+  if (k === CLASSES.length && n === SQUAD_SIZE) return T.guaranteeNormal;
+  return T.guaranteeCustom(k, per, n - k * per);
+}
+
+// ---------- 人数・職分の指定 ----------
+function isCustom() {
+  return state.classes.size > 0 || (state.game !== 'sss' && state.count !== SQUAD_SIZE);
+}
+
+function classNames() {
+  return CLASSES.filter((c) => state.classes.has(c)).map((c) => CLASS_NAME[c]).join(T.listSep);
+}
+
+function buildCustomPanel() {
+  const t = $('customToggle');
+  t.textContent = T.customPill;
+  t.title = T.customTitle;
+  $('customCountLabel').textContent = T.customCount;
+  $('customClassLabel').textContent = T.customClasses;
+  $('customReset').textContent = T.customReset;
+  $('customSssNote').textContent = T.customSssNote;
+  $('customNums').innerHTML = Array.from({ length: SQUAD_SIZE }, (_, i) =>
+    `<button class="chip chip--num" type="button" role="radio" data-count="${i + 1}">${i + 1}</button>`).join('');
+  $('customClasses').innerHTML = CLASSES.map((c) =>
+    `<button class="chip" type="button" data-cls="${c}" aria-pressed="false">${CLASS_NAME[c]}</button>`).join('');
+}
+
+function renderCustom() {
+  const sss = state.game === 'sss';
+  for (const b of $('customNums').children) {
+    b.setAttribute('aria-checked', !sss && Number(b.dataset.count) === state.count ? 'true' : 'false');
+  }
+  $('customNums').classList.toggle('is-off', sss);
+  $('customSssNote').hidden = !sss;
+  for (const b of $('customClasses').children) {
+    b.setAttribute('aria-pressed', state.classes.has(b.dataset.cls) ? 'true' : 'false');
+  }
+  $('customStatus').textContent = T.customStatus(squadSize(), classNames());
+  $('customStatus').classList.toggle('is-ok', isCustom());
+  $('customReset').hidden = !isCustom();
+  $('customToggle').setAttribute('aria-pressed', isCustom() ? 'true' : 'false');
+  setGuarantee(state.guarantee); // the guarantee text depends on the size and the classes
+  if (state.ui === 'idle') { renderEmptyGrid(); updateHint(); }
+}
+
+function setCount(n) {
+  state.count = Math.min(SQUAD_SIZE, Math.max(1, n | 0));
+  if (state.game === 'sss') { setGame('normal'); return; } // setGame re-renders
+  renderCustom();
+}
+
+function toggleClass(cls) {
+  if (state.classes.has(cls)) state.classes.delete(cls); else state.classes.add(cls);
+  if (state.classes.size === CLASSES.length) state.classes.clear(); // all selected = no restriction
+  renderCustom();
+}
+
+function resetCustom() {
+  state.count = SQUAD_SIZE;
+  state.classes.clear();
+  renderCustom();
 }
 
 function setGame(game) {
   state.game = game === 'sss' ? 'sss' : 'normal';
   app.dataset.game = state.game;
   $('gameToggle').setAttribute('aria-pressed', state.game === 'sss' ? 'true' : 'false');
-  setGuarantee(state.guarantee); // refresh the guarantee text for the new size
-  if (state.ui === 'idle') { renderEmptyGrid(); updateHint(); }
+  renderCustom(); // refreshes the guarantee text and the empty grid for the new size
 }
 
 function setMode(key) {
@@ -117,9 +196,151 @@ function makeEmptySlot(i) {
 
 function renderEmptyGrid() {
   grid.innerHTML = '';
-  for (let i = 0; i < squadSize(); i++) {
+  const n = squadSize();
+  grid.dataset.n = n;
+  grid.style.setProperty('--n', n);
+  for (let i = 0; i < n; i++) {
     grid.appendChild(makeEmptySlot(i));
   }
+  packPins(n);
+  for (const [i, op] of state.pinned) showPinned(i, op);
+}
+
+// ---------- キャラ固定 ----------
+/** Keep every fixed operator inside the first n slots (move to the lowest free slot; drop what does not fit). */
+function packPins(n) {
+  const out = [...state.pinned].filter(([i]) => i >= n).map(([, op]) => op);
+  for (const i of [...state.pinned.keys()]) if (i >= n) state.pinned.delete(i);
+  for (const op of out) {
+    let free = 0;
+    while (free < n && state.pinned.has(free)) free++;
+    if (free < n) state.pinned.set(free, op);
+  }
+}
+
+function markPinned(i, on) {
+  const slot = slotEl(i);
+  if (!slot) return;
+  slot.classList.toggle('is-pinned', on);
+}
+
+/** Face-up card in a slot without the flip animation (fixed operators before a draw). */
+function showPinned(i, op) {
+  const slot = slotEl(i);
+  if (!slot) return;
+  fillSlot(i, op);
+  slot.classList.remove('is-flippable', 'is-selected', 'was-flipped');
+  slot.classList.add('is-flipped', 'no-anim');
+  markPinned(i, true);
+}
+
+function clearSlot(i) {
+  const old = slotEl(i);
+  if (old) grid.replaceChild(makeEmptySlot(i), old);
+}
+
+function renderPinButton() {
+  const b = $('btnPin');
+  if (!b) return;
+  app.dataset.pin = state.pinMode ? '1' : '0';
+  b.setAttribute('aria-pressed', state.pinMode ? 'true' : 'false');
+  b.textContent = state.pinMode ? T.pinDone : T.pinBtn;
+}
+
+function togglePinMode() {
+  if (state.ui !== 'idle' && state.ui !== 'result') return;
+  state.pinMode = !state.pinMode;
+  renderPinButton();
+  updateHint();
+}
+
+function onPinTap(i) {
+  if (state.ui === 'idle') {
+    if (state.pinned.has(i)) { state.pinned.delete(i); clearSlot(i); updateHint(); }
+    else openPicker(i);
+    return;
+  }
+  // result: fix / release the operator that is already there
+  const op = state.squad[i];
+  if (!op || !state.revealed[i]) return;
+  if (state.pinned.has(i)) state.pinned.delete(i); else state.pinned.set(i, op);
+  markPinned(i, state.pinned.has(i));
+}
+
+// ----- picker: search by name; 異格 switches the list to alter operators -----
+let pickSlot = -1;
+let pickAlter = false;
+
+const kana = (s) => String(s || '').normalize('NFKC').toLowerCase().replace(/\s+/g, '')
+  .replace(/[\u3041-\u3096]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) + 0x60)); // ひらがな -> カタカナ
+
+function pickerMatches() {
+  const q = kana($('pinSearch').value);
+  const byId = new Map(state.operators.map((o) => [o.id, o]));
+  return state.operators
+    .filter((o) => !!o.alt === pickAlter)
+    .filter((o) => !q || kana(o.name).includes(q) || (o.alt && kana(byId.get(o.alt)?.name).includes(q)))
+    .map((o, k) => [o, k])
+    .sort((a, b) => b[0].rarity - a[0].rarity || a[1] - b[1])
+    .map(([o]) => o);
+}
+
+function renderPicker() {
+  $('pinAlter').setAttribute('aria-pressed', pickAlter ? 'true' : 'false');
+  const taken = new Set([...state.pinned.values()].map((o) => o.id));
+  const list = pickerMatches();
+  const box = $('pinList');
+  box.scrollTop = 0;
+  if (!list.length) { box.innerHTML = `<div class="pinbox__empty">${T.pinEmpty}</div>`; return; }
+  box.innerHTML = '';
+  for (const op of list) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pick';
+    b.dataset.id = op.id;
+    b.dataset.rarity = op.rarity;
+    b.disabled = taken.has(op.id);
+    const img = document.createElement('img');
+    img.loading = 'lazy'; img.decoding = 'async'; img.alt = ''; img.draggable = false;
+    img.src = avatarUrl(op);
+    img.addEventListener('error', () => { img.style.visibility = 'hidden'; }, { once: true });
+    const txt = document.createElement('span');
+    txt.className = 'pick__txt';
+    const name = document.createElement('span');
+    name.className = 'pick__name';
+    name.textContent = op.name;
+    const meta = document.createElement('span');
+    meta.className = 'pick__meta';
+    meta.textContent = `★${op.rarity} ${CLASS_NAME[op.cls]}${b.disabled ? ' / ' + T.pinTaken : ''}`;
+    txt.append(name, meta);
+    b.append(img, txt);
+    box.appendChild(b);
+  }
+}
+
+function openPicker(i) {
+  pickSlot = i;
+  pickAlter = false;
+  $('pinSearch').value = '';
+  renderPicker();
+  $('pinModal').hidden = false; // no auto-focus: the list is usable without the keyboard
+  document.body.style.overflow = 'hidden';
+}
+
+function closePicker() {
+  $('pinModal').hidden = true;
+  $('pinSearch').blur();
+  document.body.style.overflow = '';
+  pickSlot = -1;
+}
+
+function onPick(id) {
+  const op = state.operators.find((o) => o.id === id);
+  if (!op || pickSlot < 0 || state.ui !== 'idle') { closePicker(); return; }
+  state.pinned.set(pickSlot, op);
+  showPinned(pickSlot, op);
+  closePicker();
+  updateHint();
 }
 
 function buildCardFaces(i, op) {
@@ -157,6 +378,7 @@ function fillSlot(i, op) {
   const art = front.querySelector('.art');
   const nameFb = front.querySelector('.name-fallback');
   nameFb.textContent = op.name;
+  art.classList.add('is-hidden'); // no broken-image icon while the face icon loads
   const clsBoxes = [...card.querySelectorAll('.cls')]; // front and back
 
   loadImage(avatarUrl(op)).then((img) => {
@@ -175,6 +397,7 @@ function fillSlot(i, op) {
 
 function renderSquadFaceDown(squad) {
   for (let i = 0; i < squad.length; i++) {
+    if (state.pinned.has(i)) continue; // fixed operators stay face up
     const slot = slotEl(i);
     slot.classList.remove('is-flipped', 'is-selected', 'was-flipped');
     slot.classList.add('is-flippable');
@@ -206,14 +429,25 @@ function revealAll() {
 // ---------- actions ----------
 function onDraw() {
   if (!state.operators.length) return;
-  const ops = pool();
-  if (ops.length < squadSize()) { hint.textContent = T.hintNotEnough(ops.length, squadSize()); return; }
-  state.squad = drawSquad(ops, state.mode, { guarantee: state.guarantee, size: squadSize(), perClass: perClass() });
-  state.revealed = new Array(state.squad.length).fill(false);
+  const n = squadSize();
+  packPins(n);
+  const fixed = state.pinned;
+  const fixedIds = new Set([...fixed.values()].map((o) => o.id));
+  const free = n - fixed.size;
+  const ops = pool().filter((o) => !fixedIds.has(o.id));
+  if (ops.length < free) { hint.textContent = T.hintNotEnough(ops.length, free); return; }
+  const drawn = free > 0
+    ? drawSquad(ops, state.mode, {
+      guarantee: state.guarantee, size: free, perClass: perClass(), have: [...fixed.values()].map((o) => o.cls),
+    })
+    : [];
+  let k = 0;
+  state.squad = Array.from({ length: n }, (_, i) => fixed.get(i) || drawn[k++]);
+  state.revealed = state.squad.map((_, i) => fixed.has(i));
   state.selected.clear();
   preloadSquad(state.squad); // warm cache; not awaited
   renderSquadFaceDown(state.squad);
-  setUi('reveal');
+  setUi(free > 0 ? 'reveal' : 'result');
   window.scrollTo({ top: grid.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
 }
 
@@ -240,6 +474,7 @@ function cancelReroll() {
 }
 
 function toggleSelect(i) {
+  if (state.pinned.has(i)) return; // fixed operators are never rerolled
   const slot = slotEl(i);
   if (state.selected.has(i)) { state.selected.delete(i); slot.classList.remove('is-selected'); }
   else { state.selected.add(i); slot.classList.add('is-selected'); }
@@ -297,7 +532,10 @@ async function openShare() {
 
   try {
     const logo = await getLogo();
-    const canvas = await renderShareImage(state.squad, state.mode, logo, { guarantee: state.guarantee, game: state.game });
+    const canvas = await renderShareImage(state.squad, state.mode, logo, {
+      guarantee: state.guarantee, game: state.game, classes: CLASSES.filter((c) => state.classes.has(c)),
+      pinned: [...state.pinned.keys()],
+    });
     const blob = await canvasToBlob(canvas);
     if (currentUrl) URL.revokeObjectURL(currentUrl);
     currentBlob = blob;
@@ -348,6 +586,7 @@ async function nativeShare() {
 
 // ---------- tap detail ----------
 function canShowDetail(i) {
+  if (state.ui === 'idle') return state.pinned.has(i);
   return state.squad.length > 0 && !!state.revealed[i] && (state.ui === 'result' || state.ui === 'reveal');
 }
 
@@ -381,7 +620,7 @@ function cropToContent(img) {
 
 let detailToken = 0;
 async function openDetail(i) {
-  const op = state.squad[i];
+  const op = state.squad[i] || state.pinned.get(i);
   if (!op) return;
   const modal = $('detailModal');
   const artBox = $('detailArt');
@@ -425,7 +664,7 @@ function renderOwned() {
   if (on) {
     const d = new Date(state.owned.fetchedAt);
     st.className = 'owned__status is-ok';
-    st.textContent = T.ownedStatus(pool().length, d.getMonth() + 1, d.getDate());
+    st.textContent = T.ownedStatus(ownedPool().length, d.getMonth() + 1, d.getDate());
   } else if (!st.classList.contains('is-err')) {
     st.className = 'owned__status';
     st.textContent = T.ownedStatusOff;
@@ -488,6 +727,23 @@ $('ownedLoad').addEventListener('click', onOwnedLoad);
 $('ownedInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') onOwnedLoad(); });
 $('ownedClear').addEventListener('click', onOwnedClear);
 
+$('customToggle').addEventListener('click', () => {
+  const p = $('customPanel');
+  p.hidden = !p.hidden;
+  const t = $('customToggle');
+  t.classList.toggle('is-open', !p.hidden);
+  t.setAttribute('aria-expanded', p.hidden ? 'false' : 'true');
+});
+$('customNums').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-count]');
+  if (b && state.ui === 'idle') setCount(Number(b.dataset.count));
+});
+$('customClasses').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-cls]');
+  if (b && state.ui === 'idle') toggleClass(b.dataset.cls);
+});
+$('customReset').addEventListener('click', () => { if (state.ui === 'idle') resetCustom(); });
+
 // ---------- events ----------
 $('gameToggle').addEventListener('click', () => {
   if (state.ui !== 'idle') return;
@@ -510,10 +766,20 @@ grid.addEventListener('click', (e) => {
   const slot = e.target.closest('.slot');
   if (!slot) return;
   const i = Number(slot.dataset.index);
-  if (state.ui === 'reroll') toggleSelect(i);
+  if (state.pinMode) onPinTap(i);
+  else if (state.ui === 'reroll') toggleSelect(i);
   else if ((state.ui === 'reveal' || state.ui === 'result') && !state.revealed[i]) reveal(i);
   else if (canShowDetail(i)) openDetail(i);
 });
+
+$('btnPin').addEventListener('click', togglePinMode);
+$('pinSearch').addEventListener('input', renderPicker);
+$('pinAlter').addEventListener('click', () => { pickAlter = !pickAlter; renderPicker(); });
+$('pinList').addEventListener('click', (e) => {
+  const b = e.target.closest('.pick');
+  if (b && !b.disabled) onPick(b.dataset.id);
+});
+for (const el of document.querySelectorAll('#pinModal [data-close-pin]')) el.addEventListener('click', closePicker);
 
 $('btnDraw').addEventListener('click', onDraw);
 $('btnRevealAll').addEventListener('click', revealAll);
@@ -604,6 +870,10 @@ function suggestLanguage() {
 suggestLanguage();
 
 // ---------- init ----------
+$('pinTitle').textContent = T.pinTitle;
+$('pinSearch').placeholder = T.pinSearch;
+$('pinAlter').textContent = T.pinAlter;
+buildCustomPanel();
 setMode('easy');
 setGuarantee(false);
 setGame('normal');

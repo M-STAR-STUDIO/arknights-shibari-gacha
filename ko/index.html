@@ -69,7 +69,19 @@
   <section class="panel panel--mode" aria-label="난이도 선택">
     <div class="mode-top">
       <button class="pill" type="button" id="ownedToggle" aria-pressed="false" title="공유 ID를 등록하면 미보유 오퍼레이터를 자동으로 제외합니다">ID 등록</button>
+      <button class="pill" type="button" id="customToggle" aria-pressed="false" aria-expanded="false" aria-controls="customPanel" title="뽑을 인원(1~12명)과 직군을 지정합니다">인원·직군</button>
       <button class="pill" type="button" id="gameToggle" aria-pressed="false" title="보안파견 초기 편성(20명)을 뽑기">보안파견</button>
+    </div>
+    <div class="owned custom" id="customPanel" hidden>
+      <div class="custom__label" id="customCountLabel">인원</div>
+      <div class="custom__nums" id="customNums" role="radiogroup" aria-labelledby="customCountLabel"></div>
+      <div class="custom__note" id="customSssNote" hidden></div>
+      <div class="custom__label" id="customClassLabel">직군</div>
+      <div class="custom__classes" id="customClasses" role="group" aria-labelledby="customClassLabel"></div>
+      <div class="custom__foot">
+        <div class="owned__status" id="customStatus"></div>
+        <button class="btn btn--ghost btn--sm" type="button" id="customReset">지정 초기화</button>
+      </div>
     </div>
     <div class="owned" id="ownedPanel" hidden>
       <div class="owned__row">
@@ -150,8 +162,11 @@
   <section class="panel panel--squad" aria-label="편성">
     <div class="squad-head">
       <div class="panel__label">SQUAD <span class="squad-count" id="squadCount">0 / 12</span></div>
-      <div class="squad-actions" id="squadActions">
-        <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">모두 뒤집기</button>
+      <div class="squad-tools">
+        <button class="btn btn--ghost btn--sm btn--pin" type="button" id="btnPin" aria-pressed="false">캐릭터 고정</button>
+        <div class="squad-actions" id="squadActions">
+          <button class="btn btn--ghost btn--sm" type="button" id="btnRevealAll">모두 뒤집기</button>
+        </div>
       </div>
     </div>
     <div class="grid" id="grid" aria-live="polite"></div>
@@ -193,6 +208,8 @@
         </ol>
         <p><strong>직군 보장</strong> 「없음」은 완전 랜덤이라 메딕이 한 명도 없거나 가드만 넷인 편성도 나옵니다. 「있음」이면 위 2줄 8칸에 뱅가드·가드·디펜더·스나이퍼·캐스터·메딕·서포터·스페셜리스트가 이 순서로 1명씩 들어가고, 아래 4칸은 랜덤입니다. 「있음」에서는 인원이 적은 직군의 오퍼레이터가 조금 더 자주 나옵니다(FAQ 참고).</p>
         <p><strong>보안파견</strong> 난이도 위의 작은 「보안파견」을 누르고 뽑으면 보안파견 초기 편성 20명을 뽑습니다. 직군 보장 「있음」이면 각 직군 2명씩(위 4줄), 나머지 4칸은 랜덤입니다.</p>
+        <p><strong>인원·직군 지정</strong> 난이도 위의 「인원·직군」을 누르면 뽑을 인원을 1~12명 중에서 고를 수 있습니다. 직군을 고르면 그 직군의 오퍼레이터만 나옵니다(아무것도 고르지 않으면 전체 직군). 예를 들어 「1명」과 「메딕」을 고르면 메딕 1명만 뽑습니다. 직군을 지정한 경우 공유 이미지에 표시됩니다.</p>
+        <p><strong>캐릭터 고정</strong> 편성 오른쪽 위의 「캐릭터 고정」을 누른 뒤 빈 칸을 탭하면, 고정할 오퍼레이터를 이름으로 검색해 고를 수 있습니다. 검색창 옆의 「이격」을 누르면 이격 오퍼레이터만 보입니다. 뽑은 뒤에 「캐릭터 고정」을 누르고 카드를 탭하면 그 오퍼레이터가 고정됩니다. 고정한 오퍼레이터는 「다시 뽑기」를 해도 바뀌지 않고 앞면 그대로 남습니다. 고정된 카드는 화면과 공유 이미지 모두 왼쪽 위에 자물쇠 표시가 붙습니다. 해제하려면 「캐릭터 고정」을 누른 뒤 고정된 카드를 탭하세요.</p>
         <p><strong>ID 등록</strong> 난이도 위의 「ID 등록」에서 Arknights Shared Viewer 공유 URL을 등록하면 미보유 오퍼레이터가 자동으로 제외됩니다. 자세한 내용은 「ID 등록」 옆의 「i」에 있습니다. 등록하지 않아도 모든 기능을 쓸 수 있습니다.</p>
       </div>
     </details>
@@ -295,6 +312,21 @@
       <div class="detail__name" id="detailName"></div>
       <div class="detail__cls" id="detailCls"></div>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="pinModal" hidden>
+  <div class="modal__backdrop" data-close-pin></div>
+  <div class="modal__box pinbox" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <div class="modal__head">
+      <div class="pinbox__title" id="pinTitle">고정할 오퍼레이터 선택</div>
+      <button class="modal__close" type="button" data-close-pin aria-label="닫기">×</button>
+    </div>
+    <div class="pinbox__search">
+      <input class="owned__input" id="pinSearch" type="search" placeholder="이름으로 검색" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      <button class="chip pinbox__alter" type="button" id="pinAlter" aria-pressed="false">이격</button>
+    </div>
+    <div class="pinbox__list" id="pinList"></div>
   </div>
 </div>
 
